@@ -9,26 +9,59 @@ import styles from "./modules/stylesheet";
     constructor(props){
         super(props);
 
+        this.state = {
+            first_name: '',
+            last_name: '',
+            email: '' ,
+            password: '',
+            new_first_name: ''
+        }
+
     }
 
-     //to verify that you are still logged in when u change tabs
     componentDidMount() {
-       
+        this.loadProfile();
+    }
+
+    loadProfile = async() => {
+        const userId = await AsyncStorage.getItem('user_id');
+        const token = await AsyncStorage.getItem('@session_token');
+
+        return fetch("http://localhost:3333/api/1.0.0/user/" + userId, {
+            method: 'get',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 400){
+                throw 'Invalid email or password';
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then(profile => {
+            this.setState(profile)
+        }) 
     }
 
 
     logout = async () => {
             
         let token = await AsyncStorage.getItem('@session_token');
-        console.log(token)
+    
         await AsyncStorage.removeItem('@session_token');
+        await AsyncStorage.removeItem('user_id');
 
         return fetch("http://localhost:3333/api/1.0.0/logout", {
             method: 'post',
             headers: {
                 "X-Authorization": token
             }
-        }) 
+        })  
         .then((response) => {
             if(response.status === 200){ 
                 console.log('checked')
@@ -46,6 +79,13 @@ import styles from "./modules/stylesheet";
 
     }
 
+    editText = () => {
+        this.setState({
+            first_name: ''
+        })
+    }
+
+
     render(){
         return(
     
@@ -56,22 +96,23 @@ import styles from "./modules/stylesheet";
                 <Image source={require('../assets/img/Heading.png')}></Image>
             </View>
 
-            <View style = {stylesIn.friendSearch}>
+            <View style = {stylesIn.userProfile}>
 
             </View>
 
-            <View style = {stylesIn.postFeed}>
-                <Text>Setting Screen</Text>
+            <View style = {stylesIn.userDetails}>
+                <Text>{this.state.first_name}</Text> <Button title="edit firstName"></Button>
+                <TextInput value = {this.state.first_name} />
+                <Text>{this.state.last_name}</Text>
+                <Text>{this.state.email}</Text>
+                <Text>{this.state.friend_count}</Text>
+            </View>
 
+            <View style = {stylesIn.signOut}>
                 <TouchableOpacity
                 onPress={() => {this.logout()}}>
-                 <Text> Sign Out</Text>
+                 <Text>Sign Out</Text>
                 </TouchableOpacity>
-
-            </View>
-
-            <View styles = {stylesIn.mainMenu}>
-
             </View>
 
         </View>
@@ -80,15 +121,14 @@ import styles from "./modules/stylesheet";
     }
  }
 
- const stylesIn = StyleSheet.create({
+const stylesIn = StyleSheet.create({
 
     flexContainer: {
         flex: 1,
     },
 
     homeLogo: {
-        flex: 5,
-        backgroundColor: 'blue',
+        flex: 5,     
     },
 
     logoImg: {
@@ -96,22 +136,19 @@ import styles from "./modules/stylesheet";
         height: 100
     },
 
-    friendSearch: {
-        flex: 5,
-        backgroundColor: 'green',
+    userProfile: {
+        flex: 20,
     },
 
-    postFeed: {
+    userDetails: {
         flex: 30,
-        backgroundColor: 'orange',
     },
 
-    mainMenu: {
+    signOut: {
         flex: 10,
-        backgroundColor: 'blue',
     }
- 
- })
+
+})
 
  export default SettingScreen;
 

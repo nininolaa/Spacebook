@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { View, TextInput,Button,Alert,Text,StyleSheet} from 'react-native'
-import Flex from './flex';
 import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
 

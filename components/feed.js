@@ -1,14 +1,34 @@
 import React, {Component} from 'react';
-import { View, TextInput,Button,Alert,Text, StyleSheet,Image} from 'react-native';
+import { View, Text, StyleSheet,Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from './modules/logo';
-import styles from "./modules/stylesheet";
 
  class Feed extends Component {
 
     constructor(props){
         super(props);
     }
+
+    componentDidMount() {
+        this.unsubscribe = this.props.navigation.addListener('focus', () => {
+  
+          AsyncStorage.getItem('@session_token')
+            .then (session => {
+              console.log(session);
+              if (session == null) {   
+               this.props.navigation.navigate('Feed');
+              }
+              else{
+                this.setState({token: session})
+              }
+            });
+  
+        })
+        
+    }
+  
+    componentWillUnmount() {
+    this.unsubscribe();
+    }    
 
     render(){
         return(

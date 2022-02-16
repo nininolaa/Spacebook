@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, Button ,Image, ImageBackground, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logo from './modules/logo';
@@ -33,13 +31,15 @@ const Tab = createBottomTabNavigator() ;
         nav.navigate('Register');
     }
 
+    //get token and check if the token exist
     componentDidMount() {
       this.unsubscribe = this.props.navigation.addListener('focus', () => {
 
         AsyncStorage.getItem('@session_token')
           .then (session => {
-            if (session == null) {
-             this.props.navigation.navigate('Login');
+            console.log(session);
+            if (session == null) {   
+             this.props.navigation.navigate('Feed');
             }
             else{
               this.setState({token: session})
@@ -135,8 +135,8 @@ const Tab = createBottomTabNavigator() ;
     
             <Tab.Screen name="Feed" component={Feed}></Tab.Screen>
             <Tab.Screen name="Friends" component={FriendScreen}></Tab.Screen>
-            <Tab.Screen name="Add Post" component={Feed}></Tab.Screen>
-            <Tab.Screen name="Profile" component={FriendScreen}></Tab.Screen>
+            <Tab.Screen name="Add Post" component={PostScreen}></Tab.Screen>
+            <Tab.Screen name="Profile" component={ProfileScreen}></Tab.Screen>
             <Tab.Screen name="Setting" component={SettingScreen}></Tab.Screen>
                    
           </Tab.Navigator>

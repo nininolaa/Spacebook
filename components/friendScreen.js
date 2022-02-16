@@ -1,16 +1,13 @@
 import React, {Component} from 'react';
-import { View, TextInput,Button,Alert,Text, StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View,Text, StyleSheet} from 'react-native';
 import Logo from './modules/logo';
-import styles from "./modules/stylesheet";
+
 
  class FriendScreen extends Component {
 
     constructor(props){
         super(props);
     }
-
-  
 
     render(){
         return(

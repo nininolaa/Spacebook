@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, TextInput,Button,Alert,Text, StyleSheet, Touchable, TouchableOpacity} from 'react-native';
+import { View, TextInput,Text, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
@@ -15,7 +15,8 @@ import styles from "./modules/stylesheet";
         }
     }
 
-    SignInButtonPressed = async () =>{
+
+    SignInButtonPressed = async () => {
 
         return fetch("http://localhost:3333/api/1.0.0/login", {
             method: 'post',
@@ -24,7 +25,6 @@ import styles from "./modules/stylesheet";
             },
             body: JSON.stringify(this.state)
         })
-
         .then((response) => {
             if(response.status === 200){
                 return response.json()
@@ -34,13 +34,12 @@ import styles from "./modules/stylesheet";
                 throw 'Something went wrong';
             }
         })
-
         .then(async (responseJson) => {
                 console.log(responseJson);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
+                await AsyncStorage.setItem('user_id', responseJson.id);
                 this.props.navigation.navigate("Home");
         })
-
         .catch((error) => {
             console.log(error);
         })
