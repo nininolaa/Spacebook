@@ -9,28 +9,18 @@ import styles from "./modules/stylesheet";
     constructor(props){
         super(props);
 
-        this.state = {
-            token: null
-        }
     }
 
+     //to verify that you are still logged in when u change tabs
     componentDidMount() {
-        AsyncStorage.getItem('@session_token')
-        .then (session => {
-          console.log(session)
-          if (session) {
-            this.setState({token: !null});
-          }
-        });
-      }
+       
+    }
 
 
     logout = async () => {
-
-        if (null !== this.state.token){
             
         let token = await AsyncStorage.getItem('@session_token');
-
+        console.log(token)
         await AsyncStorage.removeItem('@session_token');
 
         return fetch("http://localhost:3333/api/1.0.0/logout", {
@@ -38,10 +28,10 @@ import styles from "./modules/stylesheet";
             headers: {
                 "X-Authorization": token
             }
-        })
-       
+        }) 
         .then((response) => {
             if(response.status === 200){ 
+                console.log('checked')
                 this.props.navigation.navigate("Home");
             }else if(response.status === 401){
                 this.props.navigation.navigate("Home");
@@ -49,16 +39,10 @@ import styles from "./modules/stylesheet";
                 throw 'Something went wrong';
             }
         })
-
         .catch((error) => {
             console.log(error.message);
             ToastAndroid.show(error, ToastAndroid.SHORT);
         })
-    }
-
-    else {
-        console.log('You are not logged in?')
-    }
 
     }
 

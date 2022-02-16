@@ -24,38 +24,38 @@ class App extends Component{
     this.state={
         isAuthed: false,
       }
-
   }
-//   componentDidMount() {
-//     this.unsubscribe = this.props.navigation.addListener('focus', () => {
-//       this.checkLoggedIn();
-//     });
-
-//   }
-
-//   componentWillUnmount() {
-//     this.unsubscribe();
-//   }
-
-//   checkLoggedIn = async () => {
-//     const value = await AsyncStorage.getItem('@session_token');
-    
-//     if (value == null) {
-//        this.props.navigation.navigate('Login');
-//     }
-//     else {
-//         this.state.isAuthed = true;
-//     }
-//   };
-componentDidMount() {
-    AsyncStorage.getItem('@session_token')
-    .then (session => {
-      console.log(session)
-      if (session) {
-        this.setState({isAuthed: true});
-      }
+  componentDidMount() {
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.checkLoggedIn();
     });
+
   }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('@session_token');
+    
+    if (value == null) {
+       this.props.navigation.navigate('Login');
+    }
+    else {
+        this.state.isAuthed = true;
+    }
+  };
+
+// componentDidMount() {
+//     AsyncStorage.getItem('@session_token')
+//     .then (session => {
+//       console.log(session)
+//       if (session) {
+//         this.setState({isAuthed: true});
+//       }
+//     });
+//   }
 
   
 

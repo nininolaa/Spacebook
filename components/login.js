@@ -38,7 +38,7 @@ import styles from "./modules/stylesheet";
         .then(async (responseJson) => {
                 console.log(responseJson);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
-                this.props.navigation.navigate("mainScreen");
+                this.props.navigation.navigate("Home");
         })
 
         .catch((error) => {

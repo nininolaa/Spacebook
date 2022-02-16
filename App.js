@@ -26,7 +26,7 @@ class App extends Component{
                 <Stack.Screen name="Home" component={Index} />
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="mainScreen" component={mainScreen} />
+                {/* <Stack.Screen name="mainScreen" component={mainScreen} /> */}
             </Stack.Navigator>
             </NavigationContainer>
         );
