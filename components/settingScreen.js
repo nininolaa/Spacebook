@@ -59,7 +59,7 @@ import styles from "./modules/stylesheet";
         let new_info = {};
 
         if (this.state.new_first_name != this.state.first_name && this.state.new_first_name != '' ){
-            new_info['first_name'] = this.state.first_name;
+            new_info['first_name'] = this.state.new_first_name;
         }
         else {
             new_info['first_name'] = this.state.first_name;
@@ -106,6 +106,38 @@ import styles from "./modules/stylesheet";
             console.log(error);
           })
     }
+
+    logout = async () => {
+            
+        let token = await AsyncStorage.getItem('@session_token');
+    
+        await AsyncStorage.removeItem('@session_token');
+        await AsyncStorage.removeItem('user_id');
+
+        return fetch("http://localhost:3333/api/1.0.0/logout", {
+            method: 'post',
+            headers: {
+                "X-Authorization": token
+            }
+        })  
+        .then((response) => {
+            if(response.status === 200){ 
+                console.log('checked')
+                this.props.navigation.navigate("Home");
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Home");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .catch((error) => {
+            console.log(error.message);
+            ToastAndroid.show(error, ToastAndroid.SHORT);
+        })
+
+    }
+
+    
 
     render(){
         return(

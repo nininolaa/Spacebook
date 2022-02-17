@@ -18,11 +18,13 @@ import Logo from './modules/logo';
     }
 
     //check to see if user if logged in, if not redirect the user to login
+
     componentDidMount() {
         this.loadProfile();
     }
 
     async loadProfile() {
+        
         const userId = await AsyncStorage.getItem('user_id');
         const token = await AsyncStorage.getItem('@session_token');
 
@@ -62,6 +64,7 @@ import Logo from './modules/logo';
             </View>
 
             <View style = {stylesIn.userInfo}>
+                
                 <Text>{this.state.first_name}</Text>
                 <Text>{this.state.last_name}</Text>
                 <Text>{this.state.email}</Text>

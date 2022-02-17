@@ -66,7 +66,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
     homeLogo: {
         flex: 5,
-        backgroundColor: 'blue',
+     //   backgroundColor: 'blue',
     },
 
     logoImg: {
@@ -76,17 +76,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
     friendSearch: {
         flex: 5,
-        backgroundColor: 'green',
+    //    backgroundColor: 'green',
     },
 
     postFeed: {
         flex: 30,
-        backgroundColor: 'orange',
+     //   backgroundColor: 'orange',
     },
 
     mainMenu: {
         flex: 10,
-        backgroundColor: 'blue',
+     //   backgroundColor: 'blue',
     }
  
  })
