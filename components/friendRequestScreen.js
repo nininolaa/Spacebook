@@ -14,54 +14,32 @@ import Logo from './modules/logo';
             friendRequestList: [],
         }
     }
+    
+    componentDidMount(){
+        this.friendRequests();
+    }
 
-    addFriend = async() => {
-       let token = await AsyncStorage.getItem('@session_token');
-       let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId+ "/friends", {
-            method: 'POST',
+    friendRequests = async() => {
+        let token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
+            method: 'get',
             headers: {
                 "X-Authorization": token,
                 'Content-Type': 'application/json'
             },  
         })
         .then((response) => {
-            console.log("Request sent");
-          })
-          .catch((error) => {
-            console.log(error);
-          })
-    }
-
-    findFriend = async() => {
-
-    }
-
-    // friendRequests = async() => {
-    //     let token = await AsyncStorage.getItem('@session_token');
-    //     return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
-    //         method: 'get',
-    //         headers: {
-    //             "X-Authorization": token,
-    //             'Content-Type': 'application/json'
-    //         },  
-    //     })
-    //     .then((response) => {
-    //         if(response.status === 200){
-    //             return response.json()
-    //         }else if(response.status === 400){
-    //             throw 'User id not found';
-    //         }else{
-    //             throw 'Something went wrong';
-    //         }
-    //     })
-    //     .then(responseJson => {
-    //         this.setState({friendRequestList: responseJson})
-    //     }) 
-    // }
-
-    friendRequests() {
-        this.props.navigation.navigate("FriendRequest");
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 400){
+                throw 'User id not found';
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then(responseJson => {
+            this.setState({friendRequestList: responseJson})
+        }) 
     }
 
     render(){
@@ -74,37 +52,15 @@ import Logo from './modules/logo';
             </View>
 
             <View style = {stylesIn.friendSearch}>
-            
             </View>
 
             <View style = {stylesIn.postFeed}>
-            <Text>Find friend:</Text>
-            <TextInput 
-            placeholder = "Enter your friend's ID"
-            onChangeText={(friendId) => this.setState({friendId})}
-            />
-            <Button 
-            title = "Find friend"
-            onPress={() => {this.findFriend()}}
-            ></Button>
-
-
-            {/* Add friend function */}
-            <Text>Add friend:</Text>
-            <TextInput 
-            placeholder = "Enter your friend's ID"
-            onChangeText={(friendId) => this.setState({friendId})}
-            />
-            <Button 
-            title = "Add friend"
-            onPress={() => {this.addFriend()}}
-            ></Button>
-
+           
             <Text>See all friend requests</Text>
-            <Button 
+            {/* <Button 
             title = "See friend requests"
             onPress={() => {this.friendRequests()}}
-            ></Button>
+            ></Button> */}
 
             {/* FlatList is use to render the array list */}
             <FlatList

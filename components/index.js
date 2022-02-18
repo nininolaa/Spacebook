@@ -32,10 +32,10 @@ const Tab = createBottomTabNavigator() ;
     }
 
     //get token and check if the token exist
-    componentDidMount() {
-      this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    async componentDidMount() {
+      this.unsubscribe = this.props.navigation.addListener('focus', async () => {
 
-        AsyncStorage.getItem('@session_token')
+        await AsyncStorage.getItem('@session_token')
           .then (session => {
             console.log(session);
             if (session == null) {   
@@ -112,23 +112,22 @@ const Tab = createBottomTabNavigator() ;
                     break;
     
                   case 'Friends':
-                    iconName = focused ? 'list' : 'list-outline';
+                    iconName = focused ? 'people' : 'people';
                     break;
     
                   case 'Add Post':
-                    iconName = focused ? 'home' : 'home-outline';
+                    iconName = focused ? 'add' : 'add-circle';
                     break;
                   
                   case 'Profile':
-                    iconName = focused ? 'home' : 'home-outline';
+                    iconName = focused ? 'person' : 'md-person';
                     break;
                   
                     case 'Setting':
-                    iconName = focused ? 'home' : 'home-outline';
+                    iconName = focused ? 'cog' : 'ios-cog';
                     break;
     
                 }
-    
                 return <Ionicons name={iconName} size={size} color={color}/>
               }
             })}>
@@ -138,9 +137,7 @@ const Tab = createBottomTabNavigator() ;
             <Tab.Screen name="Add Post" component={PostScreen}></Tab.Screen>
             <Tab.Screen name="Profile" component={ProfileScreen}></Tab.Screen>
             <Tab.Screen name="Setting" component={SettingScreen}></Tab.Screen>
-                   
           </Tab.Navigator>
-    
        
           )
       }

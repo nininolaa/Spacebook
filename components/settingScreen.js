@@ -19,7 +19,9 @@ import styles from "./modules/stylesheet";
             new_first_name: '',
             new_last_name: '',
             new_email: '' ,
-            new_password: ''
+            new_password: '',
+
+            editable: false,
         }
     }
 
@@ -43,7 +45,7 @@ import styles from "./modules/stylesheet";
             if(response.status === 200){
                 return response.json()
             }else if(response.status === 400){
-                throw 'Invalid email or password';
+                throw 'User id not found';
             }else{
                 throw 'Something went wrong';
             }
@@ -61,35 +63,22 @@ import styles from "./modules/stylesheet";
         if (this.state.new_first_name != this.state.first_name && this.state.new_first_name != '' ){
             new_info['first_name'] = this.state.new_first_name;
         }
-        else {
-            new_info['first_name'] = this.state.first_name;
-        }
 
         if (this.state.new_last_name != this.state.last_name && this.state.new_last_name != '' ){
             new_info['last_name'] = this.state.new_last_name;
         } 
-        else {
-            new_info['last_name'] = this.state.last_name;
-        }
 
         if (this.state.new_email != this.state.email && this.state.new_email != ''){
         new_info['email'] = this.state.new_email;
         }
-        else {
-            new_info['email'] = this.state.email;
-        }
-        
+
         if (this.state.new_password != this.state.password && this.state.new_password != ''){
             new_info['password'] = this.state.new_password ;
         }
-        else {
-            new_info['password'] = this.state.password;
-        }
-        
+
         console.log(new_info)
         let token = await AsyncStorage.getItem('@session_token');
         let userId = await AsyncStorage.getItem('user_id');
-        
 
         return fetch("http://localhost:3333/api/1.0.0/user/" + userId, {
             method: 'PATCH',
@@ -100,13 +89,14 @@ import styles from "./modules/stylesheet";
             body: JSON.stringify(new_info)    
         })
         .then((response) => {
-            console.log("Item updated");
+            console.log("Info updated");
           })
           .catch((error) => {
             console.log(error);
           })
     }
 
+    //Sign out function 
     logout = async () => {
             
         let token = await AsyncStorage.getItem('@session_token');
@@ -123,9 +113,11 @@ import styles from "./modules/stylesheet";
         .then((response) => {
             if(response.status === 200){ 
                 console.log('checked')
-                this.props.navigation.navigate("Home");
+                this.props.navigation.navigate("Login");
             }else if(response.status === 401){
-                this.props.navigation.navigate("Home");
+                console.log("Goign home...");
+                this.props.navigation.navigate("Login");
+                console.log("Should be home by now...")
             }else{
                 throw 'Something went wrong';
             }
@@ -137,11 +129,15 @@ import styles from "./modules/stylesheet";
 
     }
 
+    editTextInput(){
+        this.setState({editable: true}) ;
+    }
+    
     
 
     render(){
         return(
-    
+            
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
@@ -153,35 +149,51 @@ import styles from "./modules/stylesheet";
             </View>
 
             <View style = {stylesIn.userDetails}>
-                <Text>{this.state.first_name}</Text>
-                <Text>{this.state.last_name}</Text>
-                <Text>{this.state.email}</Text>
-                <Text>{this.state.friend_count}</Text>
+
+                <TextInput
+                style = {stylesIn.userDetailsText}
+                placeholder={this.state.first_name}
+                onChangeText={(new_first_name) => this.setState({new_first_name})}
+                value={this.state.new_first_name} editable={this.state.editable}
+                />
+                <Button 
+                color= 'orange'
+                onPress={() => {this.editTextInput()}}
+                title="Edit first name"></Button>
+
                 
                 <TextInput
-                placeholder="Enter new first name..."
-                onChangeText={(new_first_name) => this.setState({new_first_name})}
-                value={this.state.new_first_name}
-                />
-                <TextInput
-                placeholder="Enter new last name..."
+                style = {stylesIn.userDetailsText}
+                placeholder={this.state.last_name}
                 onChangeText={(new_last_name) => this.setState({new_last_name})}
                 value={this.state.new_last_name}
                 />
+                <Button 
+                color= 'orange'
+                onPress={() => {this.editTextInput()}}
+                title="Edit last name"></Button>
+
                 <TextInput
-                placeholder="Enter new email..."
+                style = {stylesIn.userDetailsText}
+                placeholder={this.state.email}
                 onChangeText={(new_email) => this.setState({new_email})}
                 value={this.state.new_email}
                 />
-                <TextInput
+                <Button 
+                color= 'orange'
+                onPress={() => {this.editTextInput()}}
+                title="Edit email address"></Button>
+
+                {/* <TextInput
+                style = {stylesIn.userDetailsText}
                 placeholder="Enter new password..."
                 onChangeText={(new_password) => this.setState({new_password})}
                 value={this.state.new_password}
-                />
+                /> */}
                 <Button
-                    title="Update"
-                    onPress={() => this.updateInfo()}
-                />  
+                title="Update"
+                onPress={() => this.updateInfo()}
+                /> 
             </View>
 
             <View style = {stylesIn.signOut}>
@@ -222,6 +234,11 @@ const stylesIn = StyleSheet.create({
 
     signOut: {
         flex: 10,
+    },
+
+    userDetailsText:{
+        fontSize: 15,
+        placeholderTextColor: '#000000'
     }
 
 })
