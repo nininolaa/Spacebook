@@ -21,7 +21,7 @@ import styles from "./modules/stylesheet";
         nav.navigate('Login');
     }
 
-    RegisterButtonPressed =() => {
+    RegisterButtonPressed = () => {
         
         return fetch("http://localhost:3333/api/1.0.0/user", {
             method: 'post',
@@ -30,7 +30,6 @@ import styles from "./modules/stylesheet";
             },
             body: JSON.stringify(this.state)
         })
-
         .then((response) => {
 
             switch(response.status){
@@ -45,14 +44,11 @@ import styles from "./modules/stylesheet";
                     throw 'Something went wrong'
                     break
             }
-
         })
-
         .then((responseJson) => {
                console.log("User created with ID: ", responseJson);
                this.props.navigation.navigate("Login");
         })
-
         .catch((error) => {
             console.log(error);
         })

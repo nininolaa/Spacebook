@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWithoutFeedback} from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 
@@ -12,13 +12,18 @@ import Logo from './modules/logo';
         this.state = {
             friendId:'',
             friendRequestList: [],
+            userFriendList: [],
         }
+    }
+
+    componentDidMount(){
+        this.seeAllFriend();
     }
 
     addFriend = async() => {
        let token = await AsyncStorage.getItem('@session_token');
        let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId+ "/friends", {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId + "/friends", {
             method: 'POST',
             headers: {
                 "X-Authorization": token,
@@ -33,34 +38,60 @@ import Logo from './modules/logo';
           })
     }
 
-    findFriend = async() => {
+    seeAllFriend = async() => {
+        
+        let token = await AsyncStorage.getItem('@session_token');
+        let userId = await AsyncStorage.getItem('user_id');
+
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
+            method: 'get',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 400){
+                throw 'User id not found';
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then(responseJson => {
+            this.setState({userFriendList: responseJson})
+        }) 
 
     }
 
-    // friendRequests = async() => {
-    //     let token = await AsyncStorage.getItem('@session_token');
-    //     return fetch("http://localhost:3333/api/1.0.0/friendrequests", {
-    //         method: 'get',
-    //         headers: {
-    //             "X-Authorization": token,
-    //             'Content-Type': 'application/json'
-    //         },  
-    //     })
-    //     .then((response) => {
-    //         if(response.status === 200){
-    //             return response.json()
-    //         }else if(response.status === 400){
-    //             throw 'User id not found';
-    //         }else{
-    //             throw 'Something went wrong';
-    //         }
-    //     })
-    //     .then(responseJson => {
-    //         this.setState({friendRequestList: responseJson})
-    //     }) 
-    // }
+    removeFriend = async(user_id) => {
 
-    friendRequests() {
+        let token = await AsyncStorage.getItem('@session_token');
+
+        await AsyncStorage.removeItem(user_id);
+
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
+            method: 'DELETE',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
+
+        .then((response) =>{
+            this.seeAllFriend();
+        })
+        .then((response) => {
+            console.log("Friend deleted");
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+     }
+    
+
+    friendRequestsNavigate() {
         this.props.navigation.navigate("FriendRequest");
     }
 
@@ -100,40 +131,36 @@ import Logo from './modules/logo';
             onPress={() => {this.addFriend()}}
             ></Button>
 
-            <Text>See all friend requests</Text>
-            <Button 
-            title = "See friend requests"
-            onPress={() => {this.friendRequests()}}
-            ></Button>
-
-            {/* FlatList is use to render the array list */}
+            <Text>See all friends:</Text>
             <FlatList
+            
                 // calling the array 
-                data={this.state.friendRequestList}
-
+                data={this.state.userFriendList}
+                
                 //specify the item that we want to show on the list
                 renderItem={({item}) => (
                     <View>
-                   
-                      <Text>{item.first_name} {item.last_name} </Text>
-                      <Button title="accept" color='lightgreen'></Button>
-                      <Button title="reject" color='red'></Button>
+                        <Text> {item.user_id} {item.user_givenname} {item.user_familyname} {'\n'} {item.user_email} {'\n'}{'\n'}</Text>              
                     </View>
                 )}
-                keyExtractor={(item,index) => item.user_id.toString()}
+                keyExtractor={(item) => item.user_id.toString()}
             />
+
+
+            <Button 
+            title = "See friend requests"
+            onPress={() => {this.friendRequestsNavigate()}}
+            ></Button>
+
             </View>
 
             <View styles = {stylesIn.mainMenu}>
                 
             </View>
         </View>
-           
-
         
-  
-        )
-    }
+        )  
+    }     
  }
 
  const stylesIn = StyleSheet.create({

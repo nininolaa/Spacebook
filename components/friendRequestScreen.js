@@ -3,7 +3,6 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWit
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 
-
  class FriendScreen extends Component {
 
     constructor(props){
@@ -42,9 +41,52 @@ import Logo from './modules/logo';
         }) 
     }
 
-    render(){
-        return(
+    acceptFriend = async (user_id) => {
+
+        let token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id , {
+            method: 'post',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
+        .then((response) => {
+            console.log("Friend accepted");
+            this.props.navigation.navigate("Friends")
+          })
+        .catch((error) => {
+        console.log(error);
+        })
+    }
+
     
+    removeFriend = async (user_id) => {
+
+        let token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id , {
+            method: 'delete',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
+        .then((response) => {
+            this.friendRequests();
+          })
+        .then((response) => {
+            console.log("Rejected friend request");
+          })
+        .catch((error) => {
+        console.log(error);
+        })
+    }
+
+
+    render(){
+ 
+        return(
+        
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
@@ -57,12 +99,7 @@ import Logo from './modules/logo';
             <View style = {stylesIn.postFeed}>
            
             <Text>See all friend requests</Text>
-            {/* <Button 
-            title = "See friend requests"
-            onPress={() => {this.friendRequests()}}
-            ></Button> */}
-
-            {/* FlatList is use to render the array list */}
+            
             <FlatList
                 // calling the array 
                 data={this.state.friendRequestList}
@@ -70,13 +107,13 @@ import Logo from './modules/logo';
                 //specify the item that we want to show on the list
                 renderItem={({item}) => (
                     <View>
-                   
                       <Text>{item.first_name} {item.last_name} </Text>
-                      <Button title="accept" color='lightgreen'></Button>
-                      <Button title="reject" color='red'></Button>
+                      <Button title="accept" color='lightgreen' onPress={() => this.acceptFriend(item.user_id)}></Button>
+                      <Button title="reject" color='red' onPress={() => this.removeFriend(item.user_id)}></Button>
+                      
                     </View>
                 )}
-                keyExtractor={(item,index) => item.user_id.toString()}
+                keyExtractor={(item) => item.user_id.toString()}
             />
             </View>
 
@@ -84,10 +121,6 @@ import Logo from './modules/logo';
                 
             </View>
         </View>
-           
-
-        
-  
         )
     }
  }
