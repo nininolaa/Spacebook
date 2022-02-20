@@ -6,6 +6,9 @@ import Login from './components/login';
 import Index from './components/index';
 import Register from './components/register';
 import FriendReqeust from './components/friendRequestScreen';
+import SearchResult from './components/searchResult';
+import FriendProfile from './components/friendProfile';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +26,8 @@ class App extends Component{
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="FriendRequest" component={FriendReqeust} />
+                <Stack.Screen name="SearchResult" component={SearchResult} />
+                <Stack.Screen name="FriendProfile" component={FriendProfile} />
               </Stack.Navigator>
             </NavigationContainer>
         );        

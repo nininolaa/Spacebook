@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
+import { Searchbar } from 'react-native-paper';
 import { View,Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from './modules/logo';
+import HomeLogo from './modules/homeLogo';
+
 
 
  class FriendScreen extends Component {
 
     constructor(props){
         super(props);
+        
+        this.friendId = '';
+        this.searchQuery = '';
 
         this.state = {
             friendId:'',
@@ -17,13 +22,16 @@ import Logo from './modules/logo';
     }
 
     componentDidMount(){
-        this.seeAllFriend();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+               this.seeAllFriend();
+        })
     }
 
     addFriend = async() => {
+
        let token = await AsyncStorage.getItem('@session_token');
        let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId + "/friends", {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
             method: 'POST',
             headers: {
                 "X-Authorization": token,
@@ -90,10 +98,15 @@ import Logo from './modules/logo';
         })
      }
     
-
     friendRequestsNavigate() {
         this.props.navigation.navigate("FriendRequest");
     }
+
+    onSearchPress(){
+        console.log(this.searchQuery)
+        this.props.navigation.navigate("SearchResult",{query:this.searchQuery, friends:this.state.userFriendList})
+    }
+
 
     render(){
         return(
@@ -101,7 +114,7 @@ import Logo from './modules/logo';
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
-            <Logo></Logo>
+            <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>
@@ -109,10 +122,17 @@ import Logo from './modules/logo';
             </View>
 
             <View style = {stylesIn.postFeed}>
+            <Searchbar 
+            placeholder="Find friends"
+            onChangeText = {(query) => {this.searchQuery = query}}
+            onIconPress={() => {this.onSearchPress()}}
+            ></Searchbar>
+
+
             <Text>Find friend:</Text>
             <TextInput 
             placeholder = "Enter your friend's ID"
-            onChangeText={(friendId) => this.setState({friendId})}
+            onChangeText= {(friendId) => this.friendId = friendId}
             />
             <Button 
             title = "Find friend"
@@ -124,11 +144,11 @@ import Logo from './modules/logo';
             <Text>Add friend:</Text>
             <TextInput 
             placeholder = "Enter your friend's ID"
-            onChangeText={(friendId) => this.setState({friendId})}
+            onChangeText={(friendId) => this.friendId = friendId}
             />
             <Button 
             title = "Add friend"
-            onPress={() => {this.addFriend()}}
+            onPress= {this.addFriend}
             ></Button>
 
             <Text>See all friends:</Text>

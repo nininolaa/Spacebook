@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet,Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomeLogo from './modules/homeLogo';
 
  class Feed extends Component {
 
@@ -23,7 +24,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
             });
   
         })
-        
     }
   
     componentWillUnmount() {
@@ -36,8 +36,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
-                <Image source={require('../assets/img/logo.png')} ></Image> 
-                <Image source={require('../assets/img/Heading.png')}></Image>
+                <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>

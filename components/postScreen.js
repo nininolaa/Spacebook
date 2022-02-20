@@ -109,17 +109,17 @@ import Logo from './modules/logo';
             </View>
 
             <View styles = {stylesIn.mainMenu}>
-            <Text>Show user's posts here:</Text>
+            <Text>Show user's posts here:{'\n'}  </Text>
 
             <FlatList
                 data={this.state.userPostList}
 
                 renderItem={({item}) => (
                     <View>
-                        <Text> User name: {item.author.first_name} {item.author.last_name}{'\n'}</Text>    
-                        <Text> Post id: {item.post_id} {'\n'} </Text>  
+                        <Text> User name: {item.author.first_name} {item.author.last_name}</Text>    
+                        <Text> Post id: {item.post_id} </Text>  
                         <Text> {item.text} </Text>    
-                        <Text> {item.numLikes} </Text>    
+                        <Text> Likes: {item.numLikes} {'\n'}  </Text>    
                     </View>
                 )}
                 keyExtractor={(item) => item.post_id.toString()}

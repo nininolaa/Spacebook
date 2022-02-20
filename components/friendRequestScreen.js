@@ -60,7 +60,7 @@ import Logo from './modules/logo';
         })
     }
 
-    
+
     removeFriend = async (user_id) => {
 
         let token = await AsyncStorage.getItem('@session_token');

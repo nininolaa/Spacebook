@@ -9,6 +9,11 @@ import styles from "./modules/stylesheet";
     constructor(props){
         super(props);
 
+        this.new_first_name= '',
+        this.new_last_name= '',
+        this.new_email= '' ,
+        this.new_password= '',
+        
         this.state = {
         
             first_name: '',
@@ -155,24 +160,13 @@ import styles from "./modules/stylesheet";
                 placeholder={this.state.first_name}
                 onChangeText={(new_first_name) => this.setState({new_first_name})}
                 value={this.state.new_first_name} editable={this.state.editable}
-                />
-                <Button 
-                color= 'orange'
-                onPress={() => {this.editTextInput()}}
-                title="Edit first name"></Button>
-
-                
+                />           
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.last_name}
                 onChangeText={(new_last_name) => this.setState({new_last_name})}
                 value={this.state.new_last_name}
                 />
-                <Button 
-                color= 'orange'
-                onPress={() => {this.editTextInput()}}
-                title="Edit last name"></Button>
-
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.email}
@@ -182,7 +176,7 @@ import styles from "./modules/stylesheet";
                 <Button 
                 color= 'orange'
                 onPress={() => {this.editTextInput()}}
-                title="Edit email address"></Button>
+                title="Edit information"></Button>
 
                 {/* <TextInput
                 style = {stylesIn.userDetailsText}

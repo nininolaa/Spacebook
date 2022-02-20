@@ -49,7 +49,7 @@ const Tab = createBottomTabNavigator() ;
       })
       
     }
-
+    
     componentWillUnmount() {
       this.unsubscribe();
     }

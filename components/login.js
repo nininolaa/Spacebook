@@ -46,8 +46,8 @@ import styles from "./modules/stylesheet";
     }
     
 
-    RegisterButtonPressed(nav){
-        nav.navigate('Register');
+    RegisterButtonPressed(){
+        this.props.navigation.navigate('Register');
     }
 
     handleEmailInput = (email) => {
@@ -83,7 +83,7 @@ import styles from "./modules/stylesheet";
             </View>
 
             <View style = {styles.endTextRow}>
-            <Text>Haven't Register? <Text onPress={() => { this.RegisterButtonPressed(this.props.navigation)}} style = {styles.linkText}>Click here</Text> to create an account</Text> 
+            <Text>Haven't Register? <Text onPress={() => { this.RegisterButtonPressed()}} style = {styles.linkText}>Click here</Text> to create an account</Text> 
             </View>
 
         </View>
