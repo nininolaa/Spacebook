@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
-import LoadProfileFunction from './loadProfileFunction';
+//import LoadProfileFunction from './loadProfileFunction';
 
  class ProfileScreen extends Component {
 
@@ -20,7 +20,9 @@ import LoadProfileFunction from './loadProfileFunction';
     //check to see if user if logged in, if not redirect the user to login
 
     componentDidMount() {
-        this.loadProfile();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.loadProfile();
+     })
     }
 
     async loadProfile() {

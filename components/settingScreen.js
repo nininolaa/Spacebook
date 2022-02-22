@@ -25,7 +25,9 @@ import styles from "./modules/stylesheet";
     }
 
     componentDidMount() {
-        this.loadProfile();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.loadProfile();
+        })
     }
 
     //get user info 

@@ -3,7 +3,7 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 
- class FriendProfile extends Component {
+ class NonFriendScreen extends Component {
 
     constructor(props){
         super(props);
@@ -20,7 +20,6 @@ import HomeLogo from './modules/homeLogo';
 
     componentDidMount(){
        this.loadFriend();
-       this.userPosts();
     }
 
     async loadFriend (){
@@ -55,34 +54,24 @@ import HomeLogo from './modules/homeLogo';
         }) 
     }
 
-    userPosts = async() => {
-        let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
+    addFriend = async() => {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/post", {
-            method: 'get',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },  
-        })
+        let token = await AsyncStorage.getItem('@session_token');
+
+         return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
+             method: 'POST',
+             headers: {
+                 "X-Authorization": token,
+                 'Content-Type': 'application/json'
+             },  
+         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else if(response.status === 403){
-                this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
-            }
-            else{
-                throw 'Something went wrong';
-            }
+            console.log("Request sent");
         })
-        .then(responseJson => {
-            this.setState({userPostList: responseJson})
-        }) 
-    }
-
+        .catch((error) => {
+            console.log(error);
+        })
+     } 
 
     render(){
  
@@ -106,28 +95,17 @@ import HomeLogo from './modules/homeLogo';
             </View>
 
             <View styles = {stylesIn.mainMenu}>
-            <FlatList styles = {stylesIn.mainMenu}
-                data={this.state.userPostList}
-
-                renderItem={({item}) => (
-                    <View>
-                        <Text> Friend name: {item.author.first_name} {item.author.last_name}</Text>    
-                        <Text> Post id: {item.post_id} </Text>  
-                        <TextInput
-                        placeholder = {item.text}
-                        editable = {this.state.editable}
-                        onChangeText={(new_text_post) => this.new_text_post = new_text_post}
-                        ></TextInput>   
-                        <Text> Likes: {item.numLikes} {'\n'}  </Text> 
-                    </View>
-                )}
-                keyExtractor={(item) => item.post_id.toString()}
-            />
+            <Button 
+            title = "Add friend"
+            onPress= {this.addFriend}
+            ></Button>
             </View>
         </View>
         )
     }
  }
+
+
 
  const stylesIn = StyleSheet.create({
 
@@ -153,6 +131,6 @@ import HomeLogo from './modules/homeLogo';
  
  })
 
- export default FriendProfile ;
+ export default NonFriendScreen ;
 
 

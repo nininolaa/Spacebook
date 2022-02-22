@@ -14,7 +14,6 @@ import Logo from './modules/logo';
     }
 
     componentDidMount(){
-       console.log(this.props.route.params.query)
        this.searchQuery();
     }
 
@@ -45,6 +44,7 @@ import Logo from './modules/logo';
     }
 
     loadFriendProfile(friendId) {
+        //conditional check for friend and non-friend profile
         this.props.navigation.navigate("FriendProfile", {friendId: friendId})
     }
 
@@ -71,7 +71,7 @@ import Logo from './modules/logo';
             //specify the item that we want to show on the list
             renderItem={({item}) => (
                 <View>
-                    <Text onPress={() => { this.loadFriendProfile(item.user_id)}}  >{item.user_givenname} {item.user_familyname}  {'\n'}{'\n'}</Text>            
+                    <Text onPress={() => { this.loadFriendProfile(item.user_id)}} >{item.user_givenname} {item.user_familyname}  {'\n'}{'\n'}</Text>            
                 </View>
             )}
             keyExtractor={(item) => item.user_id.toString()}

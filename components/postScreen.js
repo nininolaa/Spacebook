@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, CardSection} from 'react-native';
+import { Alert } from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView} from 'react-native';
 import HomeLogo from './modules/homeLogo';
 
 class PostScreen extends Component {
@@ -8,12 +9,15 @@ class PostScreen extends Component {
     constructor(props){
         super(props);
 
-        deletePostId: '',
+        //deletePostId: '',
+        this.new_text_post= '',
 
         this.state = {
             addPost: '',
-           
+            textPost: '',
             userPostList: [],
+            editable: false,
+            text: ''
         }
     }
 
@@ -43,7 +47,7 @@ class PostScreen extends Component {
         .then((response) => {
             switch(response.status){
                 case 201: 
-                    return response.json()
+                    return response.json();
                     break
                 case 400:
                     throw 'Failed validation'
@@ -54,13 +58,15 @@ class PostScreen extends Component {
             }
         })
         .then((responseJson) => {
-               console.log("Posted post ", responseJson);
+            console.log("Posted post ", responseJson);
+            this.userPosts();
         })
         .catch((error) => {
             console.log(error);
         })
     }
 
+    //show all user posts
     userPosts = async() => {
         let token = await AsyncStorage.getItem('@session_token')
         let userId = await AsyncStorage.getItem('user_id')
@@ -86,26 +92,62 @@ class PostScreen extends Component {
         }) 
     }
 
-    deletePost = async() => {
+    //update a post 
+    updatePost = async(post_id) => {
+        
+        let new_info = {};
+        console.log('what')
+        console.log(this.state.item.text)
+        if (this.new_text_post!= this.item.text && this.new_text_post != '' ){
+            new_info['text'] = this.new_text_post;
+        }
+        
         let token = await AsyncStorage.getItem('@session_token')
         let userId = await AsyncStorage.getItem('user_id')
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + this.deletePostId, {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + post_id, {
+            method: 'patch',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+            body: JSON.stringify(new_info)  
+        })
+
+        .then((response) => {
+            console.log("Info updated");
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+    }
+
+
+    // Delete post function
+    deletePost = async(post_id) => {
+        
+        let token = await AsyncStorage.getItem('@session_token')
+        let userId = await AsyncStorage.getItem('user_id')
+
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + post_id, {
             method: 'delete',
             headers: {
                 "X-Authorization": token,
                 'Content-Type': 'application/json'
             },  
         })
-        // .then((response) => {
-        //     this.deletePost();
-        //   })
         .then((response) => {
             console.log("Post deleted ");
+            this.userPosts();
           })
         .catch((error) => {
         console.log(error);
         })
+    }
+
+    //edit button press
+    editPost() {
+        this.setState({editable: true}) ;
     }
     
 
@@ -119,16 +161,6 @@ class PostScreen extends Component {
             </View>
 
             <View style = {stylesIn.friendSearch}>
-                <TextInput
-                placeholder="Post ID to delete"
-                onChangeText={(deletePostId) => this.deletePostId = deletePostId}
-                // value = {this.state.deletePostId}
-                ></TextInput>
-                <Button 
-                title="Delete"
-                color= 'red'
-                onPress = {() => this.deletePost()}
-                ></Button>
             </View>
 
             <View style = {stylesIn.postFeed}>
@@ -154,8 +186,27 @@ class PostScreen extends Component {
                     <View>
                         <Text> User name: {item.author.first_name} {item.author.last_name}</Text>    
                         <Text> Post id: {item.post_id} </Text>  
-                        <Text> {item.text} </Text>    
-                        <Text> Likes: {item.numLikes} {'\n'}  </Text>    
+                        <TextInput
+                        placeholder = {item.text}
+                        editable = {this.state.editable}
+                        onChangeText={(new_text_post) => this.new_text_post = new_text_post}
+                        ></TextInput>   
+                        <Text> Likes: {item.numLikes} {'\n'}  </Text> 
+                        <Button
+                        title = "Edit post"
+                        color = 'orange'
+                        onPress = {()=> this.editPost(item.post_id)}
+                        ></Button>
+                        <Button
+                        title = "Update post"
+                        color = 'lightgreen'
+                        onPress = {()=> this.updatePost(item.post_id)}
+                        ></Button>
+                        <Button 
+                        title = "Delete post" 
+                        color = "#880808"
+                        onPress = {() => this.deletePost(item.post_id)}
+                       > </Button>   
                     </View>
                 )}
                 keyExtractor={(item) => item.post_id.toString()}
@@ -181,12 +232,12 @@ class PostScreen extends Component {
 
     friendSearch: {
         flex: 30,
-        backgroundColor: 'pink',
+       // backgroundColor: 'black',
     },
 
     postFeed: {
         flex: 30,
-        backgroundColor: 'lightgreen'
+      //  backgroundColor: 'black'
     },
 
     mainMenu: {

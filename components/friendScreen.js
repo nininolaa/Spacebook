@@ -147,7 +147,6 @@ import { ScrollView } from 'react-native';
 
             <Text>See all friends:</Text>
             <FlatList
-            
                 // calling the array 
                 data={this.state.userFriendList}
                 
