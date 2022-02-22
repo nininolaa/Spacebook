@@ -3,6 +3,7 @@ import { Searchbar } from 'react-native-paper';
 import { View,Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
+import { ScrollView } from 'react-native';
 
 
 
@@ -15,7 +16,6 @@ import HomeLogo from './modules/homeLogo';
         this.searchQuery = '';
 
         this.state = {
-            friendId:'',
             friendRequestList: [],
             userFriendList: [],
         }
@@ -111,7 +111,7 @@ import HomeLogo from './modules/homeLogo';
     render(){
         return(
     
-        <View style = {stylesIn.flexContainer}>
+        <ScrollView style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
@@ -128,17 +128,11 @@ import HomeLogo from './modules/homeLogo';
             onIconPress={() => {this.onSearchPress()}}
             ></Searchbar>
 
-
-            <Text>Find friend:</Text>
-            <TextInput 
-            placeholder = "Enter your friend's ID"
-            onChangeText= {(friendId) => this.friendId = friendId}
-            />
+            <Text></Text>
             <Button 
-            title = "Find friend"
-            onPress={() => {this.findFriend()}}
+            title = "See friend requests"
+            onPress={() => {this.friendRequestsNavigate()}}
             ></Button>
-
 
             {/* Add friend function */}
             <Text>Add friend:</Text>
@@ -167,17 +161,14 @@ import HomeLogo from './modules/homeLogo';
             />
 
 
-            <Button 
-            title = "See friend requests"
-            onPress={() => {this.friendRequestsNavigate()}}
-            ></Button>
+           
 
             </View>
 
             <View styles = {stylesIn.mainMenu}>
                 
             </View>
-        </View>
+        </ScrollView>
         
         )  
     }     

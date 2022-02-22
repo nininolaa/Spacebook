@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
+import LoadProfileFunction from './loadProfileFunction';
 
  class ProfileScreen extends Component {
 
@@ -16,7 +17,6 @@ import Logo from './modules/logo';
             user_id: '',
         }
     }
-
     //check to see if user if logged in, if not redirect the user to login
 
     componentDidMount() {
@@ -64,7 +64,7 @@ import Logo from './modules/logo';
             </View>
 
             <View style = {stylesIn.userInfo}>
-                
+
                 <Text>{this.state.first_name}</Text>
                 <Text>{this.state.last_name}</Text>
                 <Text>{this.state.email}</Text>

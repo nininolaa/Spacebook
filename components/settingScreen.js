@@ -15,17 +15,11 @@ import styles from "./modules/stylesheet";
         this.new_password= '',
         
         this.state = {
-        
+
             first_name: '',
             last_name: '',
             email: '' ,
             password: '',
-
-            new_first_name: '',
-            new_last_name: '',
-            new_email: '' ,
-            new_password: '',
-
             editable: false,
         }
     }
@@ -65,20 +59,20 @@ import styles from "./modules/stylesheet";
 
         let new_info = {};
 
-        if (this.state.new_first_name != this.state.first_name && this.state.new_first_name != '' ){
-            new_info['first_name'] = this.state.new_first_name;
+        if (this.new_first_name != this.state.first_name && this.new_first_name != '' ){
+            new_info['first_name'] = this.new_first_name;
         }
 
-        if (this.state.new_last_name != this.state.last_name && this.state.new_last_name != '' ){
-            new_info['last_name'] = this.state.new_last_name;
+        if (this.new_last_name != this.state.last_name && this.new_last_name != '' ){
+            new_info['last_name'] = this.new_last_name;
         } 
 
-        if (this.state.new_email != this.state.email && this.state.new_email != ''){
-        new_info['email'] = this.state.new_email;
+        if (this.new_email != this.state.email && this.new_email != ''){
+        new_info['email'] = this.new_email;
         }
 
-        if (this.state.new_password != this.state.password && this.state.new_password != ''){
-            new_info['password'] = this.state.new_password ;
+        if (this.new_password != this.state.password && this.new_password != ''){
+            new_info['password'] = this.new_password ;
         }
 
         console.log(new_info)
@@ -158,32 +152,35 @@ import styles from "./modules/stylesheet";
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.first_name}
-                onChangeText={(new_first_name) => this.setState({new_first_name})}
-                value={this.state.new_first_name} editable={this.state.editable}
+                onChangeText={(new_first_name) => this.new_first_name = new_first_name}
+                editable={this.state.editable}
                 />           
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.last_name}
-                onChangeText={(new_last_name) => this.setState({new_last_name})}
-                value={this.state.new_last_name}
+                onChangeText={(new_last_name) => this.new_last_name = new_last_name}
+                editable={this.state.editable}
                 />
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.email}
-                onChangeText={(new_email) => this.setState({new_email})}
-                value={this.state.new_email}
+                onChangeText={(new_email) => this.new_email = new_email}
+                editable={this.state.editable}
                 />
+
+                <TextInput
+                style = {stylesIn.userDetailsText}
+                placeholder="Enter new password..."
+                onChangeText={(new_password) => this.new_password = new_password}
+                value={this.state.new_password}
+                />
+
                 <Button 
                 color= 'orange'
                 onPress={() => {this.editTextInput()}}
                 title="Edit information"></Button>
 
-                {/* <TextInput
-                style = {stylesIn.userDetailsText}
-                placeholder="Enter new password..."
-                onChangeText={(new_password) => this.setState({new_password})}
-                value={this.state.new_password}
-                /> */}
+                
                 <Button
                 title="Update"
                 onPress={() => this.updateInfo()}

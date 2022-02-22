@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWithoutFeedback} from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 
@@ -9,6 +9,11 @@ import HomeLogo from './modules/homeLogo';
         super(props);
 
         this.state = {
+            user_id: '',
+            first_name: '',
+            last_name: '',
+            email: '',
+            friend_count: '',
         }
     }
 
@@ -37,7 +42,14 @@ import HomeLogo from './modules/homeLogo';
             }
         })
         .then(responseJson => {
-            console.log(responseJson);
+            this.setState({
+                profile: responseJson,
+                first_name: responseJson.first_name,
+                last_name: responseJson.last_name,
+                user_id: responseJson.user_id,
+                email: responseJson.email,
+                friend_count: responseJson.friend_count,
+            })
         }) 
     }
 
@@ -55,9 +67,11 @@ import HomeLogo from './modules/homeLogo';
             </View>
 
             <View style = {stylesIn.postFeed}>
-           
-            <Text>Search Result</Text>
-
+                <Text> User id: {this.state.user_id}</Text>
+                <Text>First Name: {this.state.first_name}</Text>
+                <Text>Last Name: {this.state.last_name}</Text>
+                <Text>Email: {this.state.email}</Text>
+                <Text>Friend count: {this.state.friend_count}</Text>
             </View>
 
             <View styles = {stylesIn.mainMenu}>

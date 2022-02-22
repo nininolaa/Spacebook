@@ -5,7 +5,7 @@ import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
-import Feed from './feed';
+//import Feed from './feed';
 import FriendScreen from './friendScreen';
 import PostScreen from './postScreen';
 import ProfileScreen from './profileScreen';
@@ -100,16 +100,16 @@ const Tab = createBottomTabNavigator() ;
         return(
      
         <Tab.Navigator
-            initialRouteName={'Feed'}
+            initialRouteName={'Profile'}
             screenOptions={({route}) => ({
               tabBarIcon: ({focused, color, size}) => {
                 let iconName;
                 let rn = route.name;
     
                 switch(rn)  {
-                  case 'Feed':
-                    iconName = focused ? 'home' : 'home-outline';
-                    break;
+                  // case 'Feed':
+                  //   iconName = focused ? 'home' : 'home-outline';
+                  //   break;
     
                   case 'Friends':
                     iconName = focused ? 'people' : 'people';
@@ -132,7 +132,7 @@ const Tab = createBottomTabNavigator() ;
               }
             })}>
     
-            <Tab.Screen name="Feed" component={Feed}></Tab.Screen>
+            {/* <Tab.Screen name="Feed" component={Feed}></Tab.Screen> */}
             <Tab.Screen name="Friends" component={FriendScreen}></Tab.Screen>
             <Tab.Screen name="Add Post" component={PostScreen}></Tab.Screen>
             <Tab.Screen name="Profile" component={ProfileScreen}></Tab.Screen>

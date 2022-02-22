@@ -1,21 +1,27 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView} from 'react-native';
-import Logo from './modules/logo';
+import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, CardSection} from 'react-native';
+import HomeLogo from './modules/homeLogo';
 
- class PostScreen extends Component {
+class PostScreen extends Component {
 
     constructor(props){
         super(props);
 
+        deletePostId: '',
+
         this.state = {
             addPost: '',
+           
             userPostList: [],
         }
     }
 
     componentDidMount(){
-        this.userPosts();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.userPosts();
+        })
+        
     }
 
     //add new post
@@ -78,21 +84,51 @@ import Logo from './modules/logo';
         .then(responseJson => {
             this.setState({userPostList: responseJson})
         }) 
+    }
 
+    deletePost = async() => {
+        let token = await AsyncStorage.getItem('@session_token')
+        let userId = await AsyncStorage.getItem('user_id')
 
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + this.deletePostId, {
+            method: 'delete',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
+        // .then((response) => {
+        //     this.deletePost();
+        //   })
+        .then((response) => {
+            console.log("Post deleted ");
+          })
+        .catch((error) => {
+        console.log(error);
+        })
     }
     
 
     render(){
         return(
         
-        <View style = {stylesIn.flexContainer}>
+        <ScrollView style = {stylesIn.flexContainer}>
+
             <View style = {stylesIn.homeLogo}>
-            <Logo></Logo>
+            <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>
-            
+                <TextInput
+                placeholder="Post ID to delete"
+                onChangeText={(deletePostId) => this.deletePostId = deletePostId}
+                // value = {this.state.deletePostId}
+                ></TextInput>
+                <Button 
+                title="Delete"
+                color= 'red'
+                onPress = {() => this.deletePost()}
+                ></Button>
             </View>
 
             <View style = {stylesIn.postFeed}>
@@ -111,7 +147,7 @@ import Logo from './modules/logo';
             <View styles = {stylesIn.mainMenu}>
             <Text>Show user's posts here:{'\n'}  </Text>
 
-            <FlatList
+            <FlatList styles = {stylesIn.mainMenu}
                 data={this.state.userPostList}
 
                 renderItem={({item}) => (
@@ -125,33 +161,37 @@ import Logo from './modules/logo';
                 keyExtractor={(item) => item.post_id.toString()}
             />
             </View>
-        </View>
-        
-  
-        )
+        </ScrollView>
+        );   
     }
- }
+}
+
 
  const stylesIn = StyleSheet.create({
 
     flexContainer: {
         flex: 1,
+        //marginHorizontal: 20,
     },
 
     homeLogo: {
-        flex: 5,
+        flex: 30,
+        backgroundColor: 'blue'
     },
 
     friendSearch: {
         flex: 30,
+        backgroundColor: 'pink',
     },
 
     postFeed: {
         flex: 30,
+        backgroundColor: 'lightgreen'
     },
 
     mainMenu: {
         flex: 10,
+        backgroundColor: 'blue'
     }
  
  })
