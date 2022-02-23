@@ -9,15 +9,15 @@ class PostScreen extends Component {
     constructor(props){
         super(props);
 
-        //deletePostId: '',
-        this.new_text_post= '',
+        this.new_text_post = '',
+        this.postId = ''
 
         this.state = {
             addPost: '',
             textPost: '',
             userPostList: [],
             editable: false,
-            text: ''
+            text: '',
         }
     }
 
@@ -88,17 +88,18 @@ class PostScreen extends Component {
             }
         })
         .then(responseJson => {
-            this.setState({userPostList: responseJson})
+            this.setState({
+                userPostList: responseJson,
+            })
         }) 
     }
 
     //update a post 
-    updatePost = async(post_id) => {
+    updatePost = async(post_id, text) => {
         
         let new_info = {};
-        console.log('what')
-        console.log(this.state.item.text)
-        if (this.new_text_post!= this.item.text && this.new_text_post != '' ){
+
+        if (this.new_text_post != text && this.new_text_post != '' ){
             new_info['text'] = this.new_text_post;
         }
         
@@ -106,7 +107,7 @@ class PostScreen extends Component {
         let userId = await AsyncStorage.getItem('user_id')
 
         return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + post_id, {
-            method: 'patch',
+            method: 'PATCH',
             headers: {
                 "X-Authorization": token,
                 'Content-Type': 'application/json'
@@ -150,6 +151,10 @@ class PostScreen extends Component {
         this.setState({editable: true}) ;
     }
     
+    singlePost() {
+        this.props.navigation.navigate("SinglePost", {post_id: this.postId})
+    }
+    
 
     render(){
         return(
@@ -161,9 +166,6 @@ class PostScreen extends Component {
             </View>
 
             <View style = {stylesIn.friendSearch}>
-            </View>
-
-            <View style = {stylesIn.postFeed}>
                 <Text>Post Screen</Text>
                 <TextInput
                 placeholder="Add text here"
@@ -173,6 +175,18 @@ class PostScreen extends Component {
                 <Button 
                 title="Add Post"
                 onPress = {() => this.addPost()}
+                ></Button>
+            </View>
+
+            <View style = {stylesIn.postFeed}>
+                <Text> Find a post</Text>
+                <TextInput
+                placeholder="Enter your post id here"
+                onChangeText={(postId) => this.postId = postId }
+                ></TextInput>
+                <Button
+                title="Find a post"
+                onPress={() => this.singlePost()}
                 ></Button>
             </View>
 
@@ -200,7 +214,7 @@ class PostScreen extends Component {
                         <Button
                         title = "Update post"
                         color = 'lightgreen'
-                        onPress = {()=> this.updatePost(item.post_id)}
+                        onPress = {()=> this.updatePost(item.post_id, item.text)}
                         ></Button>
                         <Button 
                         title = "Delete post" 

@@ -9,6 +9,7 @@ import FriendReqeust from './components/friendRequestScreen';
 import SearchResult from './components/searchResult';
 import FriendProfile from './components/friendProfile';
 import NonFriendScreen from './components/nonFriendScreen';
+import SinglePost from './components/singlePost';
 
 
 
@@ -31,6 +32,7 @@ class App extends Component{
                 <Stack.Screen name="SearchResult" component={SearchResult} />
                 <Stack.Screen name="FriendProfile" component={FriendProfile} />
                 <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
+                <Stack.Screen name="SinglePost" component={SinglePost} />
               </Stack.Navigator>
             </NavigationContainer>
         );        

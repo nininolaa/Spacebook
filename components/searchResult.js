@@ -71,7 +71,7 @@ import Logo from './modules/logo';
             //specify the item that we want to show on the list
             renderItem={({item}) => (
                 <View>
-                    <Text onPress={() => { this.loadFriendProfile(item.user_id)}} >{item.user_givenname} {item.user_familyname}  {'\n'}{'\n'}</Text>            
+                    <Text onPress={() => { this.loadFriendProfile(item.user_id)}}>{item.user_givenname} {item.user_familyname}  {'\n'}{'\n'}</Text>            
                 </View>
             )}
             keyExtractor={(item) => item.user_id.toString()}

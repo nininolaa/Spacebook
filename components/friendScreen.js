@@ -142,7 +142,7 @@ import { ScrollView } from 'react-native';
             />
             <Button 
             title = "Add friend"
-            onPress= {this.addFriend}
+            onPress= {() => this.addFriend}
             ></Button>
 
             <Text>See all friends:</Text>
