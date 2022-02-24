@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
+import {likePost, unlikePost} from '../libs/postFunctions'
+import styles from "./modules/stylesheet";
 
  class FriendProfile extends Component {
 
     constructor(props){
         super(props);
+
+        this.token = '';
 
         this.state = {
             user_id: '',
@@ -15,22 +19,22 @@ import HomeLogo from './modules/homeLogo';
             email: '',
             friend_count: '',
             userPostList: [],
+            isLoading: true,
         }
     }
 
-    componentDidMount(){
-       this.loadFriend();
-       this.userPosts();
+    async componentDidMount(){
+        this.token = await AsyncStorage.getItem('@session_token');
+        this.loadFriend();
+       
     }
 
-    async loadFriend (){
-
-        let token = await AsyncStorage.getItem('@session_token');
+    loadFriend (){
 
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId, {
             method: 'get',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },
         })
@@ -52,17 +56,16 @@ import HomeLogo from './modules/homeLogo';
                 email: responseJson.email,
                 friend_count: responseJson.friend_count,
             })
+            this.userPosts();
         }) 
     }
 
-    userPosts = async() => {
-        let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
+    userPosts = () => {
 
         return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/post", {
             method: 'get',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },  
         })
@@ -79,13 +82,26 @@ import HomeLogo from './modules/homeLogo';
             }
         })
         .then(responseJson => {
-            this.setState({userPostList: responseJson})
+            this.setState({
+                userPostList: responseJson,
+                isLoading: false,
+            })
         }) 
     }
 
 
     render(){
- 
+        if(this.state.isLoading == true){
+            return(
+                <View>
+                  <ActivityIndicator 
+                    size="large" 
+                    color="#00ff00" 
+                  />
+                </View>
+              );
+        }
+        else{
         return(
         
         <View style = {stylesIn.flexContainer}>
@@ -119,6 +135,30 @@ import HomeLogo from './modules/homeLogo';
                         onChangeText={(new_text_post) => this.new_text_post = new_text_post}
                         ></TextInput>   
                         <Text> Likes: {item.numLikes} {'\n'}  </Text> 
+                        <TouchableOpacity
+                        onPress = {
+                            () => likePost(this.token,item.author.user_id, item.post_id) 
+                            .then(() => {
+                                this.userPosts();  
+                            }) 
+                            .catch(() => {
+                                console.log('Error')
+                            })
+                            }
+                        style = {[styles.actionBtn,styles.actionBtnGreen]}
+                        ><Text style = {styles.actionBtnLight}>Like</Text></TouchableOpacity>
+                        <TouchableOpacity
+                        onPress = {
+                            () => unlikePost(this.token,item.author.user_id, item.post_id) 
+                            .then(() => {
+                                this.userPosts();  
+                            }) 
+                            .catch(() => {
+                                console.log('Error')
+                            })
+                        }
+                        style = {[styles.actionBtn,styles.actionBtnBlue]}
+                        ><Text style = {styles.actionBtnLight}>Unlike</Text></TouchableOpacity>
                     </View>
                 )}
                 keyExtractor={(item) => item.post_id.toString()}
@@ -126,6 +166,7 @@ import HomeLogo from './modules/homeLogo';
             </View>
         </View>
         )
+        }
     }
  }
 

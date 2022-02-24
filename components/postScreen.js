@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
-import { Alert } from 'react-native';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView} from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
 import HomeLogo from './modules/homeLogo';
+import styles from "./modules/stylesheet";
 
 class PostScreen extends Component {
 
@@ -117,6 +117,7 @@ class PostScreen extends Component {
 
         .then((response) => {
             console.log("Info updated");
+            this.setState({editable: false});
           })
           .catch((error) => {
             console.log(error);
@@ -149,6 +150,10 @@ class PostScreen extends Component {
     //edit button press
     editPost() {
         this.setState({editable: true}) ;
+    }
+
+    isEditMode() {
+        return this.state.editable;
     }
     
     singlePost() {
@@ -206,16 +211,17 @@ class PostScreen extends Component {
                         onChangeText={(new_text_post) => this.new_text_post = new_text_post}
                         ></TextInput>   
                         <Text> Likes: {item.numLikes} {'\n'}  </Text> 
-                        <Button
-                        title = "Edit post"
-                        color = 'orange'
+
+                        
+                        <TouchableOpacity
                         onPress = {()=> this.editPost(item.post_id)}
-                        ></Button>
-                        <Button
-                        title = "Update post"
-                        color = 'lightgreen'
+                        style = {[styles.actionBtn, styles.actionBtnBlue, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                        ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                        <TouchableOpacity
                         onPress = {()=> this.updatePost(item.post_id, item.text)}
-                        ></Button>
+                        style = {[styles.actionBtn , styles.actionBtnGreen, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                        ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
+                        
                         <Button 
                         title = "Delete post" 
                         color = "#880808"
@@ -257,8 +263,22 @@ class PostScreen extends Component {
     mainMenu: {
         flex: 10,
         backgroundColor: 'blue'
+    },
+
+    showEdit: {
+        display: 'block',
+    },
+
+    hideEdit:{
+        display: 'none'
+    },
+
+    editText: {
+        color: '#ffffff' , 
+        textTransform: 'uppercase', 
+        fontWeight: 'bold'
     }
- 
+
  })
 
  export default PostScreen;

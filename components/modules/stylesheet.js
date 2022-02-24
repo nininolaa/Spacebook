@@ -1,3 +1,4 @@
+import color from "color"
 import { StyleSheet } from "react-native"
 export default StyleSheet.create({
 
@@ -56,8 +57,30 @@ export default StyleSheet.create({
 
         linkText:{
             color: '#ffffff',
+        },
+
+        actionBtn: {
+            fontSize: 20,
+            textAlign: 'center',
+            paddingTop: 3,
+            paddingBottom: 3,
+        },
+
+        actionBtnGreen: {
+            backgroundColor: "#00ff00",
+        },
+
+        actionBtnBlue: {
+            backgroundColor: "#0000ff",
+        },
+
+        actionBtnLight: {
+            textTransform: 'uppercase', 
+            color: "#ffffff"
+        },
+
+        actionBtnDark: {
+            textTransform: 'uppercase', 
+            color: "#000000"
         }
-
-        
-
 })
