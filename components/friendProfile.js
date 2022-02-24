@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 import {likePost, unlikePost} from '../libs/postFunctions'
 import styles from "./modules/stylesheet";
+import IsLoading from "./modules/isLoading";
 
  class FriendProfile extends Component {
 
@@ -26,7 +27,6 @@ import styles from "./modules/stylesheet";
     async componentDidMount(){
         this.token = await AsyncStorage.getItem('@session_token');
         this.loadFriend();
-       
     }
 
     loadFriend (){
@@ -93,12 +93,7 @@ import styles from "./modules/stylesheet";
     render(){
         if(this.state.isLoading == true){
             return(
-                <View>
-                  <ActivityIndicator 
-                    size="large" 
-                    color="#00ff00" 
-                  />
-                </View>
+                <IsLoading></IsLoading>
               );
         }
         else{

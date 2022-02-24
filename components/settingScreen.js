@@ -3,6 +3,7 @@ import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,Image, Alert} 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
+import IsLoading from "./modules/isLoading";
 
  class SettingScreen extends Component {
 
@@ -15,12 +16,12 @@ import styles from "./modules/stylesheet";
         this.new_password= '',
         
         this.state = {
-
             first_name: '',
             last_name: '',
             email: '' ,
             password: '',
             editable: false,
+            isLoading: true,
         }
     }
 
@@ -51,8 +52,15 @@ import styles from "./modules/stylesheet";
                 throw 'Something went wrong';
             }
         })
-        .then(profile => {
-            this.setState(profile)
+        .then(response => {
+            this.setState({
+                userProfile: response,
+                user_id: response.user_id,
+                first_name: response.first_name,
+                last_name: response.last_name,
+                email: response.email,
+                isLoading: false 
+            })
         }) 
     }
 
@@ -137,8 +145,15 @@ import styles from "./modules/stylesheet";
     
 
     render(){
+
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+              );
+        }
+
+        else{
         return(
-            
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
@@ -198,7 +213,7 @@ import styles from "./modules/stylesheet";
 
         </View>
   
-        )
+        )}
     }
  }
 

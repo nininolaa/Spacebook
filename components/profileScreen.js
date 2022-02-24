@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
-//import LoadProfileFunction from './loadProfileFunction';
+import IsLoading from "./modules/isLoading";
 
  class ProfileScreen extends Component {
 
@@ -10,11 +10,14 @@ import Logo from './modules/logo';
         super(props);
 
         this.state = {
-            email: '',
+
+            user_id: '',
             first_name: '',
             last_name: '',
             friend_count: '',
-            user_id: '',
+            email: '',
+            isLoading: true,
+            userProfile: []
         }
     }
     //check to see if user if logged in, if not redirect the user to login
@@ -46,40 +49,57 @@ import Logo from './modules/logo';
                 throw 'Something went wrong';
             }
         })
-        .then(profile => {
-            this.setState(profile)
+        .then(response => {
+            this.setState({
+                userProfile: response,
+                user_id: response.user_id,
+                first_name: response.first_name,
+                last_name: response.last_name,
+                friend_count: response.friend_count,
+                email: response.email,
+                isLoading: false,
+            })
         }) 
     }
 
 
     render(){
+
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+              );
+        }
+
+        else{
+
         return(
-    
-        <View style = {stylesIn.flexContainer}>
 
-            <View style = {stylesIn.homeLogo}>
-            <Logo></Logo>
+            <View style = {stylesIn.flexContainer}>
+
+                <View style = {stylesIn.homeLogo}>
+                <Logo></Logo>
+                </View>
+
+                <View style = {stylesIn.profilePicture}>
+                    <Text>Profile Screen</Text>
+                </View>
+
+                <View style = {stylesIn.userInfo}>
+
+                    <Text>{this.state.first_name}</Text>
+                    <Text>{this.state.last_name}</Text>
+                    <Text>{this.state.email}</Text>
+                    <Text>{this.state.friend_count}</Text>
+                </View>
+
+                <View styles = {stylesIn.userPost}>
+                    
+                </View>
+
             </View>
-
-            <View style = {stylesIn.profilePicture}>
-                <Text>Profile Screen</Text>
-            </View>
-
-            <View style = {stylesIn.userInfo}>
-
-                <Text>{this.state.first_name}</Text>
-                <Text>{this.state.last_name}</Text>
-                <Text>{this.state.email}</Text>
-                <Text>{this.state.friend_count}</Text>
-            </View>
-
-            <View styles = {stylesIn.userPost}>
-                
-            </View>
-
-        </View>
   
-        )
+        )}
     }
  }
 

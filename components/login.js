@@ -11,7 +11,7 @@ import styles from "./modules/stylesheet";
 
         this.state = {
             email: '' ,
-            password: ''
+            password: '',
         }
     }
 

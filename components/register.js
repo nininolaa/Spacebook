@@ -18,7 +18,7 @@ import styles from "./modules/stylesheet";
     }
 
     SignInButtonPressed(nav){
-        nav.navigate('Login');
+        this.props.navigation.navigate('Login')
     }
 
     RegisterButtonPressed = () => {
@@ -94,7 +94,7 @@ import styles from "./modules/stylesheet";
             </View>
 
             <View style = {styles.endTextRow}>
-            <Text>Already have an account? <Text onPress={() => { this.SignInButtonPressed(this.props.navigation)}} style = {styles.linkText}>Click here</Text> to sign in</Text> 
+            <Text>Already have an account? <Text onPress={() => { this.SignInButtonPressed()}} style = {styles.linkText}>Click here</Text> to sign in</Text> 
             </View>
 
         </View>

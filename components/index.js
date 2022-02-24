@@ -19,16 +19,16 @@ const Tab = createBottomTabNavigator() ;
         super(props);
 
         this.state={
-          token: null
+          token: null,
         };
     }
 
     SignInButtonPressed(nav){
-        nav.navigate('Login');
+      this.props.navigation.navigate('Login');
     }
 
     RegisterButtonPressed(nav){
-        nav.navigate('Register');
+      this.props.navigation.navigate('Register');
     }
 
     //get token and check if the token exist
@@ -56,9 +56,9 @@ const Tab = createBottomTabNavigator() ;
 
     render(){
     
-        if(null === this.state.token){
+      if(null === this.state.token){
 
-        return(
+      return(
 
         <View style = {styles.flexContainer}>
 
@@ -76,7 +76,7 @@ const Tab = createBottomTabNavigator() ;
                 <View styles = {stylesIn.firstCol}>
                 <TouchableOpacity 
                     style = {stylesIn.loginButton}
-                    onPress={() => { this.SignInButtonPressed(this.props.navigation)}} >
+                    onPress={() => { this.SignInButtonPressed()}} >
                 <Text style={stylesIn.loginButtonText}>Sign In</Text>
                 </TouchableOpacity>
                 </View>
@@ -85,7 +85,7 @@ const Tab = createBottomTabNavigator() ;
                 <View styles = {stylesIn.secondCol}>
                 <TouchableOpacity 
                     style = {stylesIn.loginButton}
-                    onPress={() => {this.RegisterButtonPressed(this.props.navigation)}}>
+                    onPress={() => {this.RegisterButtonPressed()}}>
                 <Text style={stylesIn.loginButtonText}>Register</Text>
                 </TouchableOpacity>
                 </View>
@@ -94,7 +94,7 @@ const Tab = createBottomTabNavigator() ;
             
         </View>
 
-        )}
+      )}
 
       else {
         return(
@@ -139,7 +139,7 @@ const Tab = createBottomTabNavigator() ;
             <Tab.Screen name="Setting" component={SettingScreen}></Tab.Screen>
           </Tab.Navigator>
        
-          )
+        )
       }
           
     

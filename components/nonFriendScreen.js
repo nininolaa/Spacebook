@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
+import IsLoading from "./modules/isLoading";
 
  class NonFriendScreen extends Component {
 
@@ -15,6 +16,7 @@ import HomeLogo from './modules/homeLogo';
             email: '',
             friend_count: '',
             userPostList: [],
+            isLoading: true,
         }
     }
 
@@ -50,6 +52,7 @@ import HomeLogo from './modules/homeLogo';
                 user_id: responseJson.user_id,
                 email: responseJson.email,
                 friend_count: responseJson.friend_count,
+                isLoading: false,
             })
         }) 
     }
@@ -74,7 +77,12 @@ import HomeLogo from './modules/homeLogo';
      } 
 
     render(){
- 
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+              );
+        }
+        else{
         return(
         
         <View style = {stylesIn.flexContainer}>
@@ -102,6 +110,7 @@ import HomeLogo from './modules/homeLogo';
             </View>
         </View>
         )
+        }
     }
  }
 

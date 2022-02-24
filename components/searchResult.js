@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWithoutFeedback} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
+import IsLoading from "./modules/isLoading";
 
  class SearchResult extends Component {
 
@@ -9,7 +10,8 @@ import Logo from './modules/logo';
         super(props);
 
         this.state = {
-            searchList: []
+            searchList: [],
+            isLoading: true,
         }
     }
 
@@ -39,7 +41,10 @@ import Logo from './modules/logo';
         })
         .then(responseJson => {
             console.log(responseJson);
-            this.setState({searchList: responseJson});
+            this.setState({
+                searchList: responseJson,
+                isLoading: false
+            });
         }) 
     }
 
@@ -49,6 +54,14 @@ import Logo from './modules/logo';
     }
 
     render(){
+
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+            );
+        }
+
+        else{
  
         return(
         
@@ -75,14 +88,14 @@ import Logo from './modules/logo';
                 </View>
             )}
             keyExtractor={(item) => item.user_id.toString()}
-        />
+            />
             </View>
 
             <View styles = {stylesIn.mainMenu}>
                 
             </View>
         </View>
-        )
+        )}
     }
  }
 

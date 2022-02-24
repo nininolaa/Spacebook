@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWithoutFeedback} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
+import IsLoading from "./modules/isLoading";
 
  class FriendScreen extends Component {
 
@@ -11,6 +12,7 @@ import Logo from './modules/logo';
         this.state = {
             friendId:'',
             friendRequestList: [],
+            isLoading: true,
         }
     }
     
@@ -37,7 +39,10 @@ import Logo from './modules/logo';
             }
         })
         .then(responseJson => {
-            this.setState({friendRequestList: responseJson})
+            this.setState({
+                friendRequestList: responseJson,
+                isLoading: false,
+            })
         }) 
     }
 
@@ -53,6 +58,7 @@ import Logo from './modules/logo';
         })
         .then((response) => {
             console.log("Friend accepted");
+            this.setState({isLoading: false})
             this.props.navigation.navigate("Friends")
           })
         .catch((error) => {
@@ -75,6 +81,7 @@ import Logo from './modules/logo';
             this.friendRequests();
           })
         .then((response) => {
+            this.setState({isLoading: false})
             console.log("Rejected friend request");
           })
         .catch((error) => {
@@ -84,8 +91,15 @@ import Logo from './modules/logo';
 
 
     render(){
- 
+        
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+            )
+        }
+        else{
         return(
+        
         
         <View style = {stylesIn.flexContainer}>
 
@@ -122,7 +136,7 @@ import Logo from './modules/logo';
             </View>
         </View>
         )
-    }
+    }   }
  }
 
  const stylesIn = StyleSheet.create({

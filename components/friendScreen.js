@@ -4,6 +4,7 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList } from 'react-native
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 import { ScrollView } from 'react-native';
+import IsLoading from "./modules/isLoading";
 
 
 
@@ -18,6 +19,7 @@ import { ScrollView } from 'react-native';
         this.state = {
             friendRequestList: [],
             userFriendList: [],
+            isLoading: true,
         }
     }
 
@@ -30,7 +32,6 @@ import { ScrollView } from 'react-native';
     addFriend = async() => {
 
        let token = await AsyncStorage.getItem('@session_token');
-       let userId = await AsyncStorage.getItem('user_id');
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
             method: 'POST',
             headers: {
@@ -39,6 +40,7 @@ import { ScrollView } from 'react-native';
             },  
         })
         .then((response) => {
+            this.setState({isLoading: false})
             console.log("Request sent");
           })
           .catch((error) => {
@@ -68,7 +70,10 @@ import { ScrollView } from 'react-native';
             }
         })
         .then(responseJson => {
-            this.setState({userFriendList: responseJson})
+            this.setState({
+                userFriendList: responseJson,
+                isLoading: false
+            })
         }) 
 
     }
@@ -109,8 +114,14 @@ import { ScrollView } from 'react-native';
 
 
     render(){
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+              );
+        }
+        else{
         return(
-    
+        
         <ScrollView style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
@@ -142,7 +153,7 @@ import { ScrollView } from 'react-native';
             />
             <Button 
             title = "Add friend"
-            onPress= {() => this.addFriend}
+            onPress= {() => this.addFriend()}
             ></Button>
 
             <Text>See all friends:</Text>
@@ -170,6 +181,7 @@ import { ScrollView } from 'react-native';
         </ScrollView>
         
         )  
+        }
     }     
  }
 

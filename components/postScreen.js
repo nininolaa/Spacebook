@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
 import HomeLogo from './modules/homeLogo';
 import styles from "./modules/stylesheet";
+import IsLoading from "./modules/isLoading";
 
 class PostScreen extends Component {
 
@@ -18,6 +19,7 @@ class PostScreen extends Component {
             userPostList: [],
             editable: false,
             text: '',
+            isLoading: true,
         }
     }
 
@@ -90,6 +92,7 @@ class PostScreen extends Component {
         .then(responseJson => {
             this.setState({
                 userPostList: responseJson,
+                isLoading: false
             })
         }) 
     }
@@ -117,7 +120,10 @@ class PostScreen extends Component {
 
         .then((response) => {
             console.log("Info updated");
-            this.setState({editable: false});
+            this.setState({
+                editable: false,
+                isLoading: false
+            });
           })
           .catch((error) => {
             console.log(error);
@@ -162,6 +168,12 @@ class PostScreen extends Component {
     
 
     render(){
+        if(this.state.isLoading == true){
+            return(
+                <IsLoading></IsLoading>
+              );
+        }
+        else{
         return(
         
         <ScrollView style = {stylesIn.flexContainer}>
@@ -233,7 +245,7 @@ class PostScreen extends Component {
             />
             </View>
         </ScrollView>
-        );   
+        )};   
     }
 }
 
