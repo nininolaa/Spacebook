@@ -12,7 +12,6 @@ import { View, Image , StyleSheet} from 'react-native';
         
         <View style={stylesIn.homeLogo}>
             <Image source={require('../../assets/img/banner.png')} style={stylesIn.logoImg} ></Image> 
-            {/* <Image source={require('../../assets/img/Heading.png')} style={styles.headingImgIndex}></Image> */}
         </View>
 
         )
@@ -21,22 +20,17 @@ import { View, Image , StyleSheet} from 'react-native';
  }
 
  const stylesIn = StyleSheet.create({
+    homeLogo:{
+        flex:1
+    },
     logoImg: {
-        //position: 'absolute',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // width: '100%',
-        // height: 150,
-
-        flex: 1,
+        flex: 20,
         justifyContent: 'center',
-        alignContent: 'center',
+        // alignContent: 'center',
         alignItems: 'center',
-       // marginBottom: '30%',
-        width: '100%',
-        height: 150,
-        resizeMode: 'contain'
+        backgroundColor: 'pink'
+        // width: '100%',
+        // resizeMode: 'contain'
      },
  })
 

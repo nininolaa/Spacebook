@@ -3,11 +3,14 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWit
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 import IsLoading from "./modules/isLoading";
+import {searchQuery} from '../libs/searchQueryFunctions';
 
  class SearchResult extends Component {
 
     constructor(props){
         super(props);
+
+        this.token = '',
 
         this.state = {
             searchList: [],
@@ -15,8 +18,8 @@ import IsLoading from "./modules/isLoading";
         }
     }
 
-    componentDidMount(){
-       this.searchQuery();
+    async componentDidMount(){
+        this.searchQuery();
     }
 
     async searchQuery (){

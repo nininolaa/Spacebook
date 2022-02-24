@@ -82,5 +82,14 @@ export default StyleSheet.create({
         actionBtnDark: {
             textTransform: 'uppercase', 
             color: "#000000"
-        }
+        },
+
+        showEdit: {
+            display: 'block',
+        },
+    
+        hideEdit:{
+            display: 'none'
+        },
+
 })

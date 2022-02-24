@@ -178,8 +178,8 @@ class PostScreen extends Component {
         
         <ScrollView style = {stylesIn.flexContainer}>
 
-            <View style = {stylesIn.homeLogo}>
-            <HomeLogo></HomeLogo>
+            <View style={stylesIn.homeLogo}>
+                <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>

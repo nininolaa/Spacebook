@@ -6,8 +6,6 @@ import HomeLogo from './modules/homeLogo';
 import { ScrollView } from 'react-native';
 import IsLoading from "./modules/isLoading";
 
-
-
  class FriendScreen extends Component {
 
     constructor(props){
@@ -15,6 +13,7 @@ import IsLoading from "./modules/isLoading";
         
         this.friendId = '';
         this.searchQuery = '';
+        this.token = '',
 
         this.state = {
             friendRequestList: [],
@@ -23,9 +22,10 @@ import IsLoading from "./modules/isLoading";
         }
     }
 
-    componentDidMount(){
+    async componentDidMount(){
+        this.token = await AsyncStorage.getItem('@session_token');
         this.focusListener = this.props.navigation.addListener('focus', async () => {
-               this.seeAllFriend();
+        this.seeAllFriend();
         })
     }
 
@@ -112,9 +112,12 @@ import IsLoading from "./modules/isLoading";
         this.props.navigation.navigate("SearchResult",{query:this.searchQuery, friends:this.state.userFriendList})
     }
 
+    profileNavigate(friendId){
+        this.props.navigation.navigate("FriendProfile", {friendId: friendId})
+    }
 
     render(){
-        if(this.state.isLoading == true){
+        if(this.state.isLoading == true) {
             return(
                 <IsLoading></IsLoading>
               );
@@ -164,7 +167,7 @@ import IsLoading from "./modules/isLoading";
                 //specify the item that we want to show on the list
                 renderItem={({item}) => (
                     <View>
-                        <Text> {item.user_id} {item.user_givenname} {item.user_familyname} {'\n'} {item.user_email} {'\n'}{'\n'}</Text>              
+                        <Text onPress = {() => {this.profileNavigate(item.user_id)}}> {item.user_id} {item.user_givenname} {item.user_familyname} {'\n'} {item.user_email} {'\n'}{'\n'}</Text>              
                     </View>
                 )}
                 keyExtractor={(item) => item.user_id.toString()}

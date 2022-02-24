@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { View,Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from './modules/logo';
+import HomeLogo from './modules/homeLogo';
 import IsLoading from "./modules/isLoading";
 
  class ProfileScreen extends Component {
@@ -78,11 +78,11 @@ import IsLoading from "./modules/isLoading";
             <View style = {stylesIn.flexContainer}>
 
                 <View style = {stylesIn.homeLogo}>
-                <Logo></Logo>
+                <HomeLogo></HomeLogo>
                 </View>
 
                 <View style = {stylesIn.profilePicture}>
-                    <Text>Profile Screen</Text>
+                    
                 </View>
 
                 <View style = {stylesIn.userInfo}>

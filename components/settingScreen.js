@@ -98,6 +98,10 @@ import IsLoading from "./modules/isLoading";
             body: JSON.stringify(new_info)    
         })
         .then((response) => {
+            this.setState({
+                editable: false,
+                isLoading: false
+            });
             console.log("Info updated");
           })
           .catch((error) => {
@@ -140,6 +144,15 @@ import IsLoading from "./modules/isLoading";
 
     editTextInput(){
         this.setState({editable: true}) ;
+    }
+
+    //edit button press
+    editPost() {
+        this.setState({editable: true}) ;
+    }
+
+    isEditMode() {
+        return this.state.editable;
     }
     
     
@@ -192,16 +205,15 @@ import IsLoading from "./modules/isLoading";
                 value={this.state.new_password}
                 />
 
-                <Button 
-                color= 'orange'
-                onPress={() => {this.editTextInput()}}
-                title="Edit information"></Button>
-
+                <TouchableOpacity
+                onPress = {()=> this.editPost()}
+                style = {[styles.actionBtn, styles.actionBtnBlue, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                <TouchableOpacity
+                onPress = {()=> this.updateInfo()}
+                style = {[styles.actionBtn , styles.actionBtnGreen, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
                 
-                <Button
-                title="Update"
-                onPress={() => this.updateInfo()}
-                /> 
             </View>
 
             <View style = {stylesIn.signOut}>
@@ -247,7 +259,15 @@ const stylesIn = StyleSheet.create({
     userDetailsText:{
         fontSize: 15,
         placeholderTextColor: '#000000'
-    }
+    },
+
+    showEdit: {
+        display: 'block',
+    },
+
+    hideEdit:{
+        display: 'none'
+    },
 
 })
 

@@ -25,6 +25,7 @@ export function likePost(token, user_id, post_id) {
         })
         .then((responseJson) => {
             console.log("Posted post ", responseJson);
+            
             resolve(true);
         })
         .catch((error) => {
@@ -36,8 +37,7 @@ export function likePost(token, user_id, post_id) {
 
 export async function unlikePost(token, user_id, post_id) {
 
-    return new Promise((resolve,reject) => {
-        fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
+    return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
         method: 'delete',
         headers: {
             "X-Authorization": token,
@@ -59,12 +59,8 @@ export async function unlikePost(token, user_id, post_id) {
         })
         .then((responseJson) => {
             console.log("Posted post ", responseJson);
-            resolve(true);
         })
         .catch((error) => {
             console.log(error);
-            reject(false);
         })
-    }) 
-
 }

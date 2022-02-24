@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { View,Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Button, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from './modules/homeLogo';
 import {likePost, unlikePost} from '../libs/postFunctions'
+import HomeLogo from './modules/homeLogo';
 import styles from "./modules/stylesheet";
 import IsLoading from "./modules/isLoading";
 
@@ -20,13 +20,51 @@ import IsLoading from "./modules/isLoading";
             email: '',
             friend_count: '',
             userPostList: [],
+            addPost: '',
             isLoading: true,
         }
     }
 
     async componentDidMount(){
         this.token = await AsyncStorage.getItem('@session_token');
+        //this.userPost();
         this.loadFriend();
+    }
+
+    addPost = async() => {
+
+        let token = await AsyncStorage.getItem('@session_token')
+
+        let post = { text: this.state.addPost }
+
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId + "/post", {
+            method: 'post',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })
+        .then((response) => {
+            switch(response.status){
+                case 201: 
+                    return response.json();
+                    break
+                case 400:
+                    throw 'Failed validation'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
+        })
+        .then((responseJson) => {
+            console.log("Posted post ", responseJson);
+            this.userPosts();
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     loadFriend (){
@@ -88,6 +126,14 @@ import IsLoading from "./modules/isLoading";
             })
         }) 
     }
+    
+    editPost() {
+        this.setState({editable: true}) ;
+    }
+
+    isEditMode() {
+        return this.state.editable;
+    }
 
 
     render(){
@@ -99,7 +145,7 @@ import IsLoading from "./modules/isLoading";
         else{
         return(
         
-        <View style = {stylesIn.flexContainer}>
+        <ScrollView style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
@@ -117,6 +163,18 @@ import IsLoading from "./modules/isLoading";
             </View>
 
             <View styles = {stylesIn.mainMenu}>
+           
+                <Text>Post Screen</Text>
+                <TextInput
+                placeholder="Add text here"
+                onChangeText={(addPost) => this.setState({addPost})}
+                value = {this.state.addPost}
+                ></TextInput>
+                <Button 
+                title="Add Post"
+                onPress = {() => this.addPost()}
+                ></Button>
+            
             <FlatList styles = {stylesIn.mainMenu}
                 data={this.state.userPostList}
 
@@ -139,9 +197,10 @@ import IsLoading from "./modules/isLoading";
                             .catch(() => {
                                 console.log('Error')
                             })
-                            }
+                        }
                         style = {[styles.actionBtn,styles.actionBtnGreen]}
                         ><Text style = {styles.actionBtnLight}>Like</Text></TouchableOpacity>
+                        
                         <TouchableOpacity
                         onPress = {
                             () => unlikePost(this.token,item.author.user_id, item.post_id) 
@@ -159,7 +218,7 @@ import IsLoading from "./modules/isLoading";
                 keyExtractor={(item) => item.post_id.toString()}
             />
             </View>
-        </View>
+        </ScrollView>
         )
         }
     }
