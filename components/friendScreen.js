@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import { Searchbar } from 'react-native-paper';
-import { View,Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
-import { ScrollView } from 'react-native';
 import IsLoading from "./modules/isLoading";
 
  class FriendScreen extends Component {
@@ -203,12 +202,12 @@ import IsLoading from "./modules/isLoading";
     },
 
     postFeed: {
-        flex: 30,
+        flex: 100,
     },
 
-    mainMenu: {
-        flex: 20,
-    }
+    // mainMenu: {
+    //     flex: 20,
+    // }
  
  })
 

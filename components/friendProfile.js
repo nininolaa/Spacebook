@@ -243,7 +243,7 @@ import IsLoading from "./modules/isLoading";
     },
 
     mainMenu: {
-        flex: 20,
+        flex: 60,
     }
  
  })

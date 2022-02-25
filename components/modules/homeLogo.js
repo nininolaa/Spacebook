@@ -24,13 +24,13 @@ import { View, Image , StyleSheet} from 'react-native';
         flex:1
     },
     logoImg: {
-        flex: 20,
+        flex: 1,
         justifyContent: 'center',
         // alignContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'pink'
-        // width: '100%',
-        // resizeMode: 'contain'
+        //backgroundColor: 'pink',
+        width: '50%',
+        resizeMode: 'contain'
      },
  })
 

@@ -84,12 +84,36 @@ export default StyleSheet.create({
             color: "#000000"
         },
 
+        navigateBtn:{
+            padding: 3,
+            backgroundColor: "#f87217",
+            width: '40%',
+            border: 2,
+            borderRadius: 5,
+        },
+
+        navigateBtnText:{
+            textAlign: 'center',
+            color: 'white',
+        },
+
         showEdit: {
             display: 'block',
         },
     
         hideEdit:{
             display: 'none'
+        },
+
+        //User text
+
+        profileText:{
+            fontWeight: 'bold',
+            fontSize: 22,
+         },
+
+        profileMiniText:{
+            fontSize: 15,
         },
 
 })

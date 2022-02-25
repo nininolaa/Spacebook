@@ -215,10 +215,10 @@ class PostScreen extends Component {
 
                 renderItem={({item}) => (
                     <View>
-                        <Text> User name: {item.author.first_name} {item.author.last_name}</Text>    
-                        <Text> Post id: {item.post_id} </Text>  
+                        <Text>User name: {item.author.first_name} {item.author.last_name}</Text>    
+                        <Text>Post id: {item.post_id} </Text>  
                         <TextInput
-                        placeholder = {item.text}
+                        value = {item.text}
                         editable = {this.state.editable}
                         onChangeText={(new_text_post) => this.new_text_post = new_text_post}
                         ></TextInput>   
@@ -258,22 +258,22 @@ class PostScreen extends Component {
     },
 
     homeLogo: {
-        flex: 30,
+        flex: 1,
         backgroundColor: 'blue'
     },
 
     friendSearch: {
-        flex: 30,
-       // backgroundColor: 'black',
+        flex: 2,
+        backgroundColor: 'black',
     },
 
     postFeed: {
-        flex: 30,
-      //  backgroundColor: 'black'
+        flex: 3,
+        backgroundColor: 'black'
     },
 
     mainMenu: {
-        flex: 10,
+        flexGrow: 2,
         backgroundColor: 'blue'
     },
 

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
 import IsLoading from "./modules/isLoading";
+import HomeLogo from './modules/homeLogo';
 
  class SettingScreen extends Component {
 
@@ -170,27 +170,35 @@ import IsLoading from "./modules/isLoading";
         <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
-                <Image source={require('../assets/img/logo.png')} ></Image> 
-                <Image source={require('../assets/img/Heading.png')}></Image>
+                <HomeLogo></HomeLogo>
             </View>
-
+            
             <View style = {stylesIn.userProfile}>
+                <View style = {stylesIn.userImage}></View>
+
+                <View style = {stylesIn.userDetails}>
+                <Text style = {styles.profileText}> ID:{this.state.user_id}  |  {this.state.first_name} {this.state.last_name} </Text>
+                <Text style = {styles.profileMiniText}> Email: {this.state.email}</Text>
+                </View>
             </View>
 
-            <View style = {stylesIn.userDetails}>
-
+            <View style = {stylesIn.userUpdateDetails}>
+                <Text>Edit Profile </Text>
+                <Text>First Name: </Text> 
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.first_name}
                 onChangeText={(new_first_name) => this.new_first_name = new_first_name}
                 editable={this.state.editable}
-                />           
+                /> 
+                <Text>Last Name: 
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.last_name}
                 onChangeText={(new_last_name) => this.new_last_name = new_last_name}
                 editable={this.state.editable}
-                />
+                /></Text>
+                <Text>Email:</Text> 
                 <TextInput
                 style = {stylesIn.userDetailsText}
                 placeholder={this.state.email}
@@ -233,31 +241,44 @@ const stylesIn = StyleSheet.create({
 
     flexContainer: {
         flex: 1,
+        backgroundColor: "#fdf6e4",
     },
 
     homeLogo: {
-        flex: 5,     
-    },
-
-    logoImg: {
-        width: 100,
-        height: 100
+        flex: 2,     
+        //backgroundColor: 'pink'
     },
 
     userProfile: {
-        flex: 20,
+        flex: 2,
+        flexDirection: 'row',
+        //backgroundColor: 'green'
     },
 
-    userDetails: {
-        flex: 30,
+    userImage:{
+        flex:1,
+        //backgroundColor: 'red'
+    },
+
+    userDetails:{
+        flex: 2,
+        justifyContent:'center',
+        alignItems: 'flex-start',
+        //backgroundColor: 'purple'
+    },
+
+    userUpdateDetails: {
+        //backgroundColor: 'blue',
+        flex: 3,
     },
 
     signOut: {
-        flex: 10,
+        flex: 2,
+        backgroundColor: 'yellow'
     },
 
     userDetailsText:{
-        fontSize: 15,
+        fontSize: 20,
         placeholderTextColor: '#000000'
     },
 
@@ -268,6 +289,11 @@ const stylesIn = StyleSheet.create({
     hideEdit:{
         display: 'none'
     },
+
+    // profileText:{
+    //     fontWeight: 'bold',
+    //     fontSize: 22,
+    //  },
 
 })
 
