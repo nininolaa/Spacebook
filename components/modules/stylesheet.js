@@ -105,15 +105,33 @@ export default StyleSheet.create({
             display: 'none'
         },
 
+        //Headings
+        postHeaderText:{
+            color: "#411800",
+            fontSize: 20,
+            paddingBottom: 10,
+            fontWeight: 50,
+        },
+
         //User text
 
         profileText:{
-            fontWeight: 'bold',
+            fontWeight: 15,
             fontSize: 22,
          },
 
         profileMiniText:{
             fontSize: 15,
         },
+
+        //setting screen 
+        updateInput:{
+            borderWidth: 2,
+            borderColor: '#ffbf99',
+            width: '100%',
+            borderRadius: 5,
+            marginBottom: '2%',  
+            padding: 5,
+        }
 
 })

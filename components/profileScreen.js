@@ -137,7 +137,7 @@ import styles from "./modules/stylesheet";
                 </View>
 
                 <View style = {stylesIn.userPost}>
-                    <Text style = {stylesIn.postHeaderText}>Your Posts:</Text>
+                    <Text style={styles.postHeaderText}>Your Posts:</Text>
                     {/* <View styles = {stylesIn.postBox}> */}
                     <FlatList 
                     data={this.state.userPostList}
@@ -192,8 +192,8 @@ import styles from "./modules/stylesheet";
  const stylesIn = StyleSheet.create({
 
     flexContainer: {
-        flexGrow: 1,
-        flexDirection: 'column',
+        flex: 1,
+        // flexDirection: 'column',
         backgroundColor: "#fdf6e4",
     },
 
@@ -220,7 +220,7 @@ import styles from "./modules/stylesheet";
     postBox:{
         border: 20,
         borderColor: 'black',
-        backgroundColor: '#ff8b47',
+        backgroundColor: '#feddc9',
         marginBottom: 10,
         padding: 5,
     },
@@ -251,8 +251,8 @@ import styles from "./modules/stylesheet";
     },
 
     postMainText:{
-        fontSize: 25,
-        padding:10,
+        fontSize: 20,
+        padding:5,
     },
 
     postHeaderText:{

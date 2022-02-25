@@ -182,35 +182,42 @@ class PostScreen extends Component {
                 <HomeLogo></HomeLogo>
             </View>
 
-            <View style = {stylesIn.friendSearch}>
-                <Text>Post Screen</Text>
+            <View style = {stylesIn.sharePost}>
+                <Text style = {styles.postHeaderText}>Share a post:</Text>
                 <TextInput
+                style = {stylesIn.postInput}
                 placeholder="Add text here"
+                numberOfLines= "5"
                 onChangeText={(addPost) => this.setState({addPost})}
                 value = {this.state.addPost}
                 ></TextInput>
-                <Button 
-                title="Add Post"
+            </View>
+            <View style = {stylesIn.sharePostBtnContainer}>
+                <TouchableOpacity 
+                style = {styles.loginButton}
                 onPress = {() => this.addPost()}
-                ></Button>
+                ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
             </View>
 
-            <View style = {stylesIn.postFeed}>
-                <Text> Find a post</Text>
+            <View style = {stylesIn.findUserPost}>
+                <Text style = {styles.postHeaderText}> Find a post</Text>
                 <TextInput
+                style = {stylesIn.findPostInput}
                 placeholder="Enter your post id here"
                 onChangeText={(postId) => this.postId = postId }
                 ></TextInput>
-                <Button
-                title="Find a post"
+            </View>
+            <View style = {stylesIn.findUserPostBtnContainer}>
+                <TouchableOpacity
+                style = {styles.loginButton}
                 onPress={() => this.singlePost()}
-                ></Button>
+                ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
             </View>
 
-            <View styles = {stylesIn.mainMenu}>
+            <View style = {stylesIn.mainPostFeed}>
             <Text>Show user's posts here:{'\n'}  </Text>
 
-            <FlatList styles = {stylesIn.mainMenu}
+            <FlatList 
                 data={this.state.userPostList}
 
                 renderItem={({item}) => (
@@ -254,27 +261,44 @@ class PostScreen extends Component {
 
     flexContainer: {
         flex: 1,
-        //marginHorizontal: 20,
+        backgroundColor: "#fdf6e4",
     },
 
     homeLogo: {
         flex: 1,
-        backgroundColor: 'blue'
     },
 
-    friendSearch: {
-        flex: 2,
-        backgroundColor: 'black',
+    sharePost: {
+        flex: 1,
+        paddingHorizontal: 20,
+       // backgroundColor: 'black',
     },
 
-    postFeed: {
-        flex: 3,
-        backgroundColor: 'black'
+    sharePostBtnContainer: {
+        flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingHorizontal: 20,
+        //backgroundColor: 'pink',
     },
 
-    mainMenu: {
-        flexGrow: 2,
-        backgroundColor: 'blue'
+    findUserPost:{
+        flex: 0.5,
+        paddingHorizontal: 20,
+        //backgroundColor: 'green',
+    },
+
+    findUserPostBtnContainer:{
+        flex:0.4,
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'flex-end',
+        paddingHorizontal: 20,
+    },
+
+    mainPostFeed:{
+        flex: 5,
+        backgroundColor: 'skyblue'
     },
 
     showEdit: {
@@ -289,6 +313,26 @@ class PostScreen extends Component {
         color: '#ffffff' , 
         textTransform: 'uppercase', 
         fontWeight: 'bold'
+    },
+
+    postInput:{
+        borderWidth: 3,
+        borderColor: '#ffc9a9',
+        borderRadius: 3,
+        padding: 40,
+        fontSize: 15,
+    },
+
+    sharePostBtn:{
+        backgroundColor: "#f9943b",
+    },
+
+    findPostInput:{
+        borderWidth: 3,
+        borderColor: '#ffc9a9',
+        borderRadius: 3,
+        padding: 5,
+        fontSize: 15,
     }
 
  })

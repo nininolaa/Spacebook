@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,Image, Alert} from 'react-native';
+import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "./modules/stylesheet";
 import IsLoading from "./modules/isLoading";
@@ -167,8 +167,9 @@ import HomeLogo from './modules/homeLogo';
 
         else{
         return(
-        <View style = {stylesIn.flexContainer}>
 
+        <View style = {stylesIn.flexContainer}>
+            
             <View style = {stylesIn.homeLogo}>
                 <HomeLogo></HomeLogo>
             </View>
@@ -177,62 +178,79 @@ import HomeLogo from './modules/homeLogo';
                 <View style = {stylesIn.userImage}></View>
 
                 <View style = {stylesIn.userDetails}>
-                <Text style = {styles.profileText}> ID:{this.state.user_id}  |  {this.state.first_name} {this.state.last_name} </Text>
-                <Text style = {styles.profileMiniText}> Email: {this.state.email}</Text>
+                <Text style = {styles.profileText}>ID:{this.state.user_id} </Text>
+                <Text style = {styles.profileText}>{this.state.first_name} {this.state.last_name} </Text>
                 </View>
             </View>
 
             <View style = {stylesIn.userUpdateDetails}>
-                <Text>Edit Profile </Text>
-                <Text>First Name: </Text> 
+                <Text style={styles.postHeaderText}>Edit Profile </Text>
+                <Text style = {stylesIn.userDetailsText}>First Name: </Text> 
                 <TextInput
-                style = {stylesIn.userDetailsText}
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder={this.state.first_name}
                 onChangeText={(new_first_name) => this.new_first_name = new_first_name}
                 editable={this.state.editable}
                 /> 
-                <Text>Last Name: 
-                <TextInput
-                style = {stylesIn.userDetailsText}
+                <Text style = {stylesIn.userDetailsText}>Last Name: </Text>
+                <TextInput 
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder={this.state.last_name}
                 onChangeText={(new_last_name) => this.new_last_name = new_last_name}
                 editable={this.state.editable}
-                /></Text>
-                <Text>Email:</Text> 
+                />
+                <Text style = {stylesIn.userDetailsText}>Email:</Text> 
                 <TextInput
-                style = {stylesIn.userDetailsText}
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder={this.state.email}
                 onChangeText={(new_email) => this.new_email = new_email}
                 editable={this.state.editable}
                 />
 
+                <Text style = {stylesIn.userDetailsText}>Password:</Text>
                 <TextInput
-                style = {stylesIn.userDetailsText}
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
+                placeholder="Enter old password..."
+                onChangeText={(new_password) => this.new_password = new_password}
+                value={this.state.new_password}
+                />
+
+                <TextInput
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder="Enter new password..."
+                onChangeText={(new_password) => this.new_password = new_password}
+                value={this.state.new_password}
+                />
+
+                <TextInput
+                style = {[stylesIn.userDetailsText, styles.updateInput]}
+                placeholder="Confirm your new password..."
                 onChangeText={(new_password) => this.new_password = new_password}
                 value={this.state.new_password}
                 />
 
                 <TouchableOpacity
                 onPress = {()=> this.editPost()}
-                style = {[styles.actionBtn, styles.actionBtnBlue, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                style = {[stylesIn.editBtn, stylesIn.editBtnColor, !this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                ><Text style = {[stylesIn.editBtnText]}>Edit information</Text></TouchableOpacity>
                 <TouchableOpacity
                 onPress = {()=> this.updateInfo()}
-                style = {[styles.actionBtn , styles.actionBtnGreen, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
+                style = {[stylesIn.editBtn , stylesIn.updateBtnColor, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                ><Text style = {[stylesIn.editBtnText]}>Update information</Text></TouchableOpacity>
                 
             </View>
 
             <View style = {stylesIn.signOut}>
                 <TouchableOpacity
-                onPress={() => {this.logout()}}>
+                onPress={() => {this.logout()}}
+                style = {styles.loginButton}
+                >
                  <Text>Sign Out</Text>
                 </TouchableOpacity>
             </View>
+           
 
         </View>
-  
         )}
     }
  }
@@ -245,55 +263,68 @@ const stylesIn = StyleSheet.create({
     },
 
     homeLogo: {
-        flex: 2,     
-        //backgroundColor: 'pink'
+        flex: 2, 
+        justifyContent: 'flex-start',    
     },
 
     userProfile: {
         flex: 2,
         flexDirection: 'row',
-        //backgroundColor: 'green'
     },
 
     userImage:{
         flex:1,
-        //backgroundColor: 'red'
     },
 
     userDetails:{
         flex: 2,
         justifyContent:'center',
         alignItems: 'flex-start',
-        //backgroundColor: 'purple'
     },
 
     userUpdateDetails: {
-        //backgroundColor: 'blue',
-        flex: 3,
+        flex: 8,         
     },
 
     signOut: {
-        flex: 2,
-        backgroundColor: 'yellow'
+        flex: 1,
+        // justifyContent:'center',
+        alignItems: 'center',
+        // alignContent: 'center',
+        //backgroundColor: 'yellow'
     },
 
     userDetailsText:{
-        fontSize: 20,
+        fontSize: 15,
         placeholderTextColor: '#000000'
     },
 
-    showEdit: {
-        display: 'block',
+    editBtn:{
+        justifyContent:'center',  
+        alignContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderRadius: 5,
+        width: '30%',
+        padding: 5,
     },
 
-    hideEdit:{
-        display: 'none'
+    editBtnColor:{
+        backgroundColor: '#9c5304',
+        borderColor: '#9c5304',
     },
 
-    // profileText:{
-    //     fontWeight: 'bold',
-    //     fontSize: 22,
-    //  },
+    updateBtnColor:{
+        backgroundColor: '#63c5da',
+        borderColor: '#63c5da',
+    },
+
+    editBtnText:{
+        textAlign:'center',
+        color: 'white',
+        fontSize:15,
+    }
+
 
 })
 
