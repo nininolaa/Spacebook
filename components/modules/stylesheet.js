@@ -62,19 +62,37 @@ export default StyleSheet.create({
         actionBtn: {
             fontSize: 20,
             textAlign: 'center',
-            paddingTop: 3,
-            paddingBottom: 3,
+            height:"80%",
+            width:"100%",
+            alignItems:'center',
+        },
+        btnContainer1:{
+            flex: 1,
+            alignItems:'center'
+        },
+        btnContainer2:{
+            flex: 1,
+            alignItems:'center'
+        },
+
+        actionBtnOrange: {
+            backgroundColor: "#ff6700",
         },
 
         actionBtnGreen: {
-            backgroundColor: "#00ff00",
+            backgroundColor: "#69b34c",
+        },
+
+        actionBtnRed: {
+            backgroundColor: '#990f02',
         },
 
         actionBtnBlue: {
-            backgroundColor: "#0000ff",
+            backgroundColor: '#95d8eb',
         },
 
         actionBtnLight: {
+            textAlign:'center',
             textTransform: 'uppercase', 
             color: "#ffffff"
         },
@@ -132,6 +150,68 @@ export default StyleSheet.create({
             borderRadius: 5,
             marginBottom: '2%',  
             padding: 5,
-        }
+        },
+
+        //post wall
+
+        postHeaderText:{
+            border: 5,
+            borderColor: 'black',
+            fontSize: 25,
+            paddingBottom: 10,
+            fontWeight: 'bold',
+        },
+
+        postBox:{
+            border: 20,
+            borderColor: 'black',
+            backgroundColor: '#feddc9',
+            marginBottom: 10,
+            padding: 5,
+        },
+
+        postNameText:{
+            fontSize: 15,
+            fontWeight: 'bold',
+            color: "#391500"
+        },
+
+        postInfoText:{
+            fontSize: 11,
+            color: 'grey'
+        },
+
+        postMainText:{
+            fontSize: 20,
+            padding:5,
+            placeholderTextColor: 'black',
+        },
+
+        inPostContainer:{
+            flex: 1,
+            flexDirection: 'row',
+            padding: 10,
+        },
+
+        inPostImage:{
+            flex: 1,
+        },
+
+        inPostHeader:{
+            flex: 4,
+        },
+
+        //friend Screen
+        friendsBtn:{
+            border: 5,
+            borderRadius: 5,
+            fontSize: 20,
+            textAlign: 'center',
+            height:"50%",
+            width:"100%",
+            alignItems:'center',
+        },
+        
+
 
 })

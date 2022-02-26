@@ -137,29 +137,29 @@ import styles from "./modules/stylesheet";
                 </View>
 
                 <View style = {stylesIn.userPost}>
-                    <Text style={styles.postHeaderText}>Your Posts:</Text>
+                    <Text style={styles.postHeaderText}>Your Feed:</Text>
                     {/* <View styles = {stylesIn.postBox}> */}
                     <FlatList 
                     data={this.state.userPostList}
 
                     renderItem={({item}) => (
-                        <View style = {stylesIn.postBox}>
-                            <View style = {stylesIn.inPostContainer}>
-                                <View style = {stylesIn.inPostImage}>
+                        <View style = {styles.postBox}>
+                            <View style = {styles.inPostContainer}>
+                                <View style = {styles.inPostImage}>
                                    {/* <HomeLogo></HomeLogo>  */}
                                 </View>
-                                <View style = {stylesIn.inPostHeader}>
-                                <Text style = {stylesIn.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                <Text style = {stylesIn.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                <View style = {styles.inPostHeader}>
+                                <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
+                                <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                             </View> 
                             <TextInput
-                            style = {stylesIn.postMainText}
+                            style = {styles.postMainText}
                             value ={item.text}
                             editable = {this.state.editable}
                             onChangeText={(new_text_post) => this.new_text_post = new_text_post}
                             ></TextInput>   
-                            <Text style ={stylesIn.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
+                            <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
 
                             
                             {/* <TouchableOpacity
@@ -217,43 +217,43 @@ import styles from "./modules/stylesheet";
         //backgroundColor: 'pink'
     },
 
-    postBox:{
-        border: 20,
-        borderColor: 'black',
-        backgroundColor: '#feddc9',
-        marginBottom: 10,
-        padding: 5,
-    },
+    // postBox:{
+    //     border: 20,
+    //     borderColor: 'black',
+    //     backgroundColor: '#feddc9',
+    //     marginBottom: 10,
+    //     padding: 5,
+    // },
 
-    postNameText:{
-        fontSize: 15,
-        fontWeight: 'bold',
-        color: "#391500"
-    },
+    // postNameText:{
+    //     fontSize: 15,
+    //     fontWeight: 'bold',
+    //     color: "#391500"
+    // },
 
-    postInfoText:{
-        fontSize: 11,
-        color: 'grey'
-    },
+    // postInfoText:{
+    //     fontSize: 11,
+    //     color: 'grey'
+    // },
 
-    inPostContainer:{
-        flex: 1,
-        flexDirection: 'row',
-        padding: 10,
-    },
+    // inPostContainer:{
+    //     flex: 1,
+    //     flexDirection: 'row',
+    //     padding: 10,
+    // },
 
-    inPostImage:{
-        flex: 1,
-    },
+    // inPostImage:{
+    //     flex: 1,
+    // },
 
-    inPostHeader:{
-        flex: 4,
-    },
+    // inPostHeader:{
+    //     flex: 4,
+    // },
 
-    postMainText:{
-        fontSize: 20,
-        padding:5,
-    },
+    // postMainText:{
+    //     fontSize: 20,
+    //     padding:5,
+    // },
 
     postHeaderText:{
         border: 5,

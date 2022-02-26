@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import { Searchbar } from 'react-native-paper';
-import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView} from 'react-native';
+import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 import IsLoading from "./modules/isLoading";
+import styles from "./modules/stylesheet";
 
  class FriendScreen extends Component {
 
@@ -124,31 +125,40 @@ import IsLoading from "./modules/isLoading";
         else{
         return(
         
-        <ScrollView style = {stylesIn.flexContainer}>
+        <View style = {stylesIn.flexContainer}>
 
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>
-            
-            </View>
-
-            <View style = {stylesIn.postFeed}>
             <Searchbar 
             placeholder="Find friends"
             onChangeText = {(query) => {this.searchQuery = query}}
             onIconPress={() => {this.onSearchPress()}}
             ></Searchbar>
+            </View>
 
-            <Text></Text>
-            <Button 
-            title = "See friend requests"
-            onPress={() => {this.friendRequestsNavigate()}}
-            ></Button>
+            <View style = {stylesIn.friendBtnContainer}>
+                {/* <View style = {stylesIn.allFriendBtn}>
+                <TouchableOpacity 
+                    style = {[styles.friendsBtn, styles.actionBtnBlue]}
+                    onPress={() => {this.friendRequestsNavigate()}}
+                    ><Text style = {[styles.actionBtnLight]}>See all friend</Text>
+                    </TouchableOpacity>
+                </View> */}
+                <View style = {stylesIn.friendRequestBtn}>
+                    <TouchableOpacity 
+                    style = {[styles.friendsBtn, styles.actionBtnOrange]}
+                    onPress={() => {this.friendRequestsNavigate()}}
+                    ><Text style = {[styles.actionBtnLight]}>See friend requests</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            
 
             {/* Add friend function */}
-            <Text>Add friend:</Text>
+            {/* <Text>Add friend:</Text>
             <TextInput 
             placeholder = "Enter your friend's ID"
             onChangeText={(friendId) => this.friendId = friendId}
@@ -156,31 +166,29 @@ import IsLoading from "./modules/isLoading";
             <Button 
             title = "Add friend"
             onPress= {() => this.addFriend()}
-            ></Button>
-
-            <Text>See all friends:</Text>
+            ></Button> */}
+            <View style = {stylesIn.friendList}>
+            <Text style={styles.postHeaderText}>All friends:</Text>
             <FlatList
                 // calling the array 
                 data={this.state.userFriendList}
                 
                 //specify the item that we want to show on the list
                 renderItem={({item}) => (
-                    <View>
-                        <Text onPress = {() => {this.profileNavigate(item.user_id)}}> {item.user_id} {item.user_givenname} {item.user_familyname} {'\n'} {item.user_email} {'\n'}{'\n'}</Text>              
+                    <View style = {[styles.inPostContainer,styles.postBox]}>
+                        {/* <View style = {stylesIn.friedInfoContainer}> */}
+                        <View style = {styles.inPostImage}></View>
+                        <View style = {styles.inPostHeader}>    
+                            <Text onPress = {() => {this.profileNavigate(item.user_id)}} style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} </Text>              
+                        </View>
+                        {/* </View> */}
                     </View>
                 )}
                 keyExtractor={(item) => item.user_id.toString()}
             />
-
-
-           
-
             </View>
-
-            <View styles = {stylesIn.mainMenu}>
-                
-            </View>
-        </ScrollView>
+            
+        </View>
         
         )  
         }
@@ -191,24 +199,44 @@ import IsLoading from "./modules/isLoading";
 
     flexContainer: {
         flex: 1,
+        backgroundColor: "#fdf6e4",
     },
 
     homeLogo: {
-        flex: 5,
+        flex: 0.8,
+        //backgroundColor: 'blue'
     },
 
     friendSearch: {
-        flex: 5,
+        flex: 0.5,
+        paddingHorizontal: 20,
+        //backgroundColor: 'green'
     },
 
-    postFeed: {
-        flex: 100,
+    friendBtnContainer:{
+        flex: 0.5,
+        flexDirection:'flex-end',
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+        //alignItems: 'center',
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // alignContent:'space-between',
+       // backgroundColor: 'purple',
     },
-
-    // mainMenu: {
-    //     flex: 20,
-    // }
- 
+    allFriendBtn:{
+        flex: 1,
+        backgroundColor: 'pink'
+    },
+    friendRequestBtn:{
+        flex: 1,
+        //backgroundColor: 'orange'
+    },
+    friendList:{
+        flex: 2,
+       // backgroundColor: 'grey',
+        paddingHorizontal: 20,
+    },
  })
 
  export default FriendScreen;

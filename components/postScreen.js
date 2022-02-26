@@ -215,41 +215,55 @@ class PostScreen extends Component {
             </View>
 
             <View style = {stylesIn.mainPostFeed}>
-            <Text>Show user's posts here:{'\n'}  </Text>
+            <Text style={styles.postHeaderText}>Your Posts:</Text>
+                    {/* <View styles = {stylesIn.postBox}> */}
+                    <FlatList 
+                    data={this.state.userPostList}
 
-            <FlatList 
-                data={this.state.userPostList}
+                    renderItem={({item}) => (
+                        <View style = {styles.postBox}>
+                            <View style = {styles.inPostContainer}>
+                                <View style = {styles.inPostImage}>
+                                   {/* <HomeLogo></HomeLogo>  */}
+                                </View>
+                                <View style = {styles.inPostHeader}>
+                                <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
+                                <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                </View> 
+                            </View> 
+                            <TextInput
+                            style = {styles.postMainText}
+                            placeholder ={item.text}
+                            editable = {this.state.editable}
+                            onChangeText={(new_text_post) => this.new_text_post = new_text_post}
+                            ></TextInput>   
+                            <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
 
-                renderItem={({item}) => (
-                    <View>
-                        <Text>User name: {item.author.first_name} {item.author.last_name}</Text>    
-                        <Text>Post id: {item.post_id} </Text>  
-                        <TextInput
-                        value = {item.text}
-                        editable = {this.state.editable}
-                        onChangeText={(new_text_post) => this.new_text_post = new_text_post}
-                        ></TextInput>   
-                        <Text> Likes: {item.numLikes} {'\n'}  </Text> 
+                            <View style = {stylesIn.editBtnContainer}>
 
-                        
-                        <TouchableOpacity
-                        onPress = {()=> this.editPost(item.post_id)}
-                        style = {[styles.actionBtn, styles.actionBtnBlue, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                        ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
-                        <TouchableOpacity
-                        onPress = {()=> this.updatePost(item.post_id, item.text)}
-                        style = {[styles.actionBtn , styles.actionBtnGreen, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                        ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
-                        
-                        <Button 
-                        title = "Delete post" 
-                        color = "#880808"
-                        onPress = {() => this.deletePost(item.post_id)}
-                       > </Button>   
-                    </View>
-                )}
-                keyExtractor={(item) => item.post_id.toString()}
-            />
+                                <View style = {styles.btnContainer1}>
+                                <TouchableOpacity
+                                onPress = {()=> this.editPost(item.post_id)}
+                                style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                                ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                                <TouchableOpacity
+                                onPress = {()=> this.updatePost(item.post_id, item.text)}
+                                style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                                ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
+                                </View>
+
+                                <View style = {styles.btnContainer2}>
+                                <TouchableOpacity 
+                                style = {[styles.actionBtn,styles.actionBtnRed]}
+                                onPress = {() => this.deletePost(item.post_id)}
+                                ><Text style = {styles.actionBtnLight}>Delete post</Text> </TouchableOpacity>  
+                                </View>
+                            </View> 
+
+                        </View>
+                    )}
+                    keyExtractor={(item) => item.post_id.toString()}
+                    />
             </View>
         </ScrollView>
         )};   
@@ -296,9 +310,14 @@ class PostScreen extends Component {
         paddingHorizontal: 20,
     },
 
+    editBtnContainer:{
+        flex: 1,
+        flexDirection: 'row',
+    },
+
     mainPostFeed:{
         flex: 5,
-        backgroundColor: 'skyblue'
+        paddingHorizontal: 20,
     },
 
     showEdit: {
