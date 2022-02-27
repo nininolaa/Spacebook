@@ -61,7 +61,7 @@ import IsLoading from "./modules/isLoading";
 
         let token = await AsyncStorage.getItem('@session_token');
 
-         return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
+         return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId + "/friends", {
              method: 'POST',
              headers: {
                  "X-Authorization": token,

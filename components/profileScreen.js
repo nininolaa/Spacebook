@@ -4,14 +4,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 import IsLoading from "./modules/isLoading";
 import styles from "./modules/stylesheet";
+import ProfileImage from './modules/profileImage';
 
  class ProfileScreen extends Component {
 
     constructor(props){
         super(props);
 
-        this.state = {
+        this.user_id = ''
+        this.token = ''
 
+        this.state = {
             user_id: '',
             first_name: '',
             last_name: '',
@@ -24,22 +27,23 @@ import styles from "./modules/stylesheet";
     }
     //check to see if user if logged in, if not redirect the user to login
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        this.user_id = await AsyncStorage.getItem('user_id');
+        this.token = await AsyncStorage.getItem('@session_token');
+
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
             this.userPosts();
-     })
+        })
     }
 
-    async loadProfile() {
-        
-        const userId = await AsyncStorage.getItem('user_id');
-        const token = await AsyncStorage.getItem('@session_token');
+    loadProfile() {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/" + userId, {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.user_id, {
             method: 'get',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },
         })
@@ -69,14 +73,12 @@ import styles from "./modules/stylesheet";
         this.props.navigation.navigate("Setting")
     }
 
-    userPosts = async() => {
-        let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
+    userPosts() {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.user_id + "/post", {
             method: 'get',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },  
         })
@@ -117,10 +119,13 @@ import styles from "./modules/stylesheet";
                 </View>
 
                 <View style = {stylesIn.profilePicture}>
-                <TouchableOpacity
-                    style = {styles.navigateBtn}
-                    ><Text style = {styles.navigateBtnText}>Upload profile picture</Text>
-                    </TouchableOpacity>
+                    <ProfileImage
+                    userId = {this.user_id}
+                    isEditable = {true}
+                    width = {150}
+                    height = {150}
+                    navigation={this.props.navigation}
+                    ></ProfileImage>
                 </View>
 
                 <View style = {stylesIn.userInfo}>
@@ -146,7 +151,13 @@ import styles from "./modules/stylesheet";
                         <View style = {styles.postBox}>
                             <View style = {styles.inPostContainer}>
                                 <View style = {styles.inPostImage}>
-                                   {/* <HomeLogo></HomeLogo>  */}
+                                <ProfileImage
+                                userId = {item.author.user_id}
+                                isEditable = {false}
+                                width = {50}
+                                height = {50}
+                                navigation={this.props.navigation}
+                                ></ProfileImage>
                                 </View>
                                 <View style = {styles.inPostHeader}>
                                 <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
@@ -202,7 +213,7 @@ import styles from "./modules/stylesheet";
     },
 
     profilePicture: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
     },
 

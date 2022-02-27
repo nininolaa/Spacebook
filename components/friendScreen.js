@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from './modules/homeLogo';
 import IsLoading from "./modules/isLoading";
 import styles from "./modules/stylesheet";
+import ProfileImage from './modules/profileImage';
 
  class FriendScreen extends Component {
 
@@ -177,7 +178,15 @@ import styles from "./modules/stylesheet";
                 renderItem={({item}) => (
                     <View style = {[styles.inPostContainer,styles.postBox]}>
                         {/* <View style = {stylesIn.friedInfoContainer}> */}
-                        <View style = {styles.inPostImage}></View>
+                        <View style = {styles.inPostImage}>
+                        <ProfileImage
+                        userId = {item.user_id}
+                        isEditable = {false}
+                        width = {50}
+                        height = {50}
+                        navigation={this.props.navigation}
+                        ></ProfileImage>
+                        </View>
                         <View style = {styles.inPostHeader}>    
                             <Text onPress = {() => {this.profileNavigate(item.user_id)}} style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} </Text>              
                         </View>
