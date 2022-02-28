@@ -15,10 +15,10 @@ class ProfileImage extends Component{
   }
 
   async componentDidMount(){
-    console.log(this.props.navigation)
     
-    this.token = await AsyncStorage.getItem('@session_token')
+    //this.token = await AsyncStorage.getItem('@session_token')
     this.getImage()
+
     this.focusListener = this.props.navigation.addListener('focus', async () => {
       console.log('loaded')
       this.getImage()
@@ -26,13 +26,15 @@ class ProfileImage extends Component{
     
   }
 
-  getImage() {
-    console.log('hi')
+  async getImage() {
+
+      let token =  await AsyncStorage.getItem('@session_token')
+
       fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
       method: "GET",
       headers: {
           "Content-Type": "image/png",
-          "X-Authorization": this.token
+          "X-Authorization": token
       },
     })
 

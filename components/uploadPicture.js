@@ -17,7 +17,6 @@ class UploadPicture extends Component{
     async componentDidMount(){
 
           const { status } = await Camera.requestCameraPermissionsAsync();
-          console.log(status)
           this.setState({hasPermission: status === 'granted'});
         
     }

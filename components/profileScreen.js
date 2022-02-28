@@ -25,12 +25,11 @@ import ProfileImage from './modules/profileImage';
             userPostList: [],
         }
     }
-    //check to see if user if logged in, if not redirect the user to login
 
     async componentDidMount() {
 
         this.user_id = await AsyncStorage.getItem('user_id');
-        this.token = await AsyncStorage.getItem('@session_token');
+       // this.token = await AsyncStorage.getItem('@session_token');
 
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
@@ -38,26 +37,38 @@ import ProfileImage from './modules/profileImage';
         })
     }
 
-    loadProfile() {
+    loadProfile = async() => {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.user_id, {
+        let user_id = await AsyncStorage.getItem('user_id');
+        let token = await AsyncStorage.getItem('@session_token');
+
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'Invalid email or password';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 404:
+                    throw 'User not found'
+                case 500:
+                    throw 'Server Error'
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(response => {
             this.setState({
+
                 userProfile: response,
                 user_id: response.user_id,
                 first_name: response.first_name,
@@ -65,6 +76,7 @@ import ProfileImage from './modules/profileImage';
                 friend_count: response.friend_count,
                 email: response.email,
                 isLoading: false,
+
             })
         }) 
     }
@@ -73,22 +85,35 @@ import ProfileImage from './modules/profileImage';
         this.props.navigation.navigate("Setting")
     }
 
-    userPosts() {
+    userPosts = async() => {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.user_id + "/post", {
+        let user_id = await AsyncStorage.getItem('user_id');
+        let token = await AsyncStorage.getItem('@session_token');
+
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },  
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'Can only view the post of yourself or your friends'
+                case 404:
+                    throw 'Not found'
+                case 500:
+                    throw 'Server Error'
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(responseJson => {
@@ -107,10 +132,8 @@ import ProfileImage from './modules/profileImage';
                 <IsLoading></IsLoading>
               );
         }
-
         else{
-
-        return(
+            return(
 
             <ScrollView style = {stylesIn.flexContainer}>
 
@@ -200,11 +223,10 @@ import ProfileImage from './modules/profileImage';
     }
  }
 
- const stylesIn = StyleSheet.create({
+const stylesIn = StyleSheet.create({
 
     flexContainer: {
         flex: 1,
-        // flexDirection: 'column',
         backgroundColor: "#fdf6e4",
     },
 
@@ -225,46 +247,7 @@ import ProfileImage from './modules/profileImage';
 
     userPost: {
         flex: 5,
-        //backgroundColor: 'pink'
     },
-
-    // postBox:{
-    //     border: 20,
-    //     borderColor: 'black',
-    //     backgroundColor: '#feddc9',
-    //     marginBottom: 10,
-    //     padding: 5,
-    // },
-
-    // postNameText:{
-    //     fontSize: 15,
-    //     fontWeight: 'bold',
-    //     color: "#391500"
-    // },
-
-    // postInfoText:{
-    //     fontSize: 11,
-    //     color: 'grey'
-    // },
-
-    // inPostContainer:{
-    //     flex: 1,
-    //     flexDirection: 'row',
-    //     padding: 10,
-    // },
-
-    // inPostImage:{
-    //     flex: 1,
-    // },
-
-    // inPostHeader:{
-    //     flex: 4,
-    // },
-
-    // postMainText:{
-    //     fontSize: 20,
-    //     padding:5,
-    // },
 
     postHeaderText:{
         border: 5,
@@ -274,7 +257,6 @@ import ProfileImage from './modules/profileImage';
         fontWeight: 'bold',
     }
 
- 
  })
 
  export default ProfileScreen;

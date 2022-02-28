@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Searchbar } from 'react-native-paper';
 import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import HomeLogo from './modules/homeLogo';
 import IsLoading from "./modules/isLoading";
 import styles from "./modules/stylesheet";
@@ -24,7 +25,9 @@ import ProfileImage from './modules/profileImage';
     }
 
     async componentDidMount(){
+
         this.token = await AsyncStorage.getItem('@session_token');
+
         this.focusListener = this.props.navigation.addListener('focus', async () => {
         this.seeAllFriend();
         })
@@ -36,9 +39,31 @@ import ProfileImage from './modules/profileImage';
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
             method: 'POST',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },  
+        })
+        .then((response) => {
+            switch(response.status){
+                case 200: 
+                    throw 'Ok'
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'User is already added as a friend'
+                    break
+                case 404:
+                    throw 'Not found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
         })
         .then((response) => {
             this.setState({isLoading: false})
@@ -57,17 +82,30 @@ import ProfileImage from './modules/profileImage';
         return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
             method: 'get',
             headers: {
-                "X-Authorization": token,
+                "X-Authorization": this.token,
                 'Content-Type': 'application/json'
             },  
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'Can only view the friends of yourself or your friends'
+                    break
+                case 404:
+                    throw 'Not found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(responseJson => {
@@ -78,38 +116,12 @@ import ProfileImage from './modules/profileImage';
         }) 
 
     }
-
-    removeFriend = async(user_id) => {
-
-        let token = await AsyncStorage.getItem('@session_token');
-
-        await AsyncStorage.removeItem(user_id);
-
-        return fetch("http://localhost:3333/api/1.0.0/friendrequests/" + user_id, {
-            method: 'DELETE',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },  
-        })
-
-        .then((response) =>{
-            this.seeAllFriend();
-        })
-        .then((response) => {
-            console.log("Friend deleted");
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-     }
     
     friendRequestsNavigate() {
         this.props.navigation.navigate("FriendRequest");
     }
 
     onSearchPress(){
-        console.log(this.searchQuery)
         this.props.navigation.navigate("SearchResult",{query:this.searchQuery, friends:this.state.userFriendList})
     }
 
@@ -141,13 +153,6 @@ import ProfileImage from './modules/profileImage';
             </View>
 
             <View style = {stylesIn.friendBtnContainer}>
-                {/* <View style = {stylesIn.allFriendBtn}>
-                <TouchableOpacity 
-                    style = {[styles.friendsBtn, styles.actionBtnBlue]}
-                    onPress={() => {this.friendRequestsNavigate()}}
-                    ><Text style = {[styles.actionBtnLight]}>See all friend</Text>
-                    </TouchableOpacity>
-                </View> */}
                 <View style = {stylesIn.friendRequestBtn}>
                     <TouchableOpacity 
                     style = {[styles.friendsBtn, styles.actionBtnOrange]}

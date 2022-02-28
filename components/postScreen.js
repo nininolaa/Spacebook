@@ -4,6 +4,7 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, Touchab
 import HomeLogo from './modules/homeLogo';
 import styles from "./modules/stylesheet";
 import IsLoading from "./modules/isLoading";
+import ProfileImage from './modules/profileImage';
 
 class PostScreen extends Component {
 
@@ -81,12 +82,22 @@ class PostScreen extends Component {
             },  
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'Can only view the post of yourself or your friends'
+                case 404:
+                    throw 'Not found'
+                case 500:
+                    throw 'Server Error'
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(responseJson => {
@@ -117,7 +128,28 @@ class PostScreen extends Component {
             },  
             body: JSON.stringify(new_info)  
         })
-
+        .then((response) => {
+            switch(response.status){
+                case 200: 
+                    console.log('info updated')
+                    break
+                case 400:
+                    throw 'Bad request'
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'Forbidden - you can only update your own posts'
+                case 404:
+                    throw 'Not found'
+                case 500:
+                    throw 'Server Error'
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
+        })
         .then((response) => {
             console.log("Info updated");
             this.setState({
@@ -210,12 +242,12 @@ class PostScreen extends Component {
             <View style = {stylesIn.findUserPostBtnContainer}>
                 <TouchableOpacity
                 style = {styles.loginButton}
-                onPress={() => this.singlePost()}
+                onPress={() =>  this.props.navigation.navigate("SinglePost" , {post_id: this.postId})}
                 ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
             </View>
 
             <View style = {stylesIn.mainPostFeed}>
-            <Text style={styles.postHeaderText}>Your Posts:</Text>
+                <Text style={styles.postHeaderText}>Your Posts:</Text>
                     {/* <View styles = {stylesIn.postBox}> */}
                     <FlatList 
                     data={this.state.userPostList}
@@ -224,11 +256,17 @@ class PostScreen extends Component {
                         <View style = {styles.postBox}>
                             <View style = {styles.inPostContainer}>
                                 <View style = {styles.inPostImage}>
-                                   {/* <HomeLogo></HomeLogo>  */}
+                                    <ProfileImage
+                                        userId = {item.author.user_id}
+                                        isEditable = {false}
+                                        width = {50}
+                                        height = {50}
+                                        navigation={this.props.navigation}
+                                    ></ProfileImage>
                                 </View>
                                 <View style = {styles.inPostHeader}>
-                                <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                    <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
+                                    <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                             </View> 
                             <TextInput
