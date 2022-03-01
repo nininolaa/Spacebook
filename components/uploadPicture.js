@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     camera: {
-      flex: 1,
+      flex: 3,
     },
     buttonContainer: {
       flex: 1,

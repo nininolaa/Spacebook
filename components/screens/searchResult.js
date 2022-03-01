@@ -3,10 +3,10 @@ import { View,Text, StyleSheet, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Searchbar } from 'react-native-paper';
 
-import styles from "./modules/stylesheet";
-import ProfileImage from './modules/profileImage';
-import HomeLogo from './modules/homeLogo';
-import IsLoading from "./modules/isLoading";
+import styles from "../modules/stylesheet";
+import ProfileImage from '../modules/profileImage';
+import HomeLogo from '../modules/homeLogo';
+import IsLoading from "../modules/isLoading";
 
  class SearchResult extends Component {
 

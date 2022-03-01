@@ -4,11 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logo from './modules/logo';
-import styles from "./modules/stylesheet";
-//import Feed from './feed';
-import FriendScreen from './friendScreen';
-import PostScreen from './postScreen';
-import ProfileScreen from './profileScreen';
+import styles from './modules/stylesheet';
+
+import FriendScreen from './screens/friendScreen';
+import PostScreen from './screens/postScreen';
+import ProfileScreen from './screens/profileScreen';
 import SettingScreen from './settingScreen';
 
 const Tab = createBottomTabNavigator() ;
@@ -107,9 +107,6 @@ const Tab = createBottomTabNavigator() ;
                 let rn = route.name;
     
                 switch(rn)  {
-                  // case 'Feed':
-                  //   iconName = focused ? 'home' : 'home-outline';
-                  //   break;
     
                   case 'Friends':
                     iconName = focused ? 'people' : 'people';
@@ -131,8 +128,7 @@ const Tab = createBottomTabNavigator() ;
                 return <Ionicons name={iconName} size={size} color={color}/>
               }
             })}>
-    
-            {/* <Tab.Screen name="Feed" component={Feed}></Tab.Screen> */}
+
             <Tab.Screen name="Friends" component={FriendScreen}></Tab.Screen>
             <Tab.Screen name="Add Post" component={PostScreen}></Tab.Screen>
             <Tab.Screen name="Profile" component={ProfileScreen}></Tab.Screen>

@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
-import HomeLogo from './modules/homeLogo';
-import styles from "./modules/stylesheet";
-import IsLoading from "./modules/isLoading";
-import ProfileImage from './modules/profileImage';
+import HomeLogo from '../modules/homeLogo';
+import styles from "../modules/stylesheet";
+import IsLoading from "../modules/isLoading";
+import ProfileImage from '../modules/profileImage';
 
 class PostScreen extends Component {
 
@@ -28,7 +28,6 @@ class PostScreen extends Component {
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.userPosts();
         })
-        
     }
 
     //add new post
@@ -198,7 +197,6 @@ class PostScreen extends Component {
         this.props.navigation.navigate("SinglePost", {post_id: this.postId})
     }
     
-
     render(){
         if(this.state.isLoading == true){
             return(
@@ -223,10 +221,9 @@ class PostScreen extends Component {
                 onChangeText={(addPost) => this.setState({addPost})}
                 value = {this.state.addPost}
                 ></TextInput>
-            </View>
-            <View style = {stylesIn.sharePostBtnContainer}>
+
                 <TouchableOpacity 
-                style = {styles.loginButton}
+                style = {[styles.addPostBtn, styles.btnToEnd]}
                 onPress = {() => this.addPost()}
                 ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
             </View>
@@ -234,14 +231,12 @@ class PostScreen extends Component {
             <View style = {stylesIn.findUserPost}>
                 <Text style = {styles.postHeaderText}> Find a post</Text>
                 <TextInput
-                style = {stylesIn.findPostInput}
+                style = {styles.findPostInput}
                 placeholder="Enter your post id here"
                 onChangeText={(postId) => this.postId = postId }
                 ></TextInput>
-            </View>
-            <View style = {stylesIn.findUserPostBtnContainer}>
                 <TouchableOpacity
-                style = {styles.loginButton}
+                style = {[styles.addPostBtn,styles.btnToEnd]}
                 onPress={() =>  this.props.navigation.navigate("SinglePost" , {post_id: this.postId})}
                 ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
             </View>
@@ -321,32 +316,16 @@ class PostScreen extends Component {
     },
 
     sharePost: {
-        flex: 1,
+        flex: 1.1,
         paddingHorizontal: 20,
-       // backgroundColor: 'black',
-    },
-
-    sharePostBtnContainer: {
-        flex: 0.5,
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-        paddingHorizontal: 20,
-        //backgroundColor: 'pink',
     },
 
     findUserPost:{
-        flex: 0.5,
+        flex: 0.8,
         paddingHorizontal: 20,
-        //backgroundColor: 'green',
     },
 
-    findUserPostBtnContainer:{
-        flex:0.4,
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'flex-end',
-        paddingHorizontal: 20,
-    },
+    
 
     editBtnContainer:{
         flex: 1,
@@ -383,14 +362,6 @@ class PostScreen extends Component {
     sharePostBtn:{
         backgroundColor: "#f9943b",
     },
-
-    findPostInput:{
-        borderWidth: 3,
-        borderColor: '#ffc9a9',
-        borderRadius: 3,
-        padding: 5,
-        fontSize: 15,
-    }
 
  })
 

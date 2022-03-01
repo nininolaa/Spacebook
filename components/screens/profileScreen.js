@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { View,Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, TextInput, Button, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from './modules/homeLogo';
-import IsLoading from "./modules/isLoading";
-import styles from "./modules/stylesheet";
-import ProfileImage from './modules/profileImage';
+import HomeLogo from '../modules/homeLogo';
+import IsLoading from "../modules/isLoading";
+import styles from "../modules/stylesheet";
+import ProfileImage from '../modules/profileImage';
 
  class ProfileScreen extends Component {
 
@@ -166,7 +166,7 @@ import ProfileImage from './modules/profileImage';
 
                 <View style = {stylesIn.userPost}>
                     <Text style={styles.postHeaderText}>Your Feed:</Text>
-                    {/* <View styles = {stylesIn.postBox}> */}
+
                     <FlatList 
                     data={this.state.userPostList}
 
@@ -214,7 +214,7 @@ import ProfileImage from './modules/profileImage';
                     )}
                     keyExtractor={(item) => item.post_id.toString()}
                     />
-                {/* </View> */}
+
                 </View>
 
             </ScrollView>
@@ -235,7 +235,7 @@ const stylesIn = StyleSheet.create({
     },
 
     profilePicture: {
-        // flex: 1,
+        flex: 1,
         alignItems: 'center',
     },
 
@@ -246,7 +246,7 @@ const stylesIn = StyleSheet.create({
     },
 
     userPost: {
-        flex: 5,
+        flex: 9,
     },
 
     postHeaderText:{

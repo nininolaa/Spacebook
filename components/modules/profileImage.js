@@ -7,49 +7,46 @@ class ProfileImage extends Component{
   constructor(props){
     super(props);
 
-    this.token = ''
-
     this.state = {
       profileImage: ''
     }
   }
 
-  async componentDidMount(){
-    
-    //this.token = await AsyncStorage.getItem('@session_token')
+componentDidMount(){
+
+  this.getImage()
+
+  this.focusListener = this.props.navigation.addListener('focus', async () => {
+    console.log('loaded')
     this.getImage()
-
-    this.focusListener = this.props.navigation.addListener('focus', async () => {
-      console.log('loaded')
-      this.getImage()
-    })
+  })
     
-  }
+}
 
-  async getImage() {
+async getImage() {
 
-      let token =  await AsyncStorage.getItem('@session_token')
+  let token =  await AsyncStorage.getItem('@session_token')
 
-      fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
-      method: "GET",
-      headers: {
-          "Content-Type": "image/png",
-          "X-Authorization": token
-      },
-    })
+  fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
+    method: "GET",
+    headers: {
+        "Content-Type": "image/png",
+        "X-Authorization": token
+    },
+  })
 
-    .then((res) => {
-      return res.blob();
-    })
-    .then((resBlob) => {
-      this.setState({
-        profileImage: URL.createObjectURL(resBlob)
-      });   
-    })
-    .catch((err) => {
-      console.log("error", err)
-    });
-  }
+  .then((res) => {
+    return res.blob();
+  })
+  .then((resBlob) => {
+    this.setState({
+      profileImage: URL.createObjectURL(resBlob)
+    });   
+  })
+  .catch((err) => {
+    console.log("error", err)
+  });
+}
 
   render(){
 

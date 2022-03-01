@@ -5,10 +5,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
 import Index from './components/index';
 import Register from './components/register';
-import FriendReqeust from './components/friendRequestScreen';
-import SearchResult from './components/searchResult';
-import FriendProfile from './components/friendProfile';
-import NonFriendScreen from './components/nonFriendScreen';
+import FriendReqeust from './components/screens/friendRequestScreen';
+import SearchResult from './components/screens/searchResult';
+import FriendProfile from './components/screens/friendProfile';
+import NonFriendScreen from './components/screens/nonFriendScreen';
 import SinglePost from './components/singlePost';
 import UploadPicture from './components/uploadPicture';
 

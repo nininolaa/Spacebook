@@ -3,10 +3,10 @@ import { Searchbar } from 'react-native-paper';
 import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import HomeLogo from './modules/homeLogo';
-import IsLoading from "./modules/isLoading";
-import styles from "./modules/stylesheet";
-import ProfileImage from './modules/profileImage';
+import HomeLogo from '../modules/homeLogo';
+import IsLoading from '../modules/isLoading';
+import styles from "../modules/stylesheet";
+import ProfileImage from '../modules/profileImage';
 
  class FriendScreen extends Component {
 
@@ -82,7 +82,7 @@ import ProfileImage from './modules/profileImage';
         return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },  
         })
@@ -232,11 +232,6 @@ import ProfileImage from './modules/profileImage';
         flexDirection:'flex-end',
         justifyContent: 'center',
         paddingHorizontal: 20,
-        //alignItems: 'center',
-        // flexDirection: 'row',
-        // justifyContent: 'space-between',
-        // alignContent:'space-between',
-       // backgroundColor: 'purple',
     },
     allFriendBtn:{
         flex: 1,

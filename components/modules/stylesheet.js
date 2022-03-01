@@ -201,6 +201,30 @@ export default StyleSheet.create({
             flex: 4,
         },
 
+        findPostInput:{
+            borderWidth: 3,
+            borderColor: '#ffc9a9',
+            borderRadius: 3,
+            padding: 5,
+            fontSize: 15,
+        },
+
+        addPostBtn:{
+            backgroundColor: '#f9943b',
+            borderColor: '#f9943b',
+            borderWidth: 2,
+            borderRadius: 5,
+            width: '40%',
+            height: 40,
+            alignItems:'center',
+            marginTop:10,
+        },
+
+        btnToEnd:{
+            alignSelf: 'flex-end',
+            paddingTop:10,
+        },
+
         //friend Screen
         friendsBtn:{
             border: 5,
