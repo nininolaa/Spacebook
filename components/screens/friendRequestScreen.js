@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList, Alert, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
+import { View,Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from "../modules/isLoading";
@@ -31,12 +31,19 @@ import styles from "../modules/stylesheet";
             },  
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200:
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(responseJson => {
@@ -58,7 +65,25 @@ import styles from "../modules/stylesheet";
             },  
         })
         .then((response) => {
-            console.log("Friend accepted");
+            switch(response.status){
+                case 200:
+                    console.log('friend accepted')
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 404:
+                    throw 'Not Found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
+        })
+        .then((response) => {
             this.setState({isLoading: false})
             this.props.navigation.navigate("Friends")
           })
@@ -79,11 +104,29 @@ import styles from "../modules/stylesheet";
             },  
         })
         .then((response) => {
+            switch(response.status){
+                case 200:
+                    console.log("Rejected friend request");
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 404:
+                    throw 'Not Found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
+        })
+        .then((response) => {
             this.friendRequests();
-          })
+        })
         .then((response) => {
             this.setState({isLoading: false})
-            console.log("Rejected friend request");
           })
         .catch((error) => {
         console.log(error);
@@ -162,18 +205,15 @@ import styles from "../modules/stylesheet";
 
     homeLogo: {
         flex: 1,
-      //  backgroundColor: 'blue'
     },
 
     mainContext:{
         flex: 6,
-      //  backgroundColor: 'red'
     },
 
     btnContainer:{
         flex: 2,
         flexDirection: 'row',
-     //   backgroundColor: 'pink'
     }
  
  })

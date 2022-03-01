@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from "./modules/stylesheet";
-import IsLoading from "./modules/isLoading";
-import HomeLogo from './modules/homeLogo';
-import ProfileImage from './modules/profileImage';
+import styles from "../modules/stylesheet";
+import IsLoading from "../modules/isLoading";
+import HomeLogo from '../modules/homeLogo';
+import ProfileImage from '../modules/profileImage';
 
 
  class SettingScreen extends Component {

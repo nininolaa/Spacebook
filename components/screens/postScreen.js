@@ -12,7 +12,8 @@ class PostScreen extends Component {
         super(props);
 
         this.new_text_post = '',
-        this.postId = ''
+        this.postId = '',
+        this.user_id = '',
 
         this.state = {
             addPost: '',
@@ -24,7 +25,9 @@ class PostScreen extends Component {
         }
     }
 
-    componentDidMount(){
+    async componentDidMount(){
+        this.user_id = await AsyncStorage.getItem('user_id')
+        this.rou
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.userPosts();
         })
@@ -192,11 +195,7 @@ class PostScreen extends Component {
     isEditMode() {
         return this.state.editable;
     }
-    
-    singlePost() {
-        this.props.navigation.navigate("SinglePost", {post_id: this.postId})
-    }
-    
+        
     render(){
         if(this.state.isLoading == true){
             return(
@@ -228,7 +227,7 @@ class PostScreen extends Component {
                 ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
             </View>
 
-            <View style = {stylesIn.findUserPost}>
+            {/* <View style = {stylesIn.findUserPost}>
                 <Text style = {styles.postHeaderText}> Find a post</Text>
                 <TextInput
                 style = {styles.findPostInput}
@@ -239,7 +238,7 @@ class PostScreen extends Component {
                 style = {[styles.addPostBtn,styles.btnToEnd]}
                 onPress={() =>  this.props.navigation.navigate("SinglePost" , {post_id: this.postId})}
                 ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
-            </View>
+            </View> */}
 
             <View style = {stylesIn.mainPostFeed}>
                 <Text style={styles.postHeaderText}>Your Posts:</Text>
@@ -260,7 +259,9 @@ class PostScreen extends Component {
                                     ></ProfileImage>
                                 </View>
                                 <View style = {styles.inPostHeader}>
-                                    <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
+                                    <Text 
+                                    onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.user_id})}} 
+                                    style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
                                     <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                             </View> 
@@ -272,6 +273,8 @@ class PostScreen extends Component {
                             ></TextInput>   
                             <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
 
+        
+                                
                             <View style = {stylesIn.editBtnContainer}>
 
                                 <View style = {styles.btnContainer1}>
@@ -292,8 +295,8 @@ class PostScreen extends Component {
                                 ><Text style = {styles.actionBtnLight}>Delete post</Text> </TouchableOpacity>  
                                 </View>
                             </View> 
-
                         </View>
+                        
                     )}
                     keyExtractor={(item) => item.post_id.toString()}
                     />

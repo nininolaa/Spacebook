@@ -9,7 +9,7 @@ import styles from './modules/stylesheet';
 import FriendScreen from './screens/friendScreen';
 import PostScreen from './screens/postScreen';
 import ProfileScreen from './screens/profileScreen';
-import SettingScreen from './settingScreen';
+import SettingScreen from './screens/settingScreen';
 
 const Tab = createBottomTabNavigator() ;
 

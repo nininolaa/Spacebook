@@ -27,10 +27,8 @@ import ProfileImage from '../modules/profileImage';
     }
 
     async componentDidMount() {
-
         this.user_id = await AsyncStorage.getItem('user_id');
-       // this.token = await AsyncStorage.getItem('@session_token');
-
+        
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
             this.userPosts();
@@ -136,34 +134,37 @@ import ProfileImage from '../modules/profileImage';
             return(
 
             <ScrollView style = {stylesIn.flexContainer}>
+                <View style = {stylesIn.subMainContainer}>
+                <View style = {stylesIn.firstSubContainer}>
+                    <View style = {stylesIn.homeLogo}>
+                    <HomeLogo></HomeLogo>
+                    </View>
 
-                <View style = {stylesIn.homeLogo}>
-                <HomeLogo></HomeLogo>
+                    <View style = {stylesIn.profilePicture}>
+                        <ProfileImage
+                        userId = {this.user_id}
+                        isEditable = {true}
+                        width = {150}
+                        height = {150}
+                        navigation={this.props.navigation}
+                        ></ProfileImage>
+                    </View>
+
+                    <View style = {stylesIn.userInfo}>
+                        <Text style = {styles.profileText}> ID:{this.state.user_id}  |  {this.state.first_name} {this.state.last_name} </Text>
+                        <Text style = {styles.profileMiniText}> {this.state.email}</Text>
+                        <Text style = {styles.profileMiniText}> Total friend: {this.state.friend_count} {'\n'} </Text>
+
+                        <TouchableOpacity
+                        onPress = {() => {this.navigateSetting()}}
+                        style = {styles.navigateBtn}
+                        ><Text style = {styles.navigateBtnText}>Edit information</Text>
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
 
-                <View style = {stylesIn.profilePicture}>
-                    <ProfileImage
-                    userId = {this.user_id}
-                    isEditable = {true}
-                    width = {150}
-                    height = {150}
-                    navigation={this.props.navigation}
-                    ></ProfileImage>
-                </View>
-
-                <View style = {stylesIn.userInfo}>
-                    <Text style = {styles.profileText}> ID:{this.state.user_id}  |  {this.state.first_name} {this.state.last_name} </Text>
-                    <Text style = {styles.profileMiniText}> {this.state.email}</Text>
-                    <Text style = {styles.profileMiniText}> Total friend: {this.state.friend_count} {'\n'} </Text>
-
-                    <TouchableOpacity
-                    onPress = {() => {this.navigateSetting()}}
-                    style = {styles.navigateBtn}
-                    ><Text style = {styles.navigateBtnText}>Edit information</Text>
-                    </TouchableOpacity>
-
-                </View>
-
+                <View style = {stylesIn.secondSubContainer}>
                 <View style = {stylesIn.userPost}>
                     <Text style={styles.postHeaderText}>Your Feed:</Text>
 
@@ -182,9 +183,12 @@ import ProfileImage from '../modules/profileImage';
                                 navigation={this.props.navigation}
                                 ></ProfileImage>
                                 </View>
-                                <View style = {styles.inPostHeader}>
+                                <View 
+                                style = {styles.inPostHeader}>
                                 <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                <Text style = {styles.postInfoText}
+                                onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.user_id})}}
+                                >Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                             </View> 
                             <TextInput
@@ -215,8 +219,9 @@ import ProfileImage from '../modules/profileImage';
                     keyExtractor={(item) => item.post_id.toString()}
                     />
 
+                    </View>
+                    </View>
                 </View>
-
             </ScrollView>
   
         )}
@@ -228,6 +233,20 @@ const stylesIn = StyleSheet.create({
     flexContainer: {
         flex: 1,
         backgroundColor: "#fdf6e4",
+    },
+
+    subMainContainer:{
+        flex:1
+    },
+
+    firstSubContainer:{
+        flex:1,
+        //backgroundColor:'blue'
+    },
+
+    secondSubContainer:{
+        flex: 1,
+        //backgroundColor:'green'
     },
 
     homeLogo: {

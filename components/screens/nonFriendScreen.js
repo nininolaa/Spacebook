@@ -36,12 +36,22 @@ import IsLoading from "../modules/isLoading";
             },
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'User id not found';
-            }else{
-                throw 'Something went wrong';
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 404:
+                    throw 'User not found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(responseJson => {
@@ -61,20 +71,39 @@ import IsLoading from "../modules/isLoading";
 
         let token = await AsyncStorage.getItem('@session_token');
 
-         return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId + "/friends", {
-             method: 'POST',
-             headers: {
-                 "X-Authorization": token,
-                 'Content-Type': 'application/json'
-             },  
-         })
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId + "/friends", {
+            method: 'POST',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },  
+        })
         .then((response) => {
-            console.log("Request sent");
+            switch(response.status){
+                case 200:
+                    console.log("Request sent");
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 403:
+                    throw 'User is already added as a friend'
+                    break
+                case 404:
+                    throw 'Not found'
+                    break
+                case 500:
+                    throw 'Server Error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
+            }   
         })
         .catch((error) => {
             console.log(error);
         })
-     } 
+    } 
 
     render(){
         if(this.state.isLoading == true){

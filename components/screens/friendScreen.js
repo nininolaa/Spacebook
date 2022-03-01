@@ -193,7 +193,10 @@ import ProfileImage from '../modules/profileImage';
                         ></ProfileImage>
                         </View>
                         <View style = {styles.inPostHeader}>    
-                            <Text onPress = {() => {this.profileNavigate(item.user_id)}} style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} </Text>              
+                            <Text 
+                            onPress = {() => {this.profileNavigate(item.user_id)}} 
+                            style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} 
+                            </Text>              
                         </View>
                         {/* </View> */}
                     </View>

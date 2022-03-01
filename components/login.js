@@ -26,16 +26,23 @@ import styles from "./modules/stylesheet";
             body: JSON.stringify(this.state)
         })
         .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 400){
-                throw 'Invalid email or password';
-            }else{
-                throw 'Something went wrong';
+
+            switch(response.status){
+                case 200:
+                    return response.json()
+                    break
+                case 400: 
+                    throw 'Invalid email/password supplied'
+                    break
+                case 500:
+                    throw 'Server error'
+                    break
+                default:
+                    throw 'Something went wrong'
+                    break
             }
         })
         .then(async (responseJson) => {
-                console.log(responseJson);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
                 await AsyncStorage.setItem('user_id', responseJson.id);
                 this.props.navigation.navigate("Home");
@@ -109,9 +116,6 @@ import styles from "./modules/stylesheet";
         borderRadius: 20,
      
     },
-
-
-
  
  })
 

@@ -89,8 +89,10 @@ class FriendProfile extends Component {
                     break
                 case 404:
                     throw 'User not found'
+                    break
                 case 500:
                     throw 'Server Error'
+                    break
                 default:
                     throw 'Something went wrong'
                     break
@@ -165,7 +167,8 @@ class FriendProfile extends Component {
         return(
         
         <ScrollView style = {stylesIn.flexContainer}>
-
+            <View style = {stylesIn.subMainContainer}>
+            <View style = {stylesIn.firstSubContainer}>
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
             </View>
@@ -195,7 +198,7 @@ class FriendProfile extends Component {
                 <View style = {stylesIn.backToTab}>
                     <TouchableOpacity
                     style = {[stylesIn.seeFriendBtn,stylesIn.friendBtnGrey]}
-                    onPress = {() => this.props.navigation.navigate("FriendScreen")}
+                    onPress = {() => this.props.navigation.navigate("Friends")}
                     >
                     <Text style = {stylesIn.seeFriendBtnText}>Back to Home</Text>
                     </TouchableOpacity>
@@ -209,17 +212,6 @@ class FriendProfile extends Component {
                     </TouchableOpacity>
                 </View>
                 
-            </View>
-            <View style = {stylesIn.findfriendPost}>
-                <Text style = {stylesIn.friendProfileHeaderText}>View a post of {this.state.first_name}</Text>
-                <TextInput
-                style = {styles.findPostInput}
-                placeholder="Enter a post id here"
-                // onChangeText={(postId) => this.postId = postId }
-                ></TextInput>
-                <TouchableOpacity
-                style = {[styles.addPostBtn, styles.btnToEnd]}
-                ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
             </View>
 
             <View style = {stylesIn.addPost}>
@@ -239,6 +231,9 @@ class FriendProfile extends Component {
                 ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
         
             </View>
+            </View>
+
+            <View style = {stylesIn.secondSubContainer}>
             <View style = {stylesIn.friendPosts}>
                 <Text style = {stylesIn.friendProfileHeaderText}>{this.state.first_name}'s Wall:</Text>
                 
@@ -259,7 +254,9 @@ class FriendProfile extends Component {
                                 </View>
                                 <View style = {styles.inPostHeader}>
                                     <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                    <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                    <Text style = {styles.postInfoText}
+                                    onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.props.route.params.friendId})}}
+                                    >Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                                 </View> 
 
@@ -304,6 +301,8 @@ class FriendProfile extends Component {
                     keyExtractor={(item) => item.post_id.toString()}
                 />
             </View>
+            </View>
+            </View>
         </ScrollView>
         )
         }
@@ -317,12 +316,24 @@ class FriendProfile extends Component {
         backgroundColor: "#fdf6e4",
     },
 
+    subMainContainer:{
+        flex: 1,
+    },
+
+    firstSubContainer:{
+        flex:2,
+    },
+
+    secondSubContainer:{
+        flex: 3,
+    },
+
     homeLogo: {
         flex: 1.5,
     },
 
     friendDetails: {
-        flex: 2,
+        flex: 1.5,
         flexDirection: 'row',
     },
 
@@ -341,8 +352,14 @@ class FriendProfile extends Component {
     friendBtnContainer:{
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         paddingLeft: 10,
+    },
+
+    backToTab:{
+        flex: 1,
+        justifyContent: 'space-around',
+        padding:10,
     },
 
     seeFriendBtnContainer:{
@@ -354,7 +371,7 @@ class FriendProfile extends Component {
         borderWidth: 2,
         borderRadius: 5,
         width: '80%',
-        height:'100%',
+        height:'50%',
         alignItems:'center',
     },
 
@@ -375,12 +392,6 @@ class FriendProfile extends Component {
         borderColor: '#808080',
     },
 
-    backToTab:{
-        flex: 1,
-        justifyContent: 'space-around',
-        padding:10,
-    },
-
     friendProfileHeaderText:{
         padding: 5,
         fontSize:18,
@@ -399,7 +410,7 @@ class FriendProfile extends Component {
     },
 
     friendPosts:{
-        flex: 5,
+        flex: 3,
     },
 
     postInput:{

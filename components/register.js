@@ -38,7 +38,10 @@ import styles from "./modules/stylesheet";
                     return response.json()
                     break
                 case 400:
-                    throw 'Failed validation'
+                    throw 'Bad request'
+                    break
+                case 500:
+                    throw 'Server Error'
                     break
                 default:
                     throw 'Something went wrong'
@@ -120,7 +123,6 @@ import styles from "./modules/stylesheet";
         borderWidth: 5,
         borderColor:'#ffaf7a',
         borderRadius: 20,
-     
     },
 
 
