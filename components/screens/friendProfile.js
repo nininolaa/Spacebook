@@ -6,6 +6,7 @@ import HomeLogo from '../modules/homeLogo';
 import styles from "../modules/stylesheet";
 import IsLoading from "../modules/isLoading";
 import ProfileImage from '../modules/profileImage';
+import FriendHeading from '../friendHeading';
 
 
 class FriendProfile extends Component {
@@ -174,10 +175,11 @@ class FriendProfile extends Component {
             </View>
 
             <View style = {stylesIn.friendDetails}>
-            {/* <FriendHeading
+            <FriendHeading
                 friend_id = {this.props.route.params.friendId}
-            ></FriendHeading> */}
-                <View style = {stylesIn.friendImage}>
+                navigation={this.props.navigation}
+            ></FriendHeading>
+                {/* <View style = {stylesIn.friendImage}>
                 <ProfileImage
                     userId = {this.props.route.params.friendId}
                     isEditable = {false}
@@ -190,7 +192,7 @@ class FriendProfile extends Component {
                     <Text style = {styles.profileText}> ID: {this.state.user_id} | {this.state.first_name} {this.state.last_name}</Text>
                     <Text>Email: {this.state.email}</Text>
                     <Text>Friend count: {this.state.friend_count}</Text>
-                </View>
+                </View> */}
             </View>
 
             <View style = {stylesIn.friendBtnContainer}>

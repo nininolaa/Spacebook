@@ -16,10 +16,9 @@ componentDidMount(){
 
   this.getImage()
 
-  this.focusListener = this.props.navigation.addListener('focus', async () => {
-    console.log('loaded')
-    this.getImage()
-  })
+  // this.focusListener = this.props.navigation.addListener('focus', async () => {
+  //   this.getImage()
+  // })
     
 }
 
@@ -43,15 +42,15 @@ async getImage() {
       profileImage: URL.createObjectURL(resBlob)
     });   
   })
-  .catch((err) => {
-    console.log("error", err)
+  .catch((error) => {
+    console.log("error", error)
   });
 }
 
-  render(){
+render(){
 
-    if(this.props.isEditable == false){
-      return(
+  if(this.props.isEditable == false){
+    return(
         <View>
           <Image source={{
             uri: this.state.profileImage
@@ -61,8 +60,8 @@ async getImage() {
             height: this.props.height
           }}></Image>
         </View>
-      )
-    }
+    )
+  }
 
     else{
       return(

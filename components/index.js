@@ -35,17 +35,12 @@ const Tab = createBottomTabNavigator() ;
     async componentDidMount() {
       this.unsubscribe = this.props.navigation.addListener('focus', async () => {
 
-        await AsyncStorage.getItem('@session_token')
+        AsyncStorage.getItem('@session_token')
           .then (session => {
-            console.log(session);
-            if (session == null) {   
-             this.props.navigation.navigate('Feed');
-            }
-            else{
-              this.setState({token: session})
-            }
-          });
-
+            this.setState({
+              token: session
+            })
+          })
       })
       
     }

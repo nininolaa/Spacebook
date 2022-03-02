@@ -227,23 +227,10 @@ class PostScreen extends Component {
                 ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
             </View>
 
-            {/* <View style = {stylesIn.findUserPost}>
-                <Text style = {styles.postHeaderText}> Find a post</Text>
-                <TextInput
-                style = {styles.findPostInput}
-                placeholder="Enter your post id here"
-                onChangeText={(postId) => this.postId = postId }
-                ></TextInput>
-                <TouchableOpacity
-                style = {[styles.addPostBtn,styles.btnToEnd]}
-                onPress={() =>  this.props.navigation.navigate("SinglePost" , {post_id: this.postId})}
-                ><Text style = {[styles.loginButtonText]}>Find a post</Text></TouchableOpacity>
-            </View> */}
-
             <View style = {stylesIn.mainPostFeed}>
                 <Text style={styles.postHeaderText}>Your Posts:</Text>
                     {/* <View styles = {stylesIn.postBox}> */}
-                    <FlatList 
+                <FlatList 
                     data={this.state.userPostList}
 
                     renderItem={({item}) => (
@@ -263,36 +250,35 @@ class PostScreen extends Component {
                                     onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.user_id})}} 
                                     style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
                                     <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
-                                </View> 
+                                    
+                                </View>     
                             </View> 
-                            <TextInput
-                            style = {styles.postMainText}
-                            placeholder ={item.text}
-                            editable = {this.state.editable}
-                            onChangeText={(new_text_post) => this.new_text_post = new_text_post}
-                            ></TextInput>   
-                            <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
-
-        
+                                <TextInput
+                                style = {styles.postMainText}
+                                placeholder ={item.text}
+                                editable = {this.state.editable}
+                                onChangeText={(new_text_post) => this.new_text_post = new_text_post}
+                                ></TextInput>   
+                                <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
                                 
                             <View style = {stylesIn.editBtnContainer}>
 
                                 <View style = {styles.btnContainer1}>
-                                <TouchableOpacity
-                                onPress = {()=> this.editPost(item.post_id)}
-                                style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                                ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
-                                <TouchableOpacity
-                                onPress = {()=> this.updatePost(item.post_id, item.text)}
-                                style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                                ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
+                                    <TouchableOpacity
+                                    onPress = {()=> this.editPost(item.post_id)}
+                                    style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                                    ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                                    <TouchableOpacity
+                                    onPress = {()=> this.updatePost(item.post_id, item.text)}
+                                    style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
+                                    ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
                                 </View>
 
                                 <View style = {styles.btnContainer2}>
-                                <TouchableOpacity 
-                                style = {[styles.actionBtn,styles.actionBtnRed]}
-                                onPress = {() => this.deletePost(item.post_id)}
-                                ><Text style = {styles.actionBtnLight}>Delete post</Text> </TouchableOpacity>  
+                                    <TouchableOpacity 
+                                    style = {[styles.actionBtn,styles.actionBtnRed]}
+                                    onPress = {() => this.deletePost(item.post_id)}
+                                    ><Text style = {styles.actionBtnLight}>Delete post</Text> </TouchableOpacity>  
                                 </View>
                             </View> 
                         </View>

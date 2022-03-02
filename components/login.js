@@ -76,8 +76,18 @@ import styles from "./modules/stylesheet";
 
             <View style = {stylesIn.loginRow}>     
             <Text style = {styles.loginHeading}>Sign In</Text>
-            <TextInput style = {styles.loginInput} placeholder="email..." onChangeText={this.handleEmailInput} value = {this.state.email} />
-            <TextInput style = {styles.loginInput} placeholder="password..." onChangeText={this.handlePasswordInput} value = {this.state.password} />
+            <TextInput
+            style = {styles.loginInput} 
+            placeholder="email..." 
+            onChangeText={this.handleEmailInput} 
+            value = {this.state.email}
+            />
+            <TextInput 
+            style = {styles.loginInput} 
+            placeholder="password..." 
+            onChangeText={this.handlePasswordInput} 
+            value = {this.state.password} 
+            secureTextEntry={true}/>
             </View>
 
             <View style =  {styles.loginButtonRow}>
