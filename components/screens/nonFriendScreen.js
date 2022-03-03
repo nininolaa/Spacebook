@@ -118,6 +118,7 @@ import IsLoading from "../modules/isLoading";
 
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
+            
             </View>
 
             <View style = {stylesIn.friendSearch}>

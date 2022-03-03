@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
 import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ValidationComponent from 'react-native-form-validator';
+
 import styles from "../modules/stylesheet";
 import IsLoading from "../modules/isLoading";
 import HomeLogo from '../modules/homeLogo';
 import ProfileImage from '../modules/profileImage';
 
 
- class SettingScreen extends Component {
+ class SettingScreen extends ValidationComponent {
 
     constructor(props){
         super(props);
 
-        this.token = '',
+        // this.token = '',
         this.user_id = '',
         this.new_first_name= '',
         this.new_last_name= '',
@@ -26,14 +28,11 @@ import ProfileImage from '../modules/profileImage';
             password: '',
             editable: false,
             isLoading: true,
+            alertMessage: '',
         }
     }
 
     componentDidMount () {
-
-        // this.user_id = await AsyncStorage.getItem('user_id');
-        //this.token = await AsyncStorage.getItem('@session_token');
-        
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
         })
@@ -42,13 +41,13 @@ import ProfileImage from '../modules/profileImage';
     //get user info 
     async loadProfile() {
 
-        this.token = await AsyncStorage.getItem('@session_token');
-        this.user_id = await AsyncStorage.getItem('user_id');
+        let token = await AsyncStorage.getItem('@session_token');
+        let user_id = await AsyncStorage.getItem('user_id');
         
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.user_id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },
         })
@@ -58,14 +57,16 @@ import ProfileImage from '../modules/profileImage';
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 404:
-                    throw 'User not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -79,12 +80,54 @@ import ProfileImage from '../modules/profileImage';
                 isLoading: false 
             })
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
 
     //update user info
     async updateInfo(){
-        this.token = await AsyncStorage.getItem('@session_token');
-        this.user_id = await AsyncStorage.getItem('user_id');
+
+        this.validate({
+            first_name: { maxlength: 50 },
+            last_name: { maxlength: 50},
+            new_email: { email:true},
+            password: { minlength: 8},
+            password_confirm: {  equalPassword: this.state.password},
+        })
+
+        let token = await AsyncStorage.getItem('@session_token');
+        let user_id = await AsyncStorage.getItem('user_id');
+
+        
+
         let new_info = {};
 
         if (this.new_first_name != this.state.first_name && this.new_first_name != '' ){
@@ -103,10 +146,10 @@ import ProfileImage from '../modules/profileImage';
             new_info['password'] = this.new_password ;
         }
 
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.user_id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
             method: 'PATCH',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(new_info)    
@@ -226,25 +269,37 @@ import ProfileImage from '../modules/profileImage';
                 <Text style={styles.postHeaderText}>Edit Profile </Text>
                 <Text style = {stylesIn.userDetailsText}>First Name: </Text> 
                 <TextInput
-                style = {[stylesIn.userDetailsText, styles.updateInput]}
-                placeholder={this.state.first_name}
-                onChangeText={(new_first_name) => this.new_first_name = new_first_name}
-                editable={this.state.editable}
-                /> 
+                    style = {[stylesIn.userDetailsText, styles.updateInput]}
+                    placeholder={this.state.first_name}
+                    onChangeText={(new_first_name) => this.new_first_name = new_first_name}
+                    editable={this.state.editable}
+                    /> 
+                    {this.isFieldInError('first_name') && this.getErrorsInField('first_name').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Your first name should not be more than 50 characters</Text>
+                    )} 
+                    
                 <Text style = {stylesIn.userDetailsText}>Last Name: </Text>
                 <TextInput 
-                style = {[stylesIn.userDetailsText, styles.updateInput]}
-                placeholder={this.state.last_name}
-                onChangeText={(new_last_name) => this.new_last_name = new_last_name}
-                editable={this.state.editable}
-                />
+                    style = {[stylesIn.userDetailsText, styles.updateInput]}
+                    placeholder={this.state.last_name}
+                    onChangeText={(new_last_name) => this.new_last_name = new_last_name}
+                    editable={this.state.editable}
+                    />
+                    {this.isFieldInError('last_name') && this.getErrorsInField('last_name').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Your last name should not be more than 50 characters</Text>
+                    )} 
+
                 <Text style = {stylesIn.userDetailsText}>Email:</Text> 
                 <TextInput
-                style = {[stylesIn.userDetailsText, styles.updateInput]}
-                placeholder={this.state.email}
-                onChangeText={(new_email) => this.new_email = new_email}
-                editable={this.state.editable}
-                />
+                    style = {[stylesIn.userDetailsText, styles.updateInput]}
+                    placeholder={this.state.email}
+                    onChangeText={(new_email) => this.new_email = new_email}
+                    editable={this.state.editable}
+                    value = {this.state.email}
+                    />
+                    {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>
+                    )}
 
                 <Text style = {stylesIn.userDetailsText}>Password:</Text>
                 <TextInput

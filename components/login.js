@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import { View, TextInput,Text, StyleSheet, TouchableOpacity} from 'react-native';
+import ValidationComponent from 'react-native-form-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from './modules/logo';
 import styles from "./modules/stylesheet";
 
- class Login extends Component {
+ class Login extends ValidationComponent {
 
     constructor(props){
         super(props);
@@ -12,11 +13,19 @@ import styles from "./modules/stylesheet";
         this.state = {
             email: '' ,
             password: '',
+            alertMessage: '',
         }
     }
 
 
     SignInButtonPressed = async () => {
+
+        this.validate({
+            email: {required: true},
+            password: {required: true},
+        })
+
+        if (this.isFormValid() == true){
 
         return fetch("http://localhost:3333/api/1.0.0/login", {
             method: 'post',
@@ -32,13 +41,13 @@ import styles from "./modules/stylesheet";
                     return response.json()
                     break
                 case 400: 
-                    throw 'Invalid email/password supplied'
+                    throw {errorCase: "InvalidInfo"}
                     break
                 case 500:
-                    throw 'Server error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -48,8 +57,27 @@ import styles from "./modules/stylesheet";
                 this.props.navigation.navigate("Home");
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error)
+            switch (error.errorCase){
+
+                case 'InvalidInfo':    
+                    this.setState({
+                        alertMessage: 'Invalid email or password'
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again'
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again'
+                    })
+                    break
+            }
         })
+    }
     }
     
 
@@ -67,6 +95,7 @@ import styles from "./modules/stylesheet";
 
     render(){
         return(
+        
     
         <View style = {styles.flexContainer}>
 
@@ -82,16 +111,22 @@ import styles from "./modules/stylesheet";
             onChangeText={this.handleEmailInput} 
             value = {this.state.email}
             />
+            {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
+            <Text key={errorMessage} style={styles.loginErrorText}>An email is required</Text>
+            )}
             <TextInput 
             style = {styles.loginInput} 
             placeholder="password..." 
             onChangeText={this.handlePasswordInput} 
             value = {this.state.password} 
             secureTextEntry={true}/>
+            {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => 
+            <Text key={errorMessage} style={styles.loginErrorText}>A password is required</Text>
+            )}
             </View>
 
             <View style =  {styles.loginButtonRow}>
-            
+            <Text>{this.state.alertMessage}</Text>
             <TouchableOpacity
                 style = {styles.loginButton}
                 onPress={() => {this.SignInButtonPressed()}}>

@@ -6,72 +6,106 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from '../modules/isLoading';
 import styles from "../modules/stylesheet";
-import ProfileImage from '../modules/profileImage';
+import FriendList from '../modules/friendList';
 
  class FriendScreen extends Component {
 
     constructor(props){
         super(props);
         
-        this.friendId = '';
+        
         this.searchQuery = '';
         this.token = '',
 
         this.state = {
+            friendId: '',
             friendRequestList: [],
             userFriendList: [],
-            isLoading: true,
+            isLoading: false,
+            user_id: '',
+            alertMessage: '',
         }
     }
 
     async componentDidMount(){
 
-        this.token = await AsyncStorage.getItem('@session_token');
-
-        this.focusListener = this.props.navigation.addListener('focus', async () => {
-        this.seeAllFriend();
-        })
+        this.state.user_id = await AsyncStorage.getItem('user_id');
+        // this.focusListener = this.props.navigation.addListener('focus', async () => {
+        // this.seeAllFriend();
+        // })
     }
 
     addFriend = async() => {
-
-       let token = await AsyncStorage.getItem('@session_token');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.friendId + "/friends", {
+        let token = await AsyncStorage.getItem('@session_token');
+        let user_id = await AsyncStorage.getItem('user_id');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId + "/friends", {
             method: 'POST',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },  
         })
         .then((response) => {
             switch(response.status){
                 case 200: 
-                    throw 'Ok'
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'User is already added as a friend'
+                    throw {errorCase: "AlreadyAdded"}
                     break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
         .then((response) => {
             this.setState({isLoading: false})
             console.log("Request sent");
-          })
-          .catch((error) => {
-            console.log(error);
-          })
+        })
+        .catch((error) => {
+        console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'AlreadyAdded':    
+                    this.setState({
+                        alertMessage: 'User is already added as a friend',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
 
     seeAllFriend = async() => {
@@ -89,22 +123,22 @@ import ProfileImage from '../modules/profileImage';
         .then((response) => {
             switch(response.status){
                 case 200: 
-                    return response.json()
+                return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'Can only view the friends of yourself or your friends'
+                    throw {errorCase: "ViewFriend"}
                     break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -114,6 +148,44 @@ import ProfileImage from '../modules/profileImage';
                 isLoading: false
             })
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+
+                case 'ViewFriend':    
+                    this.setState({
+                        alertMessage: 'Can only view the friends of yourself or your friends',
+                        isLoading: false,
+                    })
+                    break
+                    
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
 
     }
     
@@ -139,7 +211,7 @@ import ProfileImage from '../modules/profileImage';
         return(
         
         <View style = {stylesIn.flexContainer}>
-
+            <Text>{this.state.alertMessage}</Text>
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
             </View>
@@ -173,36 +245,39 @@ import ProfileImage from '../modules/profileImage';
             title = "Add friend"
             onPress= {() => this.addFriend()}
             ></Button> */}
+
             <View style = {stylesIn.friendList}>
-            <Text style={styles.postHeaderText}>All friends:</Text>
-            <FlatList
-                // calling the array 
-                data={this.state.userFriendList}
-                
-                //specify the item that we want to show on the list
-                renderItem={({item}) => (
-                    <View style = {[styles.inPostContainer,styles.postBox]}>
-                        {/* <View style = {stylesIn.friedInfoContainer}> */}
-                        <View style = {styles.inPostImage}>
-                        <ProfileImage
-                        userId = {item.user_id}
-                        isEditable = {false}
-                        width = {50}
-                        height = {50}
-                        navigation={this.props.navigation}
-                        ></ProfileImage>
+                <FriendList
+                    friend_id={this.state.user_id}
+                    navigation={this.props.navigation}
+                ></FriendList>
+                {/* <Text style={styles.postHeaderText}>All friends:</Text>
+                <FlatList
+                    // calling the array 
+                    data={this.state.userFriendList}
+                    
+                    //specify the item that we want to show on the list
+                    renderItem={({item}) => (
+                        <View style = {[styles.inPostContainer,styles.postBox]}>
+                            <View style = {styles.inPostImage}>
+                            <ProfileImage
+                            userId = {item.user_id}
+                            isEditable = {false}
+                            width = {50}
+                            height = {50}
+                            navigation={this.props.navigation}
+                            ></ProfileImage>
+                            </View>
+                            <View style = {styles.inPostHeader}>    
+                                <Text 
+                                onPress = {() => {this.profileNavigate(item.user_id)}} 
+                                style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} 
+                                </Text>              
+                            </View>
                         </View>
-                        <View style = {styles.inPostHeader}>    
-                            <Text 
-                            onPress = {() => {this.profileNavigate(item.user_id)}} 
-                            style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} 
-                            </Text>              
-                        </View>
-                        {/* </View> */}
-                    </View>
-                )}
-                keyExtractor={(item) => item.user_id.toString()}
-            />
+                    )}
+                    keyExtractor={(item) => item.user_id.toString()}
+                /> */}
             </View>
             
         </View>

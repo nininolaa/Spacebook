@@ -73,18 +73,20 @@ import styles from "./modules/stylesheet";
                     case 'Duplicate':    
                         console.log('sd')
                         this.setState({
-                            showAlert: true,
                             alertMessage: 'This user  is already exist, please try to register with a new email address'
                         })
                         break
                     case "ServerError":
-                        Alert.alert('Cannot connect to the server, please try again')
+                        this.setState({
+                            alertMessage: 'Cannot connect to the server, please try again'
+                        })
                         break
                     case "WentWrong":
-                        Alert.alert('Something went wrong, please try again')
+                        this.setState({
+                            alertMessage: 'Something went wrong, please try again'
+                        })
                         break
                 }
-
             })
         }
     }
@@ -112,6 +114,7 @@ import styles from "./modules/stylesheet";
 
     render(){
         return(
+            
         <View style = {styles.flexContainer}>
             <AwesomeAlert
                 show={this.state.showAlert}
@@ -127,26 +130,32 @@ import styles from "./modules/stylesheet";
                 <TextInput 
                     ref = "first_name"
                     style = {styles.loginInput} 
-                    placeholder="firstname..." 
+                    placeholder="first name..." 
                     onChangeText={this.handleFirstNameInput} 
-                    value = {this.state.first_name} />
-                    {this.isFieldInError('first_name') && this.getErrorsInField('first_name').map(errorMessage => <Text key={errorMessage} style={styles.error}>{errorMessage}</Text>)}
+                    value = {this.state.first_name} /> 
+                    {this.isFieldInError('first_name') && this.getErrorsInField('first_name').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Your first name is required</Text>
+                    )} 
 
                 <TextInput 
                     ref = "last_name"
                     style = {styles.loginInput} 
-                    placeholder="lastname..." 
+                    placeholder="last name..." 
                     onChangeText={this.handleLastNameInput} 
                     value = {this.state.last_name} />
-                    {this.isFieldInError('last_name') && this.getErrorsInField('last_name').map(errorMessage => <Text key={errorMessage} style={styles.error}>{errorMessage}</Text>)}
+                    {this.isFieldInError('last_name') && this.getErrorsInField('last_name').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Your last name is required</Text>
+                    )}
 
                 <TextInput 
-                    ref = "email"
+                    ref = "new_email"
                     style = {styles.loginInput} 
                     placeholder="email..." 
                     onChangeText={this.handleEmailInput} 
                     value = {this.state.email} />
-                    {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => <Text key={errorMessage} style={styles.error}>{errorMessage}</Text>)}
+                    {this.isFieldInError('new_email') && this.getErrorsInField('new_email').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>
+                    )}
 
                 <TextInput 
                     ref = "password"
@@ -155,7 +164,9 @@ import styles from "./modules/stylesheet";
                     onChangeText={this.handlePasswordInput} 
                     value = {this.state.password} 
                     secureTextEntry={true} />
-                    {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => <Text key={errorMessage} style={styles.error}>{errorMessage}</Text>)}
+                    {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>A password must contain at least 8 characters</Text>
+                    )}
 
                 <TextInput 
                     ref = "password_confirm"
@@ -163,9 +174,13 @@ import styles from "./modules/stylesheet";
                     placeholder="confirm password..." 
                     onChangeText={this.handleConfirmPasswordInput} 
                     value = {this.state.password_confirm} 
-                    secureTextEntry={true} />
-                    {this.isFieldInError('password_confirm') && this.getErrorsInField('password_confirm').map(errorMessage => <Text key={errorMessage} style={styles.error}>{errorMessage}</Text>)}
+                    secureTextEntry={true}/>
+                    {this.isFieldInError('password_confirm') && this.getErrorsInField('password_confirm').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Password does not match</Text>
+                    )}
             </View>
+
+            <Text>{this.state.alertMessage}</Text>
             
             <View style =  {styles.loginButtonRow}>
             <Button
@@ -173,10 +188,6 @@ import styles from "./modules/stylesheet";
                 color='#ffaf7a'
                 onPress={() => {this.RegisterButtonPressed()}}></Button>
             </View>
-
-            <Text>
-                {this.getErrorMessages()}
-            </Text>
 
             <View style = {styles.endTextRow}>
             <Text>Already have an account? <Text onPress={() => { this.SignInButtonPressed()}} style = {styles.linkText}>Click here</Text> to sign in</Text> 

@@ -9,6 +9,7 @@ import FriendReqeust from './components/screens/friendRequestScreen';
 import SearchResult from './components/screens/searchResult';
 import FriendProfile from './components/screens/friendProfile';
 import NonFriendScreen from './components/screens/nonFriendScreen';
+import ErrorAlert from './components/screens/errorAlert';
 import SinglePost from './components/singlePost';
 import UploadPicture from './components/uploadPicture';
 
@@ -35,6 +36,7 @@ class App extends Component{
                 <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
                 <Stack.Screen name="SinglePost" component={SinglePost} />
                 <Stack.Screen name="UploadPicture" component={UploadPicture} />
+                <Stack.Screen name="ErrorAlert" component={ErrorAlert} />
               </Stack.Navigator>
             </NavigationContainer>
         );        

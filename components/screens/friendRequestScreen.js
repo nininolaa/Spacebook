@@ -36,13 +36,13 @@ import styles from "../modules/stylesheet";
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    this.props.navigation.navigate("ErrorAlert", {errorCase: "Unauthorised"})
                     break
                 case 500:
-                    throw 'Server Error'
+                    this.props.navigation.navigate("ErrorAlert", {errorCase: "ServerError"})
                     break
                 default:
-                    throw 'Something went wrong'
+                    this.props.navigation.navigate("ErrorAlert", {errorCase: "WentWrong"})
                     break
             }
         })

@@ -22,12 +22,12 @@ class PostScreen extends Component {
             editable: false,
             text: '',
             isLoading: true,
+            alertMessage: '',
         }
     }
 
     async componentDidMount(){
         this.user_id = await AsyncStorage.getItem('user_id')
-        this.rou
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.userPosts();
         })
@@ -54,11 +54,17 @@ class PostScreen extends Component {
                 case 201: 
                     return response.json();
                     break
-                case 400:
-                    throw 'Failed validation'
+                case 401:
+                    throw {errorCase: "Unauthorised"}
+                    break
+                case 404:
+                    throw {errorCase: "UserNotFound"}
+                    break
+                case 500:
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -68,6 +74,33 @@ class PostScreen extends Component {
         })
         .catch((error) => {
             console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
         })
     }
 
@@ -89,16 +122,19 @@ class PostScreen extends Component {
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'Can only view the post of yourself or your friends'
+                    throw {errorCase: "UnauthorisedPost"}
+                    break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -108,6 +144,42 @@ class PostScreen extends Component {
                 isLoading: false
             })
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UnauthorisedPost':    
+                    this.setState({
+                        alertMessage: 'You can only view the post of yourself or your friends',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
 
     //update a post 
@@ -136,19 +208,22 @@ class PostScreen extends Component {
                     console.log('info updated')
                     break
                 case 400:
-                    throw 'Bad request'
+                    throw {errorCase: "BadRequest"}
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'Forbidden - you can only update your own posts'
+                    throw {errorCase: "ForbiddenUpdatePost"}
+                    break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -158,10 +233,50 @@ class PostScreen extends Component {
                 editable: false,
                 isLoading: false
             });
-          })
-          .catch((error) => {
-            console.log(error);
-          })
+        })
+        .catch((error) => {
+        console.log(error);
+        switch (error.errorCase){
+
+            case 'BadRequest':    
+                this.setState({
+                    alertMessage: 'Bad Request',
+                    isLoading: false,
+                })
+                break
+
+            case 'Unauthorised':    
+                this.setState({
+                    alertMessage: 'Unauthorised, Please login',
+                    isLoading: false,
+                })
+                break
+            case 'ForbiddenUpdatePost':    
+                this.setState({
+                    alertMessage: 'Forbidden - you can only update your own posts',
+                    isLoading: false,
+                })
+                break
+            case 'UserNotFound':    
+                this.setState({
+                    alertMessage: 'Not found',
+                    isLoading: false,
+                })
+                break
+            case "ServerError":
+                this.setState({
+                    alertMessage: 'Cannot connect to the server, please try again',
+                    isLoading: false,
+                })
+                break
+            case "WentWrong":
+                this.setState({
+                    alertMessage: 'Something went wrong, please try again',
+                    isLoading: false,
+                })
+                break
+        }
+        })
     }
 
 
@@ -179,11 +294,66 @@ class PostScreen extends Component {
             },  
         })
         .then((response) => {
+            switch(response.status){
+                case 200: 
+                    throw 'OK'
+                    break
+                case 401:
+                    throw {errorCase: "Unauthorised"}
+                    break
+                case 403:
+                    throw {errorCase: "ForbiddenDeletePost"}
+                    break
+                case 404:
+                    throw {errorCase: "UserNotFound"}
+                    break
+                case 500:
+                    throw {errorCase: "ServerError"}
+                    break
+                default:
+                    throw {errorCase: "WentWrong"}
+                    break
+            }
+        })
+        .then((response) => {
             console.log("Post deleted ");
             this.userPosts();
           })
         .catch((error) => {
         console.log(error);
+        switch (error.errorCase){
+
+            case 'Unauthorised':    
+                this.setState({
+                    alertMessage: 'Unauthorised, Please login',
+                    isLoading: false,
+                })
+                break
+            case 'ForbiddenDeletePost':    
+                this.setState({
+                    alertMessage: 'Forbidden - you can only delete your own posts',
+                    isLoading: false,
+                })
+                break
+            case 'UserNotFound':    
+                this.setState({
+                    alertMessage: 'Not found',
+                    isLoading: false,
+                })
+                break
+            case "ServerError":
+                this.setState({
+                    alertMessage: 'Cannot connect to the server, please try again',
+                    isLoading: false,
+                })
+                break
+            case "WentWrong":
+                this.setState({
+                    alertMessage: 'Something went wrong, please try again',
+                    isLoading: false,
+                })
+                break
+        }
         })
     }
 
@@ -206,7 +376,7 @@ class PostScreen extends Component {
         return(
         
         <ScrollView style = {stylesIn.flexContainer}>
-
+            <Text>{this.state.alertMessage}</Text>
             <View style={stylesIn.homeLogo}>
                 <HomeLogo></HomeLogo>
             </View>

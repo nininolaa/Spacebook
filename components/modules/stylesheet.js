@@ -30,6 +30,7 @@ export default StyleSheet.create({
             width: '30%',
             height:'50%',
             alignItems:'center',
+            
         },
     
         loginButtonText: {
@@ -51,6 +52,7 @@ export default StyleSheet.create({
             borderWidth: 2,
             borderColor: '#d3d3d3',
             width: '80%',
+            height: 50,
             borderRadius: 5,
             marginBottom: '5%',         
         },
@@ -235,6 +237,16 @@ export default StyleSheet.create({
             width:"100%",
             alignItems:'center',
         },
+
+        //validation
+        loginErrorText:{
+            color: '#B90E0A',
+            marginBottom: 10,
+            textAlign:'left',
+            justifyContent:'flex-start',
+            alignContent:'flex-start',
+            alignItems:'flex-start',
+        }
         
 
 

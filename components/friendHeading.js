@@ -12,7 +12,6 @@ class FriendHeading extends Component {
     constructor(props){
         super(props);
 
-        this.token = '';
 
         this.state = {
             user_id: '',
@@ -22,24 +21,25 @@ class FriendHeading extends Component {
             friend_count: '',
             userPostList: [],
             addPost: '',
-            isLoading: true,
+            //isLoading: true,
         }
     }
 
-    async componentDidMount(){
+    componentDidMount(){
 
-        this.token = await AsyncStorage.getItem('@session_token');
+        
         
         this.loadFriend();
     }
 
 
-    loadFriend (){
+    loadFriend = async() => {
 
+        let token = await AsyncStorage.getItem('@session_token');
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.friend_id, {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": token,
                 'Content-Type': 'application/json'
             },
         })
@@ -69,58 +69,58 @@ class FriendHeading extends Component {
                 email: responseJson.email,
                 friend_count: responseJson.friend_count,
             })
-            this.userPosts();
+            //this.userPosts();
         }) 
     }
 
-    userPosts = () => {
+    // userPosts = () => {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.friend_id + "/post", {
-            method: 'get',
-            headers: {
-                "X-Authorization": this.token,
-                'Content-Type': 'application/json'
-            },  
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200:
-                    return response.json()
-                    break
-                case 401:
-                    throw 'Unauthorised'
-                    break
-                case 403:
-                    this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
-                    break
-                case 404: 
-                    throw 'Not found'
-                    break
-                case 500:
-                    throw 'Server Error'
-                    break
-                default:
-                    throw 'Something went wrong'
-                    break   
-            }
+    //     return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.friend_id + "/post", {
+    //         method: 'get',
+    //         headers: {
+    //             "X-Authorization": this.token,
+    //             'Content-Type': 'application/json'
+    //         },  
+    //     })
+    //     .then((response) => {
+    //         switch(response.status){
+    //             case 200:
+    //                 return response.json()
+    //                 break
+    //             case 401:
+    //                 throw 'Unauthorised'
+    //                 break
+    //             case 403:
+    //                 this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
+    //                 break
+    //             case 404: 
+    //                 throw 'Not found'
+    //                 break
+    //             case 500:
+    //                 throw 'Server Error'
+    //                 break
+    //             default:
+    //                 throw 'Something went wrong'
+    //                 break   
+    //         }
 
-        })
-        .then(responseJson => {
-            this.setState({
-                userPostList: responseJson,
-                isLoading: false,
-            })
-        }) 
-    }
+    //     })
+    //     .then(responseJson => {
+    //         this.setState({
+    //             userPostList: responseJson,
+    //             isLoading: false,
+    //         })
+    //     }) 
+    // }
 
     render(){
-        if(this.state.isLoading == true){
-            return(
-                <IsLoading></IsLoading>
-              );
-        }
+        // if(this.state.isLoading == true){
+        //     return(
+        //         <IsLoading></IsLoading>
+        //       );
+        // }
 
-        else{
+        // else{
         return(
         
         <View style = {stylesIn.flexContainer}>          
@@ -141,7 +141,7 @@ class FriendHeading extends Component {
         </View>
         )
         }
-    }
+    //}
  }
 
  const stylesIn = StyleSheet.create({

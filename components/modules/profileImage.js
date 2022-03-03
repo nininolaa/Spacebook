@@ -16,9 +16,9 @@ componentDidMount(){
 
   this.getImage()
 
-  // this.focusListener = this.props.navigation.addListener('focus', async () => {
-  //   this.getImage()
-  // })
+  this.focusListener = this.props.navigation.addListener('focus', async () => {
+    this.getImage()
+  })
     
 }
 
