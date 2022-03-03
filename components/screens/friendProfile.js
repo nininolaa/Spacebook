@@ -6,7 +6,7 @@ import HomeLogo from '../modules/homeLogo';
 import styles from "../modules/stylesheet";
 import IsLoading from "../modules/isLoading";
 import ProfileImage from '../modules/profileImage';
-import FriendHeading from '../friendHeading';
+import FriendHeading from '../modules/friendHeading';
 
 
 class FriendProfile extends Component {
@@ -32,7 +32,47 @@ class FriendProfile extends Component {
 
         this.token = await AsyncStorage.getItem('@session_token');
         
-        this.loadFriend();
+        this.userPosts();
+    }
+
+    loadFriend = async() => {
+        let token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId, {
+            method: 'get',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then((response) => {
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw 'Unauthorised'
+                    break
+                case 404:
+                    throw 'User not found'
+                case 500:
+                    throw 'Server Error'
+                default:
+                    throw 'Something went wrong'
+                    break
+            }
+        })
+        .then(responseJson => {
+            this.setState({
+                profile: responseJson,
+                first_name: responseJson.user_givenname,
+                last_name: responseJson.last_name,
+                user_id: responseJson.user_id,
+                email: responseJson.email,
+                friend_count: responseJson.friend_count,
+                isLoading: false,
+            })
+            //this.userPosts();
+        }) 
     }
 
     addPost = async() => {
@@ -54,11 +94,17 @@ class FriendProfile extends Component {
                 case 201: 
                     return response.json();
                     break
-                case 400:
-                    throw 'Failed validation'
+                case 401:
+                    throw {errorCase: "Unauthorised"}
+                    break
+                case 404:
+                    throw {errorCase: "UserNotFound"}
+                    break
+                case 500:
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -68,48 +114,33 @@ class FriendProfile extends Component {
         })
         .catch((error) => {
             console.log(error);
-        })
-    }
-
-    loadFriend (){
-
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId, {
-            method: 'get',
-            headers: {
-                "X-Authorization": this.token,
-                'Content-Type': 'application/json'
-            },
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200: 
-                    return response.json()
+            switch (error.errorCase){
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
                     break
-                case 401:
-                    throw 'Unauthorised'
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
                     break
-                case 404:
-                    throw 'User not found'
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
                     break
-                case 500:
-                    throw 'Server Error'
-                    break
-                default:
-                    throw 'Something went wrong'
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
                     break
             }
         })
-        .then(responseJson => {
-            this.setState({
-                profile: responseJson,
-                first_name: responseJson.first_name,
-                last_name: responseJson.last_name,
-                user_id: responseJson.user_id,
-                email: responseJson.email,
-                friend_count: responseJson.friend_count,
-            })
-            this.userPosts();
-        }) 
     }
 
     userPosts = () => {
@@ -176,23 +207,9 @@ class FriendProfile extends Component {
 
             <View style = {stylesIn.friendDetails}>
             <FriendHeading
-                friend_id = {this.props.route.params.friendId}
+                friend_id={this.props.route.params.friendId}
                 navigation={this.props.navigation}
             ></FriendHeading>
-                {/* <View style = {stylesIn.friendImage}>
-                <ProfileImage
-                    userId = {this.props.route.params.friendId}
-                    isEditable = {false}
-                    width = {100}
-                    height = {100}
-                    navigation={this.props.navigation}
-                ></ProfileImage>
-                </View>
-                <View style = {stylesIn.friendInfo}>
-                    <Text style = {styles.profileText}> ID: {this.state.user_id} | {this.state.first_name} {this.state.last_name}</Text>
-                    <Text>Email: {this.state.email}</Text>
-                    <Text>Friend count: {this.state.friend_count}</Text>
-                </View> */}
             </View>
 
             <View style = {stylesIn.friendBtnContainer}>
@@ -209,6 +226,7 @@ class FriendProfile extends Component {
                 <View style = {stylesIn.seeFriendBtnContainer}>
                     <TouchableOpacity
                     style = {[stylesIn.seeFriendBtn,stylesIn.friendBtnOrange]}
+                    onPress = {() => this.props.navigation.navigate("FriendsOfFriend",{userId: this.props.route.params.friendId  })}
                     >
                     <Text style = {stylesIn.seeFriendBtnText}>See all {this.state.first_name}'s friends</Text>
                     </TouchableOpacity>

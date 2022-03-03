@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { View, TextInput,Text, StyleSheet, TouchableOpacity} from 'react-native';
 import ValidationComponent from 'react-native-form-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Logo from './modules/logo';
-import styles from "./modules/stylesheet";
+import Logo from '../modules/logo';
+import styles from "../modules/stylesheet";
 
  class Login extends ValidationComponent {
 
@@ -16,7 +16,6 @@ import styles from "./modules/stylesheet";
             alertMessage: '',
         }
     }
-
 
     SignInButtonPressed = async () => {
 

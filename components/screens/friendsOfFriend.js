@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from './modules/homeLogo';
+import FriendList from '../modules/friendList';
+import HomeLogo from '../modules/homeLogo';
 
  class SinglePost extends Component {
 
@@ -21,7 +22,7 @@ import HomeLogo from './modules/homeLogo';
 
     componentDidMount(){
       // this.loadFriend();
-       this.userPosts();
+      // this.userPosts();
     }
 
     userPosts = async() => {
@@ -71,18 +72,14 @@ import HomeLogo from './modules/homeLogo';
         
         <View style = {stylesIn.flexContainer}>
             <Text>Single post</Text>
+            
 
             <View styles = {stylesIn.mainMenu}>
                 <View>
-                    <Text> {this.state.first_name} </Text>  
-                    <Text> {this.state.post_text}</Text>  
-                    {/* <Text> Post id: {post_id} </Text>  
-                    <TextInput
-                    placeholder = {text}
-                    editable = {this.state.editable}
-                    onChangeText={(new_text_post) => this.new_text_post = new_text_post}
-                    ></TextInput>   
-                    <Text> Likes: {numLikes} {'\n'}  </Text>  */}
+                <FriendList
+                    userId={this.props.route.params.friendId}
+                    navigation={this.props.navigation}
+                ></FriendList>
                 </View>
             </View>
         </View>

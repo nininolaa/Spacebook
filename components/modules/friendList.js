@@ -21,19 +21,19 @@ class FriendList extends Component {
 
     async componentDidMount(){
 
-        this.token = await AsyncStorage.getItem('@session_token');
-       
-        
-        this.seeAllFriend();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.seeAllFriend();
+        })
+        console.log("here", this.state.userId)
     }
 
     seeAllFriend = async() => {
         
-        console.log("here", this.props.friend_id)
+        console.log("here", this.props.userId)
         
         let token = await AsyncStorage.getItem('@session_token');
         let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.friend_id + "/friends", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/friends", {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -90,7 +90,7 @@ class FriendList extends Component {
                     <View style = {[styles.inPostContainer,styles.postBox]}>
                         <View style = {styles.inPostImage}>
                         <ProfileImage
-                        userId = {this.props.friend_id}
+                        userId = {item.user_id}
                         isEditable = {false}
                         width = {50}
                         height = {50}

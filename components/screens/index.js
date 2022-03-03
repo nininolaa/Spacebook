@@ -3,13 +3,13 @@ import { View, Text, StyleSheet, Button ,Image, ImageBackground, TouchableOpacit
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Logo from './modules/logo';
-import styles from './modules/stylesheet';
+import Logo from '../modules/logo';
+import styles from '../modules/stylesheet';
 
-import FriendScreen from './screens/friendScreen';
-import PostScreen from './screens/postScreen';
-import ProfileScreen from './screens/profileScreen';
-import SettingScreen from './screens/settingScreen';
+import FriendScreen from './friend';
+import PostScreen from './post';
+import ProfileScreen from './profile';
+import SettingScreen from './setting';
 
 const Tab = createBottomTabNavigator() ;
 
@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator() ;
     constructor(props){
         super(props);
 
-        this.state={
+        this.state={ 
           token: null,
         };
     }

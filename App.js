@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Login from './components/login';
-import Index from './components/index';
-import Register from './components/register';
-import FriendReqeust from './components/screens/friendRequestScreen';
+import Login from './components/screens/login';
+import Index from './components/screens/index';
+import Register from './components/screens/register';
+import FriendReqeust from './components/screens/friendRequest';
 import SearchResult from './components/screens/searchResult';
 import FriendProfile from './components/screens/friendProfile';
-import NonFriendScreen from './components/screens/nonFriendScreen';
+import NonFriendScreen from './components/screens/nonFriend';
 import ErrorAlert from './components/screens/errorAlert';
-import SinglePost from './components/singlePost';
-import UploadPicture from './components/uploadPicture';
-
+import SinglePost from './components/screens/singlePost';
+import UploadPicture from './components/screens/uploadPicture';
+import FriendsOfFriend from './components/screens/friendsOfFriend';
 
 
 const Stack = createNativeStackNavigator();

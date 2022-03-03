@@ -15,7 +15,6 @@ import ProfileImage from '../modules/profileImage';
         super(props);
 
         // this.token = '',
-        this.user_id = '',
         this.new_first_name= '',
         this.new_last_name= '',
         this.new_email= '' ,
@@ -29,10 +28,12 @@ import ProfileImage from '../modules/profileImage';
             editable: false,
             isLoading: true,
             alertMessage: '',
+            user_id: '',
         }
     }
 
-    componentDidMount () {
+    async componentDidMount () {
+        this.state.user_id = await AsyncStorage.getItem('user_id');
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
         })
@@ -251,7 +252,7 @@ import ProfileImage from '../modules/profileImage';
             <View style = {stylesIn.userProfile}>
                 <View style = {stylesIn.userImage}>
                     <ProfileImage
-                    userId = {this.user_id}
+                    userId = {this.state.user_id }
                     isEditable = {true}
                     width = {50}
                     height = {50}

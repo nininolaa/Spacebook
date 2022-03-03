@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from './modules/homeLogo';
+import HomeLogo from '../modules/homeLogo';
 
  class SinglePost extends Component {
 

@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { View, TextInput,Button,Text,StyleSheet} from 'react-native';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ValidationComponent from 'react-native-form-validator';
-import Logo from './modules/logo';
-import styles from "./modules/stylesheet";
+import Logo from '../modules/logo';
+import styles from "../modules/stylesheet";
 
 
  class Register extends ValidationComponent {

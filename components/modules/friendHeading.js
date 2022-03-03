@@ -2,16 +2,15 @@ import React, {Component} from 'react';
 import { View,Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import styles from "./modules/stylesheet";
-import IsLoading from "./modules/isLoading";
-import ProfileImage from './modules/profileImage';
+import styles from "./stylesheet";
+import IsLoading from "./isLoading";
+import ProfileImage from './profileImage';
 
 
 class FriendHeading extends Component {
 
     constructor(props){
         super(props);
-
 
         this.state = {
             user_id: '',
@@ -21,14 +20,11 @@ class FriendHeading extends Component {
             friend_count: '',
             userPostList: [],
             addPost: '',
-            //isLoading: true,
+            isLoading: true,
         }
     }
 
     componentDidMount(){
-
-        
-        
         this.loadFriend();
     }
 
@@ -68,59 +64,15 @@ class FriendHeading extends Component {
                 user_id: responseJson.user_id,
                 email: responseJson.email,
                 friend_count: responseJson.friend_count,
+                isLoading: false,
             })
             //this.userPosts();
         }) 
     }
 
-    // userPosts = () => {
-
-    //     return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.friend_id + "/post", {
-    //         method: 'get',
-    //         headers: {
-    //             "X-Authorization": this.token,
-    //             'Content-Type': 'application/json'
-    //         },  
-    //     })
-    //     .then((response) => {
-    //         switch(response.status){
-    //             case 200:
-    //                 return response.json()
-    //                 break
-    //             case 401:
-    //                 throw 'Unauthorised'
-    //                 break
-    //             case 403:
-    //                 this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
-    //                 break
-    //             case 404: 
-    //                 throw 'Not found'
-    //                 break
-    //             case 500:
-    //                 throw 'Server Error'
-    //                 break
-    //             default:
-    //                 throw 'Something went wrong'
-    //                 break   
-    //         }
-
-    //     })
-    //     .then(responseJson => {
-    //         this.setState({
-    //             userPostList: responseJson,
-    //             isLoading: false,
-    //         })
-    //     }) 
-    // }
 
     render(){
-        // if(this.state.isLoading == true){
-        //     return(
-        //         <IsLoading></IsLoading>
-        //       );
-        // }
-
-        // else{
+        
         return(
         
         <View style = {stylesIn.flexContainer}>          
@@ -140,9 +92,9 @@ class FriendHeading extends Component {
                 </View>
         </View>
         )
-        }
-    //}
- }
+        
+    }
+}
 
  const stylesIn = StyleSheet.create({
 

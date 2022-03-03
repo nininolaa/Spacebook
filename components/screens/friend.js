@@ -33,6 +33,7 @@ import FriendList from '../modules/friendList';
         // this.focusListener = this.props.navigation.addListener('focus', async () => {
         // this.seeAllFriend();
         // })
+        console.log(this.state.user_id)
     }
 
     addFriend = async() => {
@@ -247,10 +248,10 @@ import FriendList from '../modules/friendList';
             ></Button> */}
 
             <View style = {stylesIn.friendList}>
-                <FriendList
-                    friend_id={this.state.user_id}
+                {/* <FriendList
+                    userId={this.state.user_id}
                     navigation={this.props.navigation}
-                ></FriendList>
+                ></FriendList> */}
                 {/* <Text style={styles.postHeaderText}>All friends:</Text>
                 <FlatList
                     // calling the array 
