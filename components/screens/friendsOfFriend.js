@@ -7,8 +7,7 @@ import HomeLogo from '../modules/homeLogo';
  class SinglePost extends Component {
 
     constructor(props){
-        super(props);
-
+        super(props); 
         this.state = {
             user_id: '',
             first_name: '',

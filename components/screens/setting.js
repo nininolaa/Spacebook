@@ -161,19 +161,22 @@ import ProfileImage from '../modules/profileImage';
                     console.log('info updated')
                     break
                 case 400:
-                    throw 'Bad request'
+                    throw {errorCase: "BadRequest"}
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'Forbidden'
+                    throw {errorCase: "Forbidden"}
+                    break
                 case 404:
-                    throw 'User not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -186,7 +189,48 @@ import ProfileImage from '../modules/profileImage';
           })
           .catch((error) => {
             console.log(error);
+            switch (error.errorCase){
+
+                case 'BadRequest':    
+                    this.setState({
+                        alertMessage: 'Bad Request',
+                        isLoading: false,
+                    })
+                    break
+    
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'Forbidden':    
+                    this.setState({
+                        alertMessage: 'Forbidden',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
           })
+
     }
 
     //Sign out function 
@@ -211,15 +255,29 @@ import ProfileImage from '../modules/profileImage';
                     return this.props.navigation.navigate("Login");
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
         .catch((error) => {
             console.log(error.message);
-            // ToastAndroid.show(error, ToastAndroid.SHORT);
+            switch (error.errorCase){
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
         })
     }
 
@@ -242,10 +300,11 @@ import ProfileImage from '../modules/profileImage';
 
         else{
         return(
-
         <View style = {stylesIn.flexContainer}>
-            
+
+            <Text style = {styles.errorMessage}> {this.state.alertMessage} </Text>
             <View style = {stylesIn.homeLogo}>
+            
                 <HomeLogo></HomeLogo>
             </View>
             
@@ -254,8 +313,8 @@ import ProfileImage from '../modules/profileImage';
                     <ProfileImage
                     userId = {this.state.user_id }
                     isEditable = {true}
-                    width = {50}
-                    height = {50}
+                    width = {80}
+                    height = {80}
                     navigation={this.props.navigation}
                     ></ProfileImage>
                 </View>
@@ -343,8 +402,6 @@ import ProfileImage from '../modules/profileImage';
                  <Text>Sign Out</Text>
                 </TouchableOpacity>
             </View>
-           
-
         </View>
         )}
     }
@@ -355,6 +412,7 @@ const stylesIn = StyleSheet.create({
     flexContainer: {
         flex: 1,
         backgroundColor: "#fdf6e4",
+        paddingHorizontal: 10,
     },
 
     homeLogo: {
@@ -363,8 +421,9 @@ const stylesIn = StyleSheet.create({
     },
 
     userProfile: {
-        flex: 2,
+        flex: 2.5,
         flexDirection: 'row',
+
     },
 
     userImage:{
@@ -378,7 +437,7 @@ const stylesIn = StyleSheet.create({
     },
 
     userUpdateDetails: {
-        flex: 8,         
+        flex: 3,         
     },
 
     signOut: {

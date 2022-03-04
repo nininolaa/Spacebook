@@ -11,8 +11,8 @@ class FriendList extends Component {
     constructor(props){
         super(props);
 
-        this.token = '';
-        this.user_id = '';
+        // this.token = '';
+        // this.user_id = '';
 
         this.state = {
             userFriendList: [],
@@ -20,20 +20,17 @@ class FriendList extends Component {
     }
 
     async componentDidMount(){
-
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.seeAllFriend();
         })
-        console.log("here", this.state.userId)
+
     }
 
     seeAllFriend = async() => {
         
-        console.log("here", this.props.userId)
-        
         let token = await AsyncStorage.getItem('@session_token');
         let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/friends", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
             method: 'get',
             headers: {
                 "X-Authorization": token,

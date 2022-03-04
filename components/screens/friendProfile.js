@@ -14,9 +14,8 @@ class FriendProfile extends Component {
     constructor(props){
         super(props);
 
-        this.token = '';
-
         this.state = {
+            token: '',
             user_id: '',
             first_name: '',
             last_name: '',
@@ -25,13 +24,13 @@ class FriendProfile extends Component {
             userPostList: [],
             addPost: '',
             isLoading: true,
+            alertMessage: '',
         }
     }
 
     async componentDidMount(){
-
-        this.token = await AsyncStorage.getItem('@session_token');
-        
+        this.state.user_id = await AsyncStorage.getItem('user_id')
+        this.state.token = await AsyncStorage.getItem('@session_token')
         this.userPosts();
     }
 
@@ -50,14 +49,16 @@ class FriendProfile extends Component {
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 404:
-                    throw 'User not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -71,14 +72,42 @@ class FriendProfile extends Component {
                 friend_count: responseJson.friend_count,
                 isLoading: false,
             })
-            //this.userPosts();
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
 
     addPost = async() => {
 
         let token = await AsyncStorage.getItem('@session_token')
-
         let post = { text: this.state.addPost }
 
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId + "/post", {
@@ -148,7 +177,7 @@ class FriendProfile extends Component {
         return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/post", {
             method: 'get',
             headers: {
-                "X-Authorization": this.token,
+                "X-Authorization": this.state.token,
                 'Content-Type': 'application/json'
             },  
         })
@@ -158,20 +187,20 @@ class FriendProfile extends Component {
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
                     this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
                     break
-                case 404: 
-                    throw 'Not found'
+                case 404:
+                    throw {errorCase: "UserNotFound"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
-                    break   
+                    throw {errorCase: "WentWrong"}
+                    break
             }
 
         })
@@ -180,11 +209,46 @@ class FriendProfile extends Component {
                 userPostList: responseJson,
                 isLoading: false,
             })
-        }) 
+        })
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
     
     editPost() {
         this.setState({editable: true}) ;
+    }
+    isEditMode() {
+        return this.state.editable;
+    }
+    isUserPost(){
+        return this.state.user_id
     }
 
 
@@ -199,6 +263,9 @@ class FriendProfile extends Component {
         return(
         
         <ScrollView style = {stylesIn.flexContainer}>
+            
+            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+
             <View style = {stylesIn.subMainContainer}>
             <View style = {stylesIn.firstSubContainer}>
             <View style = {stylesIn.homeLogo}>
@@ -278,44 +345,70 @@ class FriendProfile extends Component {
                                     onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.props.route.params.friendId})}}
                                     >Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
-                                </View> 
-
+                            </View> 
+                        
                                 <TextInput
                                     style = {styles.postMainText}
                                     placeholder ={item.text}
                                     editable = {this.state.editable}
                                     onChangeText={(new_text_post) => this.new_text_post = new_text_post}
                                 ></TextInput>   
-                                <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
                                 <Text> Likes: {item.numLikes} {'\n'}  </Text> 
+                        
+                                <View style = {[stylesIn.editBtnContainer, this.isUserPost() ==  item.author.user_id ? styles.showEdit : styles.hideEdit ]}>
 
-                                <TouchableOpacity
-                            
-                                onPress = {
-                                    () => likePost(this.token,item.author.user_id, item.post_id) 
-                                    .then(() => {
-                                        this.userPosts();  
-                                    }) 
-                                    .catch(() => {
-                                        console.log('Error')
-                                    })
-                                }
-                                style = {[styles.addPostBtn,styles.actionBtnGreen]}
-                                ><Text >Like</Text></TouchableOpacity>
-                                
-                                <TouchableOpacity
-                                onPress = {
-                                    () => unlikePost(this.token,item.author.user_id, item.post_id) 
-                                    .then(() => {
-                                        this.userPosts();  
-                                    }) 
-                                    .catch(() => {
-                                        console.log('Error')
-                                    })
-                                }
-                                style = {[styles.addPostBtn,styles.actionBtnBlue]}
-                                ><Text style = {styles.actionBtnLight}>Unlike</Text></TouchableOpacity>
-                             
+                                    <View style = {[styles.btnContainer1]}>
+                                        <TouchableOpacity
+                                        onPress = {()=> this.editPost(item.post_id)}
+                                        style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                                        ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
+                                        <TouchableOpacity
+                                        onPress = {()=> this.updatePost(item.post_id, item.text)}
+                                        style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                                        ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
+                                    </View>
+
+                                    <View style = {styles.btnContainer2}>
+                                        <TouchableOpacity 
+                                        style = {[styles.actionBtn,styles.actionBtnRed]}
+                                        onPress = {() => this.deletePost(item.post_id)}
+                                        ><Text style = {styles.actionBtnLight}>Delete post</Text></TouchableOpacity>  
+                                    </View>
+                                </View> 
+
+                                <View style = {[stylesIn.editBtnContainer, this.isUserPost() !=  item.author.user_id ? styles.showEdit : styles.hideEdit ]}>
+
+                                    <View style = {styles.btnContainer1}>
+                                        <TouchableOpacity
+                                            onPress = {
+                                                () => likePost(this.state.token, item.author.user_id , item.post_id) 
+                                                .then(() => {
+                                                    this.userPosts();  
+                                                }) 
+                                                .catch(() => {
+                                                    console.log('Error')
+                                                })
+                                            }
+                                            style = {[styles.actionBtn, styles.actionBtnBlue]}
+                                        ><Text style = {styles.actionBtnLight}>Like</Text></TouchableOpacity>
+                                    </View>
+
+                                    <View style = {styles.btnContainer2}>
+                                        <TouchableOpacity
+                                            onPress = {
+                                            () => unlikePost(this.state.token, item.author.user_id , item.post_id) 
+                                            .then(() => {
+                                                this.userPosts();  
+                                            }) 
+                                            .catch(() => {
+                                                console.log('Error')
+                                            })
+                                            }   
+                                            style = {[styles.actionBtn,styles.actionBtnGrey]}
+                                        ><Text style = {styles.actionBtnLight}>Unlike</Text></TouchableOpacity> 
+                                    </View>
+
+                            </View> 
                         </View>
                     )}
                     keyExtractor={(item) => item.post_id.toString()}
@@ -385,6 +478,11 @@ class FriendProfile extends Component {
     seeFriendBtnContainer:{
         flex: 1,   
         padding:10,
+    },
+
+    editBtnContainer:{
+        flex: 1,
+        flexDirection: 'row',
     },
 
     seeFriendBtn:{

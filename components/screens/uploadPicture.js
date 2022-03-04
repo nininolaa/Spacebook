@@ -58,12 +58,13 @@ class UploadPicture extends Component{
 
     render(){
         return(
-            <View>
+            <View style={styles.container} >
                 <Camera 
                 style={styles.camera} 
                 type={this.state.type}
                 ref={ref => {this.camera = ref}}>
                 <View style={styles.buttonContainer}>
+                  <View style={styles.flipButtonContainer}>
                     <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
@@ -75,9 +76,12 @@ class UploadPicture extends Component{
                     }}>
                     <Text style={styles.text}> Flip </Text>
                     </TouchableOpacity>
+                  </View>
+                  <View style={styles.captureButtonContainer}>
                     <TouchableOpacity
                     onPress={() => {this.takePicture()}}
-                    ><Text>Take Picture</Text></TouchableOpacity>
+                    ><Text style={styles.text}>Take Picture</Text></TouchableOpacity>
+                  </View>
                 </View>
                 </Camera>
             </View>
@@ -89,20 +93,34 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
+    
     camera: {
-      flex: 3,
+      flex: 1,
     },
+
     buttonContainer: {
       flex: 1,
       backgroundColor: 'transparent',
       flexDirection: 'row',
       margin: 20,
+      justifyContent: 'space-around',
+      alignItems: 'space-around',
     },
+
+    flipButtonContainer:{
+      flex: 1,
+    },
+
+    captureButtonContainer:{
+      flex: 1,
+    },
+
     button: {
       flex: 0.1,
       alignSelf: 'flex-end',
       alignItems: 'center',
     },
+
     text: {
       fontSize: 18,
       color: 'white',

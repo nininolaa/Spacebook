@@ -11,9 +11,6 @@ import ProfileImage from '../modules/profileImage';
     constructor(props){
         super(props);
 
-        this.user_id = ''
-        this.token = ''
-
         this.state = {
             user_id: '',
             first_name: '',
@@ -28,7 +25,7 @@ import ProfileImage from '../modules/profileImage';
     }
 
     async componentDidMount() {
-        this.user_id = await AsyncStorage.getItem('user_id');
+        this.state.user_id = await AsyncStorage.getItem('user_id');
         
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.loadProfile();
@@ -40,7 +37,7 @@ import ProfileImage from '../modules/profileImage';
 
         let user_id = await AsyncStorage.getItem('user_id');
         let token = await AsyncStorage.getItem('@session_token');
-
+        console.log(token)
         return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
             method: 'get',
             headers: {
@@ -203,7 +200,7 @@ import ProfileImage from '../modules/profileImage';
 
             <ScrollView style = {stylesIn.flexContainer}>
 
-                <Text>{this.state.alertMessage}</Text>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
 
                 <View style = {stylesIn.subMainContainer}>
                 <View style = {stylesIn.firstSubContainer}>
@@ -213,7 +210,7 @@ import ProfileImage from '../modules/profileImage';
 
                     <View style = {stylesIn.profilePicture}>
                         <ProfileImage
-                        userId = {this.user_id}
+                        userId = {this.state.user_id}
                         isEditable = {true}
                         width = {150}
                         height = {150}
@@ -325,7 +322,7 @@ const stylesIn = StyleSheet.create({
     },
 
     profilePicture: {
-        flex: 1,
+        flex: 1.5,
         alignItems: 'center',
     },
 

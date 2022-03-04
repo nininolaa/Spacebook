@@ -17,6 +17,7 @@ import IsLoading from "../modules/isLoading";
             friend_count: '',
             userPostList: [],
             isLoading: true,
+            alertMessage:''
         }
     }
 
@@ -80,28 +81,64 @@ import IsLoading from "../modules/isLoading";
         })
         .then((response) => {
             switch(response.status){
-                case 200:
-                    console.log("Request sent");
+                case 200: 
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    throw 'User is already added as a friend'
+                    throw {errorCase: "AlreadyAdded"}
                     break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
-            }   
+            }
+        })
+        .then((response) => {
+            this.setState({isLoading: false})
+            console.log("Request sent");
         })
         .catch((error) => {
-            console.log(error);
+        console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'AlreadyAdded':    
+                    this.setState({
+                        alertMessage: 'User is already added as a friend',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
         })
     } 
 
@@ -115,6 +152,8 @@ import IsLoading from "../modules/isLoading";
         return(
         
         <View style = {stylesIn.flexContainer}>
+            
+            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
 
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>

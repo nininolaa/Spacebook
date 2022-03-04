@@ -2,120 +2,38 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
 import { View,Text, StyleSheet, Button, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
 import {likePost, unlikePost} from '../../libs/postFunctions'
-import HomeLogo from '../modules/homeLogo';
-import styles from "../modules/stylesheet";
-import IsLoading from "../modules/isLoading";
-import ProfileImage from '../modules/profileImage';
-import FeedWall from '../modules/feedWall';
+import styles from "./stylesheet";
+import IsLoading from "./isLoading";
+import ProfileImage from './profileImage';
 
-class PostScreen extends Component {
+class FeedWall extends Component {
 
     constructor(props){
         super(props);
 
-        this.new_text_post = '',
-        this.postId = '',
-
         this.state = {
             user_id: '',
-            addPost: '',
-            textPost: '',
             userPostList: [],
             editable: false,
-            text: '',
             isLoading: true,
             alertMessage: '',
-            token: '',
         }
     }
 
     async componentDidMount(){
-
         this.state.user_id = await AsyncStorage.getItem('user_id')
-        this.state.token = await AsyncStorage.getItem('@session_token')
-
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.userPosts();
         })
     }
 
-    //add new post
-    addPost = async() => {
-
-        let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
-
-        let post = { text: this.state.addPost }
-
-        return fetch("http://localhost:3333/api/1.0.0/user/" + userId + "/post", {
-            method: 'post',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(post)
-        })
-        .then((response) => {
-            switch(response.status){
-                case 201: 
-                    return response.json();
-                    break
-                case 401:
-                    throw {errorCase: "Unauthorised"}
-                    break
-                case 404:
-                    throw {errorCase: "UserNotFound"}
-                    break
-                case 500:
-                    throw {errorCase: "ServerError"}
-                    break
-                default:
-                    throw {errorCase: "WentWrong"}
-                    break
-            }
-        })
-        .then((responseJson) => {
-            console.log("Posted post ", responseJson);
-            this.userPosts();
-        })
-        .catch((error) => {
-            console.log(error);
-            switch (error.errorCase){
-
-                case 'Unauthorised':    
-                    this.setState({
-                        alertMessage: 'Unauthorised, Please login',
-                        isLoading: false,
-                    })
-                    break
-                case 'UserNotFound':    
-                    this.setState({
-                        alertMessage: 'Not found',
-                        isLoading: false,
-                    })
-                    break
-                case "ServerError":
-                    this.setState({
-                        alertMessage: 'Cannot connect to the server, please try again',
-                        isLoading: false,
-                    })
-                    break
-                case "WentWrong":
-                    this.setState({
-                        alertMessage: 'Something went wrong, please try again',
-                        isLoading: false,
-                    })
-                    break
-            }
-        })
-    }
-
+ 
     //show all user posts
     userPosts = async() => {
         let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
+        let user_id = await AsyncStorage.getItem('user_id')
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ user_id + "/post", {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -198,9 +116,8 @@ class PostScreen extends Component {
         }
         
         let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/post/" + post_id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.userId + "/post/" + post_id, {
             method: 'PATCH',
             headers: {
                 "X-Authorization": token,
@@ -373,52 +290,26 @@ class PostScreen extends Component {
     }
 
     isUserPost(){
-            return this.state.user_id
+        return this.state.user_id
     }
         
     render(){
-        if(this.state.isLoading == true){
-            return(
-                <IsLoading></IsLoading>
-              );
-        }
-        else{
+        // if(this.state.isLoading == true){
+        //     return(
+        //         <IsLoading></IsLoading>
+        //       );
+        // }
+        // else{
         return(
         
-        <ScrollView style = {stylesIn.flexContainer}>
-            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-            <View style={stylesIn.homeLogo}>
-                <HomeLogo></HomeLogo>
-            </View>
-
-            <View style = {stylesIn.sharePost}>
-                <Text style = {styles.postHeaderText}>Share a post:</Text>
-                <TextInput
-                style = {stylesIn.postInput}
-                placeholder="Add text here"
-                numberOfLines= "5"
-                onChangeText={(addPost) => this.setState({addPost})}
-                value = {this.state.addPost}
-                ></TextInput>
-
-                <TouchableOpacity 
-                style = {[styles.addPostBtn, styles.btnToEnd]}
-                onPress = {() => this.addPost()}
-                ><Text style = {[styles.loginButtonText]}>+ Add Post</Text></TouchableOpacity>
-            </View>
-
-            <View style = {stylesIn.mainPostFeed}>
-                {/* <FeedWall
-                    userId  = {this.state.user_id}
-                    navigation={this.props.navigation}
-                ></FeedWall> */}
-                
+            <ScrollView style = {stylesIn.flexContainer}>
                 <Text style={styles.postHeaderText}>Your Posts:</Text>
-                <View styles = {stylesIn.postBox}>
-                    <FlatList 
+                    {/* <View styles = {stylesIn.postBox}> */}
+                <FlatList 
                     data={this.state.userPostList}
 
                     renderItem={({item}) => (
+                        
                         <View style = {styles.postBox}>
                             <View style = {styles.inPostContainer}>
                                 <View style = {styles.inPostImage}>
@@ -437,7 +328,6 @@ class PostScreen extends Component {
                                     <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
                                     
                                 </View>     
-                                
                             </View> 
                                 <TextInput
                                 style = {styles.postMainText}
@@ -447,32 +337,32 @@ class PostScreen extends Component {
                                 ></TextInput>   
                                 <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
                                 
-                            <View style = {[stylesIn.editBtnContainer, this.isUserPost() ==  item.author.user_id ? styles.showEdit : styles.hideEdit ]}>
+                            <View style = {[stylesIn.editBtnContainer, this.isUserPost() ==  item.author.user_id ? stylesIn.showEdit : stylesIn.hideEdit ]}>
 
                                 <View style = {[styles.btnContainer1]}>
                                     <TouchableOpacity
                                     onPress = {()=> this.editPost(item.post_id)}
-                                    style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                                    style = {[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
                                     ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
                                     <TouchableOpacity
                                     onPress = {()=> this.updatePost(item.post_id, item.text)}
-                                    style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                                    style = {[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
                                     ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity>
                                 </View>
 
-                                <View style = {[styles.btnContainer2]}>
+                                <View style = {styles.btnContainer2}>
                                     <TouchableOpacity 
                                     style = {[styles.actionBtn,styles.actionBtnRed]}
                                     onPress = {() => this.deletePost(item.post_id)}
-                                    ><Text style = {styles.actionBtnLight}>Delete post</Text></TouchableOpacity>  
+                                    ><Text style = {styles.actionBtnLight}>Delete post</Text> </TouchableOpacity>  
                                 </View>
                             </View> 
-                            {/* <View style = {stylesIn.editBtnContainer, this.isUserPost() !=  item.author.user_id ? styles.showEdit : styles.hideEdit }>
+                            <View style = {stylesIn.editBtnContainer, this.isUserPost() !=  item.author.user_id ? stylesIn.showEdit : stylesIn.hideEdit }>
 
                                 <View style = {styles.btnContainer1}>
                                     <TouchableOpacity
                                         onPress = {
-                                            () => likePost(this.state.token, item.author.user_id , item.post_id) 
+                                            () => likePost(this.token,item.author.user_id, item.post_id) 
                                             .then(() => {
                                                 this.userPosts();  
                                             }) 
@@ -487,7 +377,7 @@ class PostScreen extends Component {
                                 <View style = {styles.btnContainer2}>
                                 <TouchableOpacity
                                     onPress = {
-                                    () => unlikePost(this.state.token, item.author.user_id , item.post_id) 
+                                    () => unlikePost(this.token,item.author.user_id, item.post_id) 
                                     .then(() => {
                                         this.userPosts();  
                                     }) 
@@ -498,17 +388,16 @@ class PostScreen extends Component {
                                     style = {[styles.actionBtn,styles.actionBtnGrey]}
                                 ><Text style = {styles.actionBtnLight}>Unlike</Text></TouchableOpacity> 
                                 </View>
-                            </View>  */}
+                            </View> 
                         </View>
                         
                     )}
                     keyExtractor={(item) => item.post_id.toString()}
-                    /> 
-                    </View>
-            </View>
-        </ScrollView>
+                    />
+            </ScrollView>
+
         )};   
-    }
+    //}
 }
 
 
@@ -543,6 +432,14 @@ class PostScreen extends Component {
         paddingHorizontal: 20,
     },
 
+    showEdit: {
+        display: 'block',
+    },
+
+    hideEdit:{
+        display: 'none'
+    },
+
     editText: {
         color: '#ffffff' , 
         textTransform: 'uppercase', 
@@ -563,6 +460,6 @@ class PostScreen extends Component {
 
  })
 
- export default PostScreen;
+ export default FeedWall;
 
 

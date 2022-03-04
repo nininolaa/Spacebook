@@ -7,6 +7,7 @@ import styles from "../modules/stylesheet";
 import ProfileImage from '../modules/profileImage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from "../modules/isLoading";
+import { TouchableOpacity } from 'react-native';
 
  class SearchResult extends Component {
 
@@ -18,6 +19,9 @@ import IsLoading from "../modules/isLoading";
         this.state = {
             searchList: [],
             isLoading: true,
+            alertMessage: '',
+            offset: '',
+            limit: '',
         }
     }
 
@@ -30,7 +34,7 @@ import IsLoading from "../modules/isLoading";
 
         let token = await AsyncStorage.getItem('@session_token');
 
-        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.props.route.params.query, {
+        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.props.route.params.query + "&limit=7" + "&offset=5", {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -43,16 +47,16 @@ import IsLoading from "../modules/isLoading";
                     return response.json()
                     break
                 case 400:
-                    throw 'Bad request'
+                    throw {errorCase: "BadRequest"}
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -63,10 +67,40 @@ import IsLoading from "../modules/isLoading";
                 isLoading: false
             });
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+    
+                case 'BadRequest':    
+                    this.setState({
+                        alertMessage: 'Bad Request',
+                        isLoading: false,
+                    })
+                    break
+    
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+            })
     }
 
     loadFriendProfile(friendId) {
-        //conditional check for friend and non-friend profile
         this.props.navigation.navigate("FriendProfile", {friendId: friendId})
     }
 
@@ -83,6 +117,8 @@ import IsLoading from "../modules/isLoading";
         return(
         
         <View style = {stylesIn.flexContainer}>
+            
+            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
 
             <View style = {stylesIn.homeLogo}>
                 <HomeLogo></HomeLogo>
@@ -125,6 +161,21 @@ import IsLoading from "../modules/isLoading";
                 keyExtractor={(item) => item.user_id.toString()}
             />
             </View>
+            <View style = {stylesIn.btnContainer}>
+                    <View style = {stylesIn.leftBtn}>
+                        <TouchableOpacity
+                        style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
+                            <Text style = {styles.actionBtnLight}>Back</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style = {stylesIn.rightBtn}>
+                        <TouchableOpacity
+                        style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
+                            <Text style = {styles.actionBtnLight}>Next</Text>
+                        </TouchableOpacity>
+                    </View>
+
+            </View>
 
         </View>
         )}
@@ -149,6 +200,30 @@ import IsLoading from "../modules/isLoading";
     friendLists: {
         flex: 5,
     },
+    btnContainer:{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
+    leftBtn:{
+        flex:1,
+        flexDirection: 'column',
+        alignItems: 'flex-start'
+    },
+
+    rightBtn:{
+        flex:1,
+        flexDirection: 'column',
+        alignItems: 'flex-end'
+    },
+
+    backBtn:{
+        margin :5,
+        padding: 10,
+        width:'70%'
+        
+    }
+
 
  
  })

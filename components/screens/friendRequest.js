@@ -14,6 +14,7 @@ import styles from "../modules/stylesheet";
             friendId:'',
             friendRequestList: [],
             isLoading: true,
+            alertMessage: '',
         }
     }
     
@@ -36,13 +37,13 @@ import styles from "../modules/stylesheet";
                     return response.json()
                     break
                 case 401:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "Unauthorised"})
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 500:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "ServerError"})
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "WentWrong"})
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -52,6 +53,29 @@ import styles from "../modules/stylesheet";
                 isLoading: false,
             })
         }) 
+        .catch((error) => {
+            console.log(error);
+                switch (error.errorCase){
+                    case 'Unauthorised':    
+                        this.setState({
+                            alertMessage: 'Unauthorised, Please login',
+                            isLoading: false,
+                        })
+                        break
+                    case "ServerError":
+                        this.setState({
+                            alertMessage: 'Cannot connect to the server, please try again',
+                            isLoading: false,
+                        })
+                        break
+                    case "WentWrong":
+                        this.setState({
+                            alertMessage: 'Something went wrong, please try again',
+                            isLoading: false,
+                        })
+                        break
+                }
+            })
     }
 
     acceptFriend = async (user_id) => {
@@ -145,7 +169,7 @@ import styles from "../modules/stylesheet";
             return(
             
             <View style = {stylesIn.flexContainer}>
-
+                 <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
                 <View style = {stylesIn.homeLogo}>
                 <HomeLogo></HomeLogo>
                 </View>

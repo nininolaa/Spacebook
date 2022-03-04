@@ -1,4 +1,3 @@
-import color from "color"
 import { StyleSheet } from "react-native"
 export default StyleSheet.create({
 
@@ -93,6 +92,10 @@ export default StyleSheet.create({
             backgroundColor: '#95d8eb',
         },
 
+        actionBtnGrey: {
+            backgroundColor: '#808080',
+        },
+
         actionBtnLight: {
             textAlign:'center',
             textTransform: 'uppercase', 
@@ -124,6 +127,7 @@ export default StyleSheet.create({
         hideEdit:{
             display: 'none'
         },
+
 
         //Headings
         postHeaderText:{
@@ -246,8 +250,16 @@ export default StyleSheet.create({
             justifyContent:'flex-start',
             alignContent:'flex-start',
             alignItems:'flex-start',
-        }
+        },
         
+        //error message
+        errorMessage:{
+            fontSize: 25,
+            color: '#B90E0A',
+            justifyContent: 'center',
+            padding: 20,
+
+        }
 
 
 })
