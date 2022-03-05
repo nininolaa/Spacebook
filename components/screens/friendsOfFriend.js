@@ -16,70 +16,26 @@ import HomeLogo from '../modules/homeLogo';
             friend_count: '',
             post_text: '',
             userPostList: [],
+            userId: this.props.route.params.userId
         }
     }
-
-    componentDidMount(){
-      // this.loadFriend();
-      // this.userPosts();
-    }
-
-    userPosts = async() => {
-        let token = await AsyncStorage.getItem('@session_token')
-        let userId = await AsyncStorage.getItem('user_id')
-
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.userId + "/post/" +this.props.route.params.post_id , {
-            method: 'get',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },  
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200: 
-                    return response.json()
-                    break
-                case 401:
-                    throw 'Unauthorised'
-                    break
-                case 403:
-                    throw 'Can only view the post of yourself or your friends'
-                case 404:
-                    throw 'Not found'
-                case 500:
-                    throw 'Server Error'
-                default:
-                    throw 'Something went wrong'
-                    break
-            }
-        })
-        .then(responseJson => {
-            this.setState({
-                userPostList: responseJson,
-                first_name: responseJson.author.first_name,
-                post_text: responseJson.text,
-
-            })
-        }) 
-    }
-
 
     render(){
  
         return(
         
         <View style = {stylesIn.flexContainer}>
-            <Text>Single post</Text>
-            
-
-            <View styles = {stylesIn.mainMenu}>
-                <View>
+            <View style = {stylesIn.homeLogo}>
+                <HomeLogo></HomeLogo>
+            </View>
+         
+            <View style = {stylesIn.mainMenu}>
+       
                 <FriendList
-                    userId={this.props.route.params.friendId}
+                    userId={this.state.userId}
                     navigation={this.props.navigation}
                 ></FriendList>
-                </View>
+         
             </View>
         </View>
         )
@@ -90,22 +46,16 @@ import HomeLogo from '../modules/homeLogo';
 
     flexContainer: {
         flex: 1,
+        backgroundColor: "#fdf6e4",
     },
 
     homeLogo: {
-        flex: 5,
+        flex: 1,
     },
 
-    friendSearch: {
-        flex: 5,
-    },
-
-    postFeed: {
-        flex: 30,
-    },
 
     mainMenu: {
-        flex: 20,
+        flex: 3,
     }
  
  })

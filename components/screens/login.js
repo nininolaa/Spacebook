@@ -113,6 +113,7 @@ import styles from "../modules/stylesheet";
             {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
             <Text key={errorMessage} style={styles.loginErrorText}>An email is required</Text>
             )}
+            
             <TextInput 
             style = {styles.loginInput} 
             placeholder="password..." 

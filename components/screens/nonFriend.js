@@ -3,6 +3,7 @@ import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from "../modules/isLoading";
+import styles from "../modules/stylesheet";
 
  class NonFriendScreen extends Component {
 

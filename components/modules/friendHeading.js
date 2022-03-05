@@ -21,6 +21,7 @@ class FriendHeading extends Component {
             userPostList: [],
             addPost: '',
             isLoading: true,
+            alertMessage: '',
         }
     }
 
@@ -45,14 +46,16 @@ class FriendHeading extends Component {
                     return response.json()
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 404:
-                    throw 'User not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
+                    break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
@@ -66,8 +69,37 @@ class FriendHeading extends Component {
                 friend_count: responseJson.friend_count,
                 isLoading: false,
             })
-            //this.userPosts();
         }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
     }
 
 
@@ -75,7 +107,10 @@ class FriendHeading extends Component {
         
         return(
         
-        <View style = {stylesIn.flexContainer}>          
+        <View style = {stylesIn.flexContainer}> 
+
+            <View style = {stylesIn.subContainer} >
+            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
                 <View style = {stylesIn.friendImage}>
                 <ProfileImage
                     userId = {this.props.friend_id}
@@ -90,6 +125,7 @@ class FriendHeading extends Component {
                     <Text>Email: {this.state.email}</Text>
                     <Text>Friend count: {this.state.friend_count}</Text>
                 </View>
+            </View>    
         </View>
         )
         
@@ -103,15 +139,10 @@ class FriendHeading extends Component {
         backgroundColor: "#fdf6e4",
     },
 
-    homeLogo: {
-        flex: 1.5,
+    subContainer:{
+        flex: 1,
+        flexDirection: 'row'
     },
-
-    friendDetails: {
-        flex: 2,
-        flexDirection: 'row',
-    },
-
     friendImage:{
         flex: 1,
         justifyContent: 'center',

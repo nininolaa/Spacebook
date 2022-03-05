@@ -36,7 +36,8 @@ class App extends Component{
                 <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
                 <Stack.Screen name="SinglePost" component={SinglePost} />
                 <Stack.Screen name="UploadPicture" component={UploadPicture} />
-                <Stack.Screen name="ErrorAlert" component={ErrorAlert} />
+                <Stack.Screen name="FriendsOfFriend" component={FriendsOfFriend} />
+                
               </Stack.Navigator>
             </NavigationContainer>
         );        

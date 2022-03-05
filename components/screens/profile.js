@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, TextInput, Button, Image} from 'react-native';
+import { View,Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from "../modules/isLoading";
 import styles from "../modules/stylesheet";
 import ProfileImage from '../modules/profileImage';
+import UserWall from '../modules/userWall';
 
  class ProfileScreen extends Component {
 
@@ -26,10 +27,8 @@ import ProfileImage from '../modules/profileImage';
 
     async componentDidMount() {
         this.state.user_id = await AsyncStorage.getItem('user_id');
-        
-        this.focusListener = this.props.navigation.addListener('focus', async () => {
-            this.loadProfile();
-            this.userPosts();
+        this.focusListener = this.props.navigation.addListener('focus', async () => {  
+           this.loadProfile();
         })
     }
 
@@ -195,28 +194,30 @@ import ProfileImage from '../modules/profileImage';
                 <IsLoading></IsLoading>
               );
         }
+
         else{
             return(
 
-            <ScrollView style = {stylesIn.flexContainer}>
+            <View style = {stylesIn.flexContainer}>
 
-                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-
-                <View style = {stylesIn.subMainContainer}>
                 <View style = {stylesIn.firstSubContainer}>
-                    <View style = {stylesIn.homeLogo}>
-                    <HomeLogo></HomeLogo>
-                    </View>
 
-                    <View style = {stylesIn.profilePicture}>
-                        <ProfileImage
-                        userId = {this.state.user_id}
-                        isEditable = {true}
-                        width = {150}
-                        height = {150}
-                        navigation={this.props.navigation}
-                        ></ProfileImage>
-                    </View>
+                        <View style = {stylesIn.homeLogo}>
+                        
+                        <HomeLogo></HomeLogo>
+                        </View>
+
+                        <View style = {stylesIn.profilePicture}>
+                            <ProfileImage
+                            userId = {this.state.user_id}
+                            isEditable = {true}
+                            width = {100}
+                            height = {100}
+                            navigation={this.props.navigation}
+                            style = {stylesIn.imageAlign}
+                            ></ProfileImage>
+
+                        </View>
 
                     <View style = {stylesIn.userInfo}>
                         <Text style = {styles.profileText}> ID:{this.state.user_id}  |  {this.state.first_name} {this.state.last_name} </Text>
@@ -228,69 +229,19 @@ import ProfileImage from '../modules/profileImage';
                         style = {styles.navigateBtn}
                         ><Text style = {styles.navigateBtnText}>Edit information</Text>
                         </TouchableOpacity>
-
                     </View>
+
                 </View>
 
                 <View style = {stylesIn.secondSubContainer}>
-                <View style = {stylesIn.userPost}>
-                    <Text style={styles.postHeaderText}>Your Feed:</Text>
-
-                    <FlatList 
-                    data={this.state.userPostList}
-
-                    renderItem={({item}) => (
-                        <View style = {styles.postBox}>
-                            <View style = {styles.inPostContainer}>
-                                <View style = {styles.inPostImage}>
-                                <ProfileImage
-                                userId = {item.author.user_id}
-                                isEditable = {false}
-                                width = {50}
-                                height = {50}
-                                navigation={this.props.navigation}
-                                ></ProfileImage>
-                                </View>
-                                <View 
-                                style = {styles.inPostHeader}>
-                                <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                <Text style = {styles.postInfoText}
-                                onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.user_id})}}
-                                >Post id: {item.post_id} | {item.timestamp} </Text>
-                                </View> 
-                            </View> 
-                            <TextInput
-                            style = {styles.postMainText}
-                            value ={item.text}
-                            editable = {this.state.editable}
-                            onChangeText={(new_text_post) => this.new_text_post = new_text_post}
-                            ></TextInput>   
-                            <Text style ={styles.postInfoText}>  Likes: {item.numLikes} {'\n'}  </Text> 
-
-                            
-                            {/* <TouchableOpacity
-                            onPress = {()=> this.editPost(item.post_id)}
-                            style = {[styles.actionBtn, styles.actionBtnBlue, !this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                            ><Text style = {[styles.actionBtnLight]}>Edit</Text></TouchableOpacity>
-                            <TouchableOpacity
-                            onPress = {()=> this.updatePost(item.post_id, item.text)}
-                            style = {[styles.actionBtn , styles.actionBtnGreen, this.isEditMode() ? stylesIn.showEdit : stylesIn.hideEdit]}
-                            ><Text style = {[styles.actionBtnLight]}>Update Post</Text></TouchableOpacity> */}
-                            
-                            {/* <Button 
-                            title = "Delete post" 
-                            color = "#880808"
-                            onPress = {() => this.deletePost(item.post_id)}
-                        > </Button>    */}
-                        </View>
-                    )}
-                    keyExtractor={(item) => item.post_id.toString()}
-                    />
-
-                    </View>
+                    <View style = {stylesIn.userPost}>
+                    <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                        <UserWall
+                        navigation = {this.props.navigation}
+                        ></UserWall>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
   
         )}
     }
@@ -309,12 +260,10 @@ const stylesIn = StyleSheet.create({
 
     firstSubContainer:{
         flex:1,
-        //backgroundColor:'blue'
     },
 
     secondSubContainer:{
         flex: 1,
-        //backgroundColor:'green'
     },
 
     homeLogo: {
@@ -322,8 +271,9 @@ const stylesIn = StyleSheet.create({
     },
 
     profilePicture: {
-        flex: 1.5,
+        flex: 2.5,
         alignItems: 'center',
+        justifyContent: 'center',
     },
 
     userInfo: {
@@ -333,7 +283,7 @@ const stylesIn = StyleSheet.create({
     },
 
     userPost: {
-        flex: 9,
+        flex: 8,
     },
 
     postHeaderText:{
@@ -342,6 +292,11 @@ const stylesIn = StyleSheet.create({
         fontSize: 25,
         paddingBottom: 10,
         fontWeight: 'bold',
+    },
+
+    imageAlign:{
+        marginLeft:30,
+        paddingLeft: 30,
     }
 
  })

@@ -13,14 +13,9 @@ import ProfileImage from '../modules/profileImage';
 
     constructor(props){
         super(props);
-
-        // this.token = '',
-        this.new_first_name= '',
-        this.new_last_name= '',
-        this.new_email= '' ,
-        this.new_password= '',
         
         this.state = {
+            user_id: '',
             first_name: '',
             last_name: '',
             email: '' ,
@@ -28,7 +23,12 @@ import ProfileImage from '../modules/profileImage';
             editable: false,
             isLoading: true,
             alertMessage: '',
-            user_id: '',
+            
+            new_first_name: '',
+            new_last_name: '',
+            new_email: '' ,
+            new_password: '',
+            new_password_confirm: '',
         }
     }
 
@@ -73,7 +73,6 @@ import ProfileImage from '../modules/profileImage';
         })
         .then(response => {
             this.setState({
-                userProfile: response,
                 user_id: response.user_id,
                 first_name: response.first_name,
                 last_name: response.last_name,
@@ -117,34 +116,34 @@ import ProfileImage from '../modules/profileImage';
     async updateInfo(){
 
         this.validate({
-            first_name: { maxlength: 50 },
-            last_name: { maxlength: 50},
-            new_email: { email:true},
-            password: { minlength: 8},
-            password_confirm: {  equalPassword: this.state.password},
+            first_name: {maxlength: 20 ,hasLowerCase: true },
+            last_name: { maxlength: 20},
+            new_email: { email: true},
+            new_password: { minlength: 6, equalPassword: this.state.new_password_confirm },
+            new_password_confirm: { minlength: 6, equalPassword: this.state.new_password },
         })
 
         let token = await AsyncStorage.getItem('@session_token');
         let user_id = await AsyncStorage.getItem('user_id');
 
-        
+        if (this.isFormValid() == true){
 
         let new_info = {};
 
-        if (this.new_first_name != this.state.first_name && this.new_first_name != '' ){
-            new_info['first_name'] = this.new_first_name;
+        if (this.state.new_first_name != this.state.first_name && this.state.new_first_name != '' ){
+            new_info['first_name'] = this.state.new_first_name;
         }
 
-        if (this.new_last_name != this.state.last_name && this.new_last_name != '' ){
-            new_info['last_name'] = this.new_last_name;
+        if (this.state.new_last_name != this.state.last_name && this.state.new_last_name != '' ){
+            new_info['last_name'] = this.state.new_last_name;
         } 
 
-        if (this.new_email != this.state.email && this.new_email != ''){
-        new_info['email'] = this.new_email;
+        if (this.state.new_email != this.state.email && this.state.new_email != ''){
+        new_info['email'] = this.state.new_email;
         }
 
-        if (this.new_password != this.state.password && this.new_password != ''){
-            new_info['password'] = this.new_password ;
+        if (this.state.new_password != this.state.password && this.state.new_password != ''){
+            new_info['password'] = this.state.new_password ;
         }
 
         return fetch("http://localhost:3333/api/1.0.0/user/" + user_id, {
@@ -158,7 +157,7 @@ import ProfileImage from '../modules/profileImage';
         .then((response) => {
             switch(response.status){
                 case 200: 
-                    console.log('info updated')
+                    //console.log('info updated')
                     break
                 case 400:
                     throw {errorCase: "BadRequest"}
@@ -230,7 +229,7 @@ import ProfileImage from '../modules/profileImage';
                     break
             }
           })
-
+        }
     }
 
     //Sign out function 
@@ -244,7 +243,7 @@ import ProfileImage from '../modules/profileImage';
         return fetch("http://localhost:3333/api/1.0.0/logout", {
             method: 'post',
             headers: {
-                "X-Authorization": this.token
+                "X-Authorization": token
             }
         })  
         .then((response) => {
@@ -300,9 +299,9 @@ import ProfileImage from '../modules/profileImage';
 
         else{
         return(
-        <View style = {stylesIn.flexContainer}>
+        <ScrollView style = {stylesIn.flexContainer}>
 
-            <Text style = {styles.errorMessage}> {this.state.alertMessage} </Text>
+           
             <View style = {stylesIn.homeLogo}>
             
                 <HomeLogo></HomeLogo>
@@ -313,8 +312,8 @@ import ProfileImage from '../modules/profileImage';
                     <ProfileImage
                     userId = {this.state.user_id }
                     isEditable = {true}
-                    width = {80}
-                    height = {80}
+                    width = {100}
+                    height = {100}
                     navigation={this.props.navigation}
                     ></ProfileImage>
                 </View>
@@ -331,21 +330,21 @@ import ProfileImage from '../modules/profileImage';
                 <TextInput
                     style = {[stylesIn.userDetailsText, styles.updateInput]}
                     placeholder={this.state.first_name}
-                    onChangeText={(new_first_name) => this.new_first_name = new_first_name}
+                    onChangeText={(new_first_name) => this.setState({new_first_name: new_first_name})}
                     editable={this.state.editable}
                     /> 
                     {this.isFieldInError('first_name') && this.getErrorsInField('first_name').map(errorMessage => 
-                    <Text key={errorMessage} style={styles.loginErrorText}>Your first name should not be more than 50 characters</Text>
+                    <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage} </Text>
                     )} 
                     
                 <Text style = {stylesIn.userDetailsText}>Last Name: </Text>
                 <TextInput 
                     style = {[stylesIn.userDetailsText, styles.updateInput]}
                     placeholder={this.state.last_name}
-                    onChangeText={(new_last_name) => this.new_last_name = new_last_name}
+                    onChangeText={(new_last_name) =>  this.setState({new_last_name: new_last_name})}
                     editable={this.state.editable}
                     />
-                    {this.isFieldInError('last_name') && this.getErrorsInField('last_name').map(errorMessage => 
+                    {this.isFieldInError('new_last_name') && this.getErrorsInField('new_last_name').map(errorMessage => 
                     <Text key={errorMessage} style={styles.loginErrorText}>Your last name should not be more than 50 characters</Text>
                     )} 
 
@@ -353,35 +352,39 @@ import ProfileImage from '../modules/profileImage';
                 <TextInput
                     style = {[stylesIn.userDetailsText, styles.updateInput]}
                     placeholder={this.state.email}
-                    onChangeText={(new_email) => this.new_email = new_email}
+                    onChangeText={(new_email) => this.setState({new_email: new_email})}
                     editable={this.state.editable}
-                    value = {this.state.email}
+                    //value = {this.state.email}
                     />
-                    {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
-                    <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>
+                    {this.isFieldInError('new_email') && this.getErrorsInField('new_email').map(errorMessage => 
+                    <Text key={errorMessage} style={styles.loginErrorText}>Please enter a valid email address</Text>
                     )}
 
                 <Text style = {stylesIn.userDetailsText}>Password:</Text>
-                <TextInput
-                style = {[stylesIn.userDetailsText, styles.updateInput]}
-                placeholder="Enter old password..."
-                onChangeText={(new_password) => this.new_password = new_password}
-                value={this.state.new_password}
-                />
-
+               
                 <TextInput
                 style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder="Enter new password..."
-                onChangeText={(new_password) => this.new_password = new_password}
+                onChangeText={(new_password) => this.setState({new_password: new_password})}
                 value={this.state.new_password}
+                secureTextEntry={true}
+                editable={this.state.editable}
                 />
+                {this.isFieldInError('new_password') && this.getErrorsInField('new_password').map(errorMessage => 
+                <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>
+                )}
 
                 <TextInput
                 style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder="Confirm your new password..."
-                onChangeText={(new_password) => this.new_password = new_password}
-                value={this.state.new_password}
+                onChangeText={(new_password_confirm) => this.setState({new_password_confirm: new_password_confirm})}
+                value={this.state.new_password_confirm}
+                secureTextEntry={true}
+                editable={this.state.editable}
                 />
+                {this.isFieldInError('new_password_confirm') && this.getErrorsInField('new_password_confirm').map(errorMessage => 
+                <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>
+                )}
 
                 <TouchableOpacity
                 onPress = {()=> this.editPost()}
@@ -390,19 +393,18 @@ import ProfileImage from '../modules/profileImage';
                 <TouchableOpacity
                 onPress = {()=> this.updateInfo()}
                 style = {[stylesIn.editBtn , stylesIn.updateBtnColor, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
-                ><Text style = {[stylesIn.editBtnText]}>Update information</Text></TouchableOpacity>
-                
-            </View>
-
-            <View style = {stylesIn.signOut}>
+                ><Text style = {[stylesIn.editBtnText]}>Update information</Text></TouchableOpacity>     
                 <TouchableOpacity
                 onPress={() => {this.logout()}}
-                style = {styles.loginButton}
+                style = {[styles.loginButton, stylesIn.logoutBtn]}
                 >
-                 <Text>Sign Out</Text>
+                <Text>Sign Out</Text>
                 </TouchableOpacity>
+                <Text style = {styles.errorMessage}> {this.state.alertMessage} </Text>
+               
             </View>
-        </View>
+
+        </ScrollView>
         )}
     }
  }
@@ -416,33 +418,36 @@ const stylesIn = StyleSheet.create({
     },
 
     homeLogo: {
-        flex: 2, 
-        justifyContent: 'flex-start',    
+        flex: 1, 
+        justifyContent: 'flex-start', 
     },
 
     userProfile: {
-        flex: 2.5,
+        flex: 1,
         flexDirection: 'row',
 
     },
 
     userImage:{
         flex:1,
+        marginLeft:10,
     },
 
     userDetails:{
-        flex: 2,
+        flex: 1.8,
+        marginLeft: 10,
         justifyContent:'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
 
     userUpdateDetails: {
-        flex: 3,         
+        flex: 2,         
     },
 
-    signOut: {
-        flex: 1,
-        alignItems: 'center',
+    logoutBtn:{
+        marginTop: 50,
+        marginLeft:'30%',
+        height: 30
     },
 
     userDetailsText:{

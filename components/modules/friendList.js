@@ -11,26 +11,110 @@ class FriendList extends Component {
     constructor(props){
         super(props);
 
-        // this.token = '';
-        // this.user_id = '';
-
         this.state = {
             userFriendList: [],
+            userId: this.props.userId,
+            first_name: '',
         }
     }
 
-    async componentDidMount(){
+    async componentDidMount(){ 
+        this.loadFriend();
+        this.seeAllFriend();
         this.focusListener = this.props.navigation.addListener('focus', async () => {
+           
             this.seeAllFriend();
+            this.loadFriend();
         })
-
     }
+    componentWillUnmount() {
+        this.focusListener();
+      }
 
+    loadFriend = async() => {
+
+        let user_id = await AsyncStorage.getItem('user_id');
+        let token = await AsyncStorage.getItem('@session_token');
+
+        if(this.state.userId == ''){
+            this.setState({
+                userId: user_id
+            })
+        }
+
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.userId, {
+            method: 'get',
+            headers: {
+                "X-Authorization": token,
+                'Content-Type': 'application/json'
+            },
+        })
+        .then((response) => {
+            switch(response.status){
+                case 200: 
+                    return response.json()
+                    break
+                case 401:
+                    throw {errorCase: "Unauthorised"}
+                    break
+                case 404:
+                    throw {errorCase: "UserNotFound"}
+                    break
+                case 500:
+                    throw {errorCase: "ServerError"}
+                    break
+                default:
+                    throw {errorCase: "WentWrong"}
+                    break
+            }
+        })
+        .then(responseJson => {
+            this.setState({
+                first_name: responseJson.first_name,
+            })
+            console.log(first_name)
+        }) 
+        .catch((error) => {
+            console.log(error);
+            switch (error.errorCase){
+
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
+    }
     seeAllFriend = async() => {
         
+        let user_id = await AsyncStorage.getItem('user_id');
         let token = await AsyncStorage.getItem('@session_token');
-        let userId = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
+        if(this.state.userId == ''){
+            this.setState({
+                userId: user_id
+            })
+        }
+        return fetch("http://localhost:3333/api/1.0.0/user/"+  this.state.userId + "/friends", {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -40,34 +124,70 @@ class FriendList extends Component {
         .then((response) => {
             switch(response.status){
                 case 200: 
-                    return response.json()
+                return response.json()
                     break
                 case 401:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "Unauthorised"})
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "ViewFriend"})
+                    throw {errorCase: "ViewFriend"}
                     break
                 case 404:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "UserNotFound"})
+                    throw {errorCase: "UserNotFound"}
                     break
                 case 500:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "ServerError"})
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    this.props.navigation.navigate("ErrorAlert", {errorCase: "WentWrong"})
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
         .then(responseJson => {
             this.setState({
                 userFriendList: responseJson,
+                isLoading: false
             })
         }) 
         .catch((error) => {
             console.log(error);
-        })
+            switch (error.errorCase){
 
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+
+                case 'ViewFriend':    
+                    this.setState({
+                        alertMessage: 'Can only view the friends of yourself or your friends',
+                        isLoading: false,
+                    })
+                    break
+                    
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
+        })
+        
     }
 
 
@@ -77,7 +197,8 @@ class FriendList extends Component {
         
         <View style = {stylesIn.flexContainer}>  
 
-            <Text style={styles.postHeaderText}>All friends:</Text>
+            <Text style={styles.postHeaderText}>{this.state.first_name}'s friends:</Text>
+            
             <FlatList
                 // calling the array 
                 data={this.state.userFriendList}
@@ -96,7 +217,7 @@ class FriendList extends Component {
                         </View>
                         <View style = {styles.inPostHeader}>    
                             <Text 
-                            onPress = {() => {this.profileNavigate(item.user_id)}} 
+                            onPress = {() => {this.props.navigation.navigate("FriendProfile", {friendId: item.user_id})}} 
                             style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} 
                             </Text>              
                         </View>

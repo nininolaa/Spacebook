@@ -11,7 +11,8 @@ import { View, Image , StyleSheet} from 'react-native';
         return(
         
         <View style={stylesIn.homeLogo}>
-            <Image source={require('../../assets/img/banner.png')} style={stylesIn.logoImg} ></Image> 
+            <Image source={require('../../assets/img/banner.png')} style={[stylesIn.logoImg]} 
+            ></Image> 
         </View>
 
         )
@@ -26,9 +27,7 @@ import { View, Image , StyleSheet} from 'react-native';
     logoImg: {
         flex: 1,
         justifyContent: 'center',
-        // alignContent: 'center',
         alignItems: 'center',
-        //backgroundColor: 'pink',
         width: '50%',
         resizeMode: 'contain'
      },

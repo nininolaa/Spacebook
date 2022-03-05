@@ -254,11 +254,17 @@ export default StyleSheet.create({
         
         //error message
         errorMessage:{
-            fontSize: 25,
+            fontSize: 20,
             color: '#B90E0A',
             justifyContent: 'center',
             padding: 20,
+        },
 
+        errorMessageSmall:{
+            fontSize: 15,
+            color: '#B90E0A',
+            justifyContent: 'center',
+            padding: 20,
         }
 
 

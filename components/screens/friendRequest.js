@@ -91,28 +91,55 @@ import styles from "../modules/stylesheet";
         .then((response) => {
             switch(response.status){
                 case 200:
-                    console.log('friend accepted')
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 404:
-                    throw 'Not Found'
+                    throw {errorCase: "Not Found"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
         .then((response) => {
-            this.setState({isLoading: false})
-            this.props.navigation.navigate("Friends")
+            this.setState({
+                isLoading: false
+            })
+            this.friendRequests();
           })
         .catch((error) => {
         console.log(error);
+            switch (error.errorCase){
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'Not Found':    
+                    this.setState({
+                        alertMessage: 'Error, Not Found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+        }
         })
     }
 
@@ -130,30 +157,55 @@ import styles from "../modules/stylesheet";
         .then((response) => {
             switch(response.status){
                 case 200:
-                    console.log("Rejected friend request");
                     break
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
                 case 404:
-                    throw 'Not Found'
+                    throw {errorCase: "Not Found"}
                     break
                 case 500:
-                    throw 'Server Error'
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
             }
         })
         .then((response) => {
+            this.setState({
+                isLoading: false
+            })
             this.friendRequests();
         })
-        .then((response) => {
-            this.setState({isLoading: false})
-          })
         .catch((error) => {
         console.log(error);
+            switch (error.errorCase){
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'Not Found':    
+                    this.setState({
+                        alertMessage: 'Error, Not Found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
         })
     }
 
@@ -175,8 +227,8 @@ import styles from "../modules/stylesheet";
                 </View>
 
                 <View style = {stylesIn.mainContext}>
-            
-                <Text style={styles.postHeaderText}>Your friend requests</Text>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                <Text style={styles.postHeaderText}>Your friend requests:</Text>
                 
                 <FlatList
                     // calling the array 

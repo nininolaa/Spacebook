@@ -14,11 +14,13 @@ export function likePost(token, user_id, post_id) {
                 case 200: 
                     return true;
                     break
+                case 400:
+                    throw 'You already like this post'
                 case 401:
                     throw 'Unauthorised'
                     break
                 case  403:
-                    throw '	Forbidden - You have already liked this post'
+                    throw '	Forbidden - You can only like a post of your friend '
                     break
                 case 404:
                     throw 'Not found'
@@ -36,7 +38,7 @@ export function likePost(token, user_id, post_id) {
         })
 }
 
-export async function unlikePost(token, user_id, post_id) {
+export function unlikePost(token, user_id, post_id) {
 
     return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
         method: 'delete',
@@ -44,7 +46,7 @@ export async function unlikePost(token, user_id, post_id) {
             "X-Authorization": token,
             'Content-Type': 'application/json'
         },
-        })
+    })
         .then((response) => {
         switch(response.status){
             case 200: 

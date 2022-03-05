@@ -20,7 +20,7 @@ class FeedWall extends Component {
         }
     }
 
-    async componentDidMount(){
+    componentDidMount = async() =>{
         this.state.user_id = await AsyncStorage.getItem('user_id')
         this.focusListener = this.props.navigation.addListener('focus', async () => {
             this.userPosts();
@@ -117,7 +117,7 @@ class FeedWall extends Component {
         
         let token = await AsyncStorage.getItem('@session_token')
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.userId + "/post/" + post_id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.state.user_id+ "/post/" + post_id, {
             method: 'PATCH',
             headers: {
                 "X-Authorization": token,
@@ -325,7 +325,7 @@ class FeedWall extends Component {
                                     <Text 
                                     onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.user_id})}} 
                                     style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                    <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
+                                    <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp}</Text>
                                     
                                 </View>     
                             </View> 

@@ -32,7 +32,7 @@ import styles from "../modules/stylesheet";
             first_name: {required:true , maxlength: 50 },
             last_name: {required:true, maxlength: 50},
             email: { required: true , email:true},
-            password: {required: true, minlength: 8},
+            password: {required: true, minlength: 6},
             password_confirm: {required: true, equalPassword: this.state.password},
         })
 

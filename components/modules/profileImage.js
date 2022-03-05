@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity , Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from "../modules/stylesheet";
 
 
 class ProfileImage extends Component{
@@ -20,6 +21,10 @@ componentDidMount(){
     this.getImage()
   })
     
+}
+
+componentWillUnmount() {
+  this.focusListener();
 }
 
 async getImage() {
@@ -57,7 +62,7 @@ render(){
           }}
           style = {{
             width: this.props.width,
-            height: this.props.height
+            height: this.props.height,
           }}></Image>
         </View>
     )
@@ -65,16 +70,16 @@ render(){
 
     else{
       return(
-        <View style={styles.container}>
+        <View style={stylesIn.container}>
           <Image source={{
             uri: this.state.profileImage
           }}
           style = {{
             width: this.props.width,
-            height: this.props.height
+            height: this.props.height,
           }}></Image>
           <TouchableOpacity
-            style = {styles.navigateBtn}
+            style = {[styles.navigateBtn, stylesIn.btnWidth]}
             onPress = {() => {this.props.navigation.navigate("UploadPicture")}}
             ><Text style = {styles.navigateBtnText}>Upload profile picture</Text>
           </TouchableOpacity>
@@ -88,9 +93,11 @@ render(){
 
 export default ProfileImage;
 
-const styles = StyleSheet.create({
+const stylesIn = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent:'center',
+    alignItems:'center'
   },
   camera: {
     flex: 1,
@@ -110,4 +117,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
+
+  btnWidth:{
+    width: 150,
+    marginTop: 5,
+  }
 });

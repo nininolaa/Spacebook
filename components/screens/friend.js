@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Searchbar } from 'react-native-paper';
-import { View,Text, StyleSheet, Button, TextInput, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
+import { View,Text, StyleSheet, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeLogo from '../modules/homeLogo';
@@ -26,11 +26,14 @@ import FriendList from '../modules/friendList';
     }
 
     async componentDidMount(){
-        
-        this.focusListener = this.props.navigation.addListener('focus', async () => {
-            this.seeAllFriend();
-        })
+        let userId = await AsyncStorage.getItem('user_id');
+        this.setState({user_id: userId})
+
+        // this.focusListener = this.props.navigation.addListener('focus', async () => {
+        //     this.seeAllFriend();
+        // })
     }
+    
 
     addFriend = async() => {
         let token = await AsyncStorage.getItem('@session_token');
@@ -105,90 +108,10 @@ import FriendList from '../modules/friendList';
         })
     }
 
-    seeAllFriend = async() => {
-        let token = await AsyncStorage.getItem('@session_token');
-        let userId = await AsyncStorage.getItem('user_id');
-
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ userId + "/friends", {
-            method: 'get',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },  
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200: 
-                return response.json()
-                    break
-                case 401:
-                    throw {errorCase: "Unauthorised"}
-                    break
-                case 403:
-                    throw {errorCase: "ViewFriend"}
-                    break
-                case 404:
-                    throw {errorCase: "UserNotFound"}
-                    break
-                case 500:
-                    throw {errorCase: "ServerError"}
-                    break
-                default:
-                    throw {errorCase: "WentWrong"}
-                    break
-            }
-        })
-        .then(responseJson => {
-            this.setState({
-                userFriendList: responseJson,
-                isLoading: false
-            })
-        }) 
-        .catch((error) => {
-            console.log(error);
-            switch (error.errorCase){
-
-                case 'Unauthorised':    
-                    this.setState({
-                        alertMessage: 'Unauthorised, Please login',
-                        isLoading: false,
-                    })
-                    break
-
-                case 'ViewFriend':    
-                    this.setState({
-                        alertMessage: 'Can only view the friends of yourself or your friends',
-                        isLoading: false,
-                    })
-                    break
-                    
-                case 'UserNotFound':    
-                    this.setState({
-                        alertMessage: 'Not found',
-                        isLoading: false,
-                    })
-                    break
-                case "ServerError":
-                    this.setState({
-                        alertMessage: 'Cannot connect to the server, please try again',
-                        isLoading: false,
-                    })
-                    break
-                case "WentWrong":
-                    this.setState({
-                        alertMessage: 'Something went wrong, please try again',
-                        isLoading: false,
-                    })
-                    break
-            }
-        })
-
-    }
 
     onSearchPress(){
         this.props.navigation.navigate("SearchResult",{query:this.state.searchQuery, friends:this.state.userFriendList})
     }
-
 
     render(){
         if(this.state.isLoading == true) {
@@ -200,7 +123,7 @@ import FriendList from '../modules/friendList';
         return(
         
         <View style = {stylesIn.flexContainer}>
-             <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+             
             <View style = {stylesIn.homeLogo}>
             <HomeLogo></HomeLogo>
             </View>
@@ -225,38 +148,11 @@ import FriendList from '../modules/friendList';
             
 
             <View style = {stylesIn.friendList}>
-                {/* <FriendList
-                    userIdd={this.state.user_id}
-                    happy={'happy'}
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                <FriendList
+                    userId={this.state.user_id}
                     navigation={this.props.navigation}
-                ></FriendList> */}
-                <Text style={styles.postHeaderText}>All friends:</Text>
-                <FlatList
-                    // calling the array 
-                    data={this.state.userFriendList}
-                    
-                    //specify the item that we want to show on the list
-                    renderItem={({item}) => (
-                        <View style = {[styles.inPostContainer,styles.postBox]}>
-                            <View style = {styles.inPostImage}>
-                            <ProfileImage
-                            userId = {item.user_id}
-                            isEditable = {false}
-                            width = {50}
-                            height = {50}
-                            navigation={this.props.navigation}
-                            ></ProfileImage>
-                            </View>
-                            <View style = {styles.inPostHeader}>    
-                                <Text 
-                                onPress = {() => {this.props.navigation.navigate("FriendProfile", {friendId: item.user_id})}} 
-                                style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} 
-                                </Text>              
-                            </View>
-                        </View>
-                    )}
-                    keyExtractor={(item) => item.user_id.toString()}
-                /> 
+                ></FriendList>
             </View>
             
         </View>

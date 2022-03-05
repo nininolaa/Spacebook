@@ -20,8 +20,9 @@ import { TouchableOpacity } from 'react-native';
             searchList: [],
             isLoading: true,
             alertMessage: '',
-            offset: '',
-            limit: '',
+            offset: 0,
+            limit: 5,
+            searchQuery: '',
         }
     }
 
@@ -29,12 +30,10 @@ import { TouchableOpacity } from 'react-native';
         this.searchQuery();
     }
 
-    //search_in ,limit and offset??
     async searchQuery (){
-
         let token = await AsyncStorage.getItem('@session_token');
 
-        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.props.route.params.query + "&limit=7" + "&offset=5", {
+        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.props.route.params.query + "&limit=" + this.state.limit + "&offset=" + this.state.offset, {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -100,8 +99,31 @@ import { TouchableOpacity } from 'react-native';
             })
     }
 
-    loadFriendProfile(friendId) {
-        this.props.navigation.navigate("FriendProfile", {friendId: friendId})
+    onSearchPress(){
+       this.searchQuery();
+    }
+
+    nextPage() {
+        
+        this.setState({
+            offset: this.state.offset + this.state.limit
+        })
+        this.searchQuery();
+    }
+
+    previousPage() {
+        
+        if (this.state.offset <= 0){
+            this.setState({
+                offset: 0
+            })
+        }
+        else{
+            this.setState({
+                offset: this.state.offset - this.state.limit
+            })
+        }
+        this.searchQuery();
     }
 
     render(){
@@ -127,8 +149,8 @@ import { TouchableOpacity } from 'react-native';
             <View style = {stylesIn.friendSearch}>
                 <Searchbar 
                 placeholder="Find friends"
-                onChangeText = {(query) => {this.searchQuery = query}}
-                onIconPress={() => {this.searchQuery()}}
+                onChangeText = {(query) => {this.setState({searchQuery: query})}}
+                onIconPress={() => {this.onSearchPress()}}
                 ></Searchbar>
             </View>
 
@@ -154,7 +176,7 @@ import { TouchableOpacity } from 'react-native';
                         </View>
                         
                         <View style = {styles.inPostHeader}>    
-                            <Text onPress = {() => {this.loadFriendProfile(item.user_id)}} style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} </Text>              
+                            <Text onPress = {() => {this.props.navigation.navigate("FriendProfile", {friendId: item.user_id})}} style = {styles.postNameText}> {item.user_givenname} {item.user_familyname} {'\n'} </Text>              
                         </View>
                     </View>
                 )}
@@ -164,12 +186,14 @@ import { TouchableOpacity } from 'react-native';
             <View style = {stylesIn.btnContainer}>
                     <View style = {stylesIn.leftBtn}>
                         <TouchableOpacity
+                        onPress = {() => {this.previousPage()}}
                         style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
                             <Text style = {styles.actionBtnLight}>Back</Text>
                         </TouchableOpacity>
                     </View>
                     <View style = {stylesIn.rightBtn}>
                         <TouchableOpacity
+                        onPress = {() => {this.nextPage()}}
                         style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
                             <Text style = {styles.actionBtnLight}>Next</Text>
                         </TouchableOpacity>
