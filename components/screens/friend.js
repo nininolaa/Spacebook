@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import { Searchbar } from 'react-native-paper';
-import { View,Text, StyleSheet, FlatList,  ScrollView, TouchableOpacity} from 'react-native';
+import { View,Text, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from '../modules/isLoading';
 import styles from "../modules/stylesheet";
-import ProfileImage from '../modules/profileImage';
 import FriendList from '../modules/friendList';
 
  class FriendScreen extends Component {
@@ -26,94 +25,22 @@ import FriendList from '../modules/friendList';
     }
 
     async componentDidMount(){
+        
         let userId = await AsyncStorage.getItem('user_id');
-        this.setState({user_id: userId})
+        // this.setState({user_id: userId})
 
-        // this.focusListener = this.props.navigation.addListener('focus', async () => {
-        //     this.seeAllFriend();
-        // })
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.setState({user_id: userId})
+        })
     }
     
-
-    addFriend = async() => {
-        let token = await AsyncStorage.getItem('@session_token');
-        let user_id = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.friendId + "/friends", {
-            method: 'POST',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },  
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200: 
-                    break
-                case 401:
-                    throw {errorCase: "Unauthorised"}
-                    break
-                case 403:
-                    throw {errorCase: "AlreadyAdded"}
-                    break
-                case 404:
-                    throw {errorCase: "UserNotFound"}
-                    break
-                case 500:
-                    throw {errorCase: "ServerError"}
-                    break
-                default:
-                    throw {errorCase: "WentWrong"}
-                    break
-            }
-        })
-        .then((response) => {
-            this.setState({isLoading: false})
-            console.log("Request sent");
-        })
-        .catch((error) => {
-        console.log(error);
-            switch (error.errorCase){
-
-                case 'Unauthorised':    
-                    this.setState({
-                        alertMessage: 'Unauthorised, Please login',
-                        isLoading: false,
-                    })
-                    break
-                case 'AlreadyAdded':    
-                    this.setState({
-                        alertMessage: 'User is already added as a friend',
-                        isLoading: false,
-                    })
-                    break
-                case 'UserNotFound':    
-                    this.setState({
-                        alertMessage: 'Not found',
-                        isLoading: false,
-                    })
-                    break
-                case "ServerError":
-                    this.setState({
-                        alertMessage: 'Cannot connect to the server, please try again',
-                        isLoading: false,
-                    })
-                    break
-                case "WentWrong":
-                    this.setState({
-                        alertMessage: 'Something went wrong, please try again',
-                        isLoading: false,
-                    })
-                    break
-            }
-        })
-    }
-
 
     onSearchPress(){
         this.props.navigation.navigate("SearchResult",{query:this.state.searchQuery, friends:this.state.userFriendList})
     }
 
     render(){
+        
         if(this.state.isLoading == true) {
             return(
                 <IsLoading></IsLoading>
@@ -125,15 +52,15 @@ import FriendList from '../modules/friendList';
         <View style = {stylesIn.flexContainer}>
              
             <View style = {stylesIn.homeLogo}>
-            <HomeLogo></HomeLogo>
+                <HomeLogo></HomeLogo>
             </View>
 
             <View style = {stylesIn.friendSearch}>
-            <Searchbar 
-            placeholder="Find friends"
-            onChangeText = {(query) => {this.setState({searchQuery: query})}}
-            onIconPress={() => {this.onSearchPress()}}
-            ></Searchbar>
+                <Searchbar 
+                placeholder="Find friends"
+                onChangeText = {(query) => {this.setState({searchQuery: query})}}
+                onIconPress={() => {this.onSearchPress()}}
+                ></Searchbar>
             </View>
 
             <View style = {stylesIn.friendBtnContainer}>
@@ -171,13 +98,11 @@ import FriendList from '../modules/friendList';
 
     homeLogo: {
         flex: 0.8,
-        //backgroundColor: 'blue'
     },
 
     friendSearch: {
         flex: 0.5,
         paddingHorizontal: 20,
-        //backgroundColor: 'green'
     },
 
     friendBtnContainer:{
@@ -192,11 +117,9 @@ import FriendList from '../modules/friendList';
     },
     friendRequestBtn:{
         flex: 1,
-        //backgroundColor: 'orange'
     },
     friendList:{
         flex: 2,
-       // backgroundColor: 'grey',
         paddingHorizontal: 20,
     },
  })

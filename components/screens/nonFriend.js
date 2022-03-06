@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
+import { View,Text, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
-import IsLoading from "../modules/isLoading";
 import styles from "../modules/stylesheet";
+import FriendHeading from '../modules/friendHeading';
+
 
  class NonFriendScreen extends Component {
 
@@ -22,53 +23,6 @@ import styles from "../modules/stylesheet";
         }
     }
 
-    componentDidMount(){
-       this.loadFriend();
-    }
-
-    async loadFriend (){
-
-        let token = await AsyncStorage.getItem('@session_token');
-
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.props.route.params.friendId, {
-            method: 'get',
-            headers: {
-                "X-Authorization": token,
-                'Content-Type': 'application/json'
-            },
-        })
-        .then((response) => {
-            switch(response.status){
-                case 200: 
-                    return response.json()
-                    break
-                case 401:
-                    throw 'Unauthorised'
-                    break
-                case 404:
-                    throw 'User not found'
-                    break
-                case 500:
-                    throw 'Server Error'
-                    break
-                default:
-                    throw 'Something went wrong'
-                    break
-            }
-        })
-        .then(responseJson => {
-            this.setState({
-                profile: responseJson,
-                first_name: responseJson.first_name,
-                last_name: responseJson.last_name,
-                user_id: responseJson.user_id,
-                email: responseJson.email,
-                friend_count: responseJson.friend_count,
-                isLoading: false,
-            })
-        }) 
-    }
-
     addFriend = async() => {
 
         let token = await AsyncStorage.getItem('@session_token');
@@ -82,7 +36,8 @@ import styles from "../modules/stylesheet";
         })
         .then((response) => {
             switch(response.status){
-                case 200: 
+                case 201: 
+                    throw 'OK'
                     break
                 case 401:
                     throw {errorCase: "Unauthorised"}
@@ -144,43 +99,44 @@ import styles from "../modules/stylesheet";
     } 
 
     render(){
-        if(this.state.isLoading == true){
-            return(
-                <IsLoading></IsLoading>
-              );
-        }
-        else{
         return(
         
         <View style = {stylesIn.flexContainer}>
             
-            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-
             <View style = {stylesIn.homeLogo}>
-            <HomeLogo></HomeLogo>
-            
+                <HomeLogo>
+                </HomeLogo>
             </View>
 
-            <View style = {stylesIn.friendSearch}>
+            <View style = {stylesIn.friendProfile}>
+            <FriendHeading
+                friend_id={this.props.route.params.friendId}
+                navigation={this.props.navigation}
+            ></FriendHeading>
             </View>
 
-            <View style = {stylesIn.postFeed}>
-                <Text> User id: {this.state.user_id}</Text>
-                <Text>First Name: {this.state.first_name}</Text>
-                <Text>Last Name: {this.state.last_name}</Text>
-                <Text>Email: {this.state.email}</Text>
-                <Text>Friend count: {this.state.friend_count}</Text>
+            <View style = {stylesIn.notFriendMeessage}>
+                <Text  style = {stylesIn.notFriendMeessageText}> You can't view their feed until you become friends</Text>
             </View>
 
-            <View styles = {stylesIn.mainMenu}>
-            <Button 
-            title = "Add friend"
-            onPress= {this.addFriend}
-            ></Button>
+            <View styles = {stylesIn.addFriend}>
+                <TouchableOpacity
+                onPress = {this.addFriend}
+                style = {[stylesIn.actionBtn,styles.actionBtnOrange]}
+                ><Text style = {styles.actionBtnLight}>Add Friend</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style = {stylesIn.backToTab}>
+                <TouchableOpacity
+                onPress={() => {(this.props.navigation.navigate("Friends"))}}
+                style = {[stylesIn.actionBtn,styles.actionBtnGrey]}
+                ><Text style = {styles.actionBtnLight}>Back to your friend list</Text>
+                </TouchableOpacity>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
             </View>
         </View>
         )
-        }
     }
  }
 
@@ -190,22 +146,43 @@ import styles from "../modules/stylesheet";
 
     flexContainer: {
         flex: 1,
+        backgroundColor: "#fdf6e4",
     },
 
     homeLogo: {
-        flex: 5,
+        flex: 2,
     },
 
-    friendSearch: {
-        flex: 5,
+    friendProfile: {
+        flex: 3,
     },
 
-    postFeed: {
-        flex: 30,
+    notFriendMeessage:{
+        flex: 1,
+        justifyContent: 'center'
     },
 
-    mainMenu: {
-        flex: 20,
+    addFriend:{
+        flex: 1.5,
+    },
+
+    backToTab:{
+        flex: 1.5,
+    },
+
+    notFriendMeessageText:{
+        fontSize: 18,
+        color: '#DD571C',
+        textAlign: 'center'
+    },
+
+    actionBtn:{
+        height: 40,
+        margin: 10,
+        width: '60%',
+        marginLeft: 90,
+        border: 5,
+        borderRadius: 5,
     }
  
  })

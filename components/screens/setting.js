@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import { View, TextInput,Button,TouchableOpacity,Text, StyleSheet,ScrollView} from 'react-native';
+import { View, TextInput,TouchableOpacity,Text, StyleSheet,ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ValidationComponent from 'react-native-form-validator';
 
 import styles from "../modules/stylesheet";
 import IsLoading from "../modules/isLoading";
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import ProfileImage from '../modules/profileImage';
 
 
@@ -303,8 +303,7 @@ import ProfileImage from '../modules/profileImage';
 
            
             <View style = {stylesIn.homeLogo}>
-            
-                <HomeLogo></HomeLogo>
+                <Logo></Logo>
             </View>
             
             <View style = {stylesIn.userProfile}>
@@ -319,13 +318,14 @@ import ProfileImage from '../modules/profileImage';
                 </View>
 
                 <View style = {stylesIn.userDetails}>
-                <Text style = {styles.profileText}>ID:{this.state.user_id} </Text>
-                <Text style = {styles.profileText}>{this.state.first_name} {this.state.last_name} </Text>
+                    <Text style = {styles.profileText}>ID:{this.state.user_id} </Text>
+                    <Text style = {styles.profileText}>{this.state.first_name} {this.state.last_name} </Text>
                 </View>
             </View>
 
             <View style = {stylesIn.userUpdateDetails}>
                 <Text style={styles.postHeaderText}>Edit Profile </Text>
+
                 <Text style = {stylesIn.userDetailsText}>First Name: </Text> 
                 <TextInput
                     style = {[stylesIn.userDetailsText, styles.updateInput]}
@@ -336,7 +336,7 @@ import ProfileImage from '../modules/profileImage';
                     {this.isFieldInError('first_name') && this.getErrorsInField('first_name').map(errorMessage => 
                     <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage} </Text>
                     )} 
-                    
+
                 <Text style = {stylesIn.userDetailsText}>Last Name: </Text>
                 <TextInput 
                     style = {[stylesIn.userDetailsText, styles.updateInput]}
@@ -361,7 +361,6 @@ import ProfileImage from '../modules/profileImage';
                     )}
 
                 <Text style = {stylesIn.userDetailsText}>Password:</Text>
-               
                 <TextInput
                 style = {[stylesIn.userDetailsText, styles.updateInput]}
                 placeholder="Enter new password..."
@@ -394,13 +393,15 @@ import ProfileImage from '../modules/profileImage';
                 onPress = {()=> this.updateInfo()}
                 style = {[stylesIn.editBtn , stylesIn.updateBtnColor, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
                 ><Text style = {[stylesIn.editBtnText]}>Update information</Text></TouchableOpacity>     
+                
+                <Text style = {styles.errorMessage}> {this.state.alertMessage} </Text>
                 <TouchableOpacity
                 onPress={() => {this.logout()}}
                 style = {[styles.loginButton, stylesIn.logoutBtn]}
                 >
                 <Text>Sign Out</Text>
                 </TouchableOpacity>
-                <Text style = {styles.errorMessage}> {this.state.alertMessage} </Text>
+                
                
             </View>
 

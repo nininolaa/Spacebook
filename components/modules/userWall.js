@@ -172,6 +172,7 @@ class UserWall extends ValidationComponent {
                     editable: false,
                     isLoading: false
                 });
+                this.userPosts();
             })
             .catch((error) => {
             console.log(error);
@@ -255,6 +256,7 @@ class UserWall extends ValidationComponent {
         })
         .then((response) => {
             console.log("Post deleted ");
+            this.userPosts();
         })
         .catch((error) => {
         switch (error.errorCase){

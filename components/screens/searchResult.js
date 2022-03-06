@@ -22,18 +22,18 @@ import { TouchableOpacity } from 'react-native';
             alertMessage: '',
             offset: 0,
             limit: 5,
-            searchQuery: '',
+            searchQuery:  this.props.route.params.query,
         }
     }
 
-    async componentDidMount(){
+    componentDidMount(){
         this.searchQuery();
     }
 
     async searchQuery (){
         let token = await AsyncStorage.getItem('@session_token');
 
-        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.props.route.params.query + "&limit=" + this.state.limit + "&offset=" + this.state.offset, {
+        return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.state.searchQuery + "&limit=" + this.state.limit + "&offset=" + this.state.offset, {
             method: 'get',
             headers: {
                 "X-Authorization": token,
@@ -155,7 +155,7 @@ import { TouchableOpacity } from 'react-native';
             </View>
 
             <View style = {stylesIn.friendLists}>
-           
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
                 <Text style = {styles.postHeaderText}>Search Result</Text>
 
                 <FlatList
@@ -184,21 +184,20 @@ import { TouchableOpacity } from 'react-native';
             />
             </View>
             <View style = {stylesIn.btnContainer}>
-                    <View style = {stylesIn.leftBtn}>
-                        <TouchableOpacity
-                        onPress = {() => {this.previousPage()}}
-                        style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
-                            <Text style = {styles.actionBtnLight}>Back</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style = {stylesIn.rightBtn}>
-                        <TouchableOpacity
-                        onPress = {() => {this.nextPage()}}
-                        style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
-                            <Text style = {styles.actionBtnLight}>Next</Text>
-                        </TouchableOpacity>
-                    </View>
-
+                <View style = {stylesIn.leftBtn}>
+                    <TouchableOpacity
+                    onPress = {() => {this.previousPage()}}
+                    style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
+                        <Text style = {styles.actionBtnLight}>Back</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style = {stylesIn.rightBtn}>
+                    <TouchableOpacity
+                    onPress = {() => {this.nextPage()}}
+                    style = {[stylesIn.backBtn, styles.actionBtnOrange]}>
+                    <Text style = {styles.actionBtnLight}>Next</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
         </View>

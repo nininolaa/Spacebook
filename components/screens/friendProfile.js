@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Button, ScrollView} from 'react-native';
+import { View,Text, StyleSheet, TextInput, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {likePost, unlikePost} from '../../libs/postFunctions';
 import ValidationComponent from 'react-native-form-validator';
@@ -27,14 +27,17 @@ class FriendProfile extends ValidationComponent {
             addPost: '',
             isLoading: true,
             alertMessage: '',
+            friendId: this.props.route.params.friendId 
         }
     }
 
     async componentDidMount(){
         this.state.user_id = await AsyncStorage.getItem('user_id')
-        this.state.token = await AsyncStorage.getItem('@session_token')
+        this.state.token = await AsyncStorage.getItem('@session_token');
         this.userPosts();
+      
     }
+
 
     addPost = async() => {
 
@@ -112,7 +115,7 @@ class FriendProfile extends ValidationComponent {
 
     userPosts = () => {
 
-        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.props.route.params.friendId + "/post", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+ this.state.friendId + "/post", {
             method: 'get',
             headers: {
                 "X-Authorization": this.state.token,
@@ -128,7 +131,7 @@ class FriendProfile extends ValidationComponent {
                     throw {errorCase: "Unauthorised"}
                     break
                 case 403:
-                    this.props.navigation.navigate("NonFriendScreen", {friendId: this.props.route.params.friendId})
+                    this.props.navigation.navigate("NonFriendScreen", {friendId: this.state.friendId})
                     break
                 case 404:
                     throw {errorCase: "UserNotFound"}
@@ -367,6 +370,12 @@ class FriendProfile extends ValidationComponent {
         return this.state.user_id
     }
 
+    reLoadProfile(new_id){
+        this.setState({
+            friendId: new_id
+        })
+    }
+
 
     render(){
         if(this.state.isLoading == true){
@@ -411,7 +420,7 @@ class FriendProfile extends ValidationComponent {
                         style = {[stylesIn.seeFriendBtn,stylesIn.friendBtnOrange]}
                         onPress = {() => this.props.navigation.navigate("FriendsOfFriend",{userId: this.props.route.params.friendId  })}
                         >
-                        <Text style = {stylesIn.seeFriendBtnText}>See all {this.state.first_name}'s friends</Text>
+                        <Text style = {stylesIn.seeFriendBtnText}>See all friends</Text>
                         </TouchableOpacity>
                     </View>
                     
@@ -459,10 +468,17 @@ class FriendProfile extends ValidationComponent {
                                     ></ProfileImage>
                                 </View>
                                 <View style = {styles.inPostHeader}>
-                                    <Text style = {styles.postNameText}>{item.author.first_name} {item.author.last_name}</Text>    
-                                    <Text style = {styles.postInfoText}
-                                    onPress = {() => {this.props.navigation.navigate("SinglePost", {post_id: item.post_id, userId: this.props.route.params.friendId})}}
-                                    >Post id: {item.post_id} | {item.timestamp} </Text>
+                                    <Text 
+                                    style = {styles.postNameText}
+                                    onPress = {() => {
+                                        this.setState({friendId: item.author.user_id})
+                                        // this.userPosts();
+                                        this.componentDidMount();
+                                    }
+                                    }
+                                    // onPress = {this.reLoadProfile(item.author.user_id)}
+                                    >{item.author.first_name} {item.author.last_name}</Text>    
+                                    <Text style = {styles.postInfoText}>Post id: {item.post_id} | {item.timestamp} </Text>
                                 </View> 
                             </View> 
                         
@@ -500,6 +516,7 @@ class FriendProfile extends ValidationComponent {
 
                                 <View style = {[stylesIn.editBtnContainer, this.isUserPost() !=  item.author.user_id ? styles.showEdit : styles.hideEdit ]}>
 
+                                    
                                     <View style = {styles.btnContainer1}>
                                         <TouchableOpacity
                                             onPress = {
@@ -512,12 +529,13 @@ class FriendProfile extends ValidationComponent {
                                             }
                                             style = {[styles.actionBtn, styles.actionBtnBlue]}
                                         ><Text style = {styles.actionBtnLight}>Like</Text></TouchableOpacity>
+                                        
                                     </View>
 
                                     <View style = {styles.btnContainer2}>
                                         <TouchableOpacity
                                             onPress = {
-                                            () => unlikePost(this.state.token, item.author.user_id , item.post_id) 
+                                            () => unlikePost(this.state.token, item.author.user_id , item.post_id, this.state.alertMessage) 
                                             .then(() => {
                                                 this.userPosts();  
                                             }) 

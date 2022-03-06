@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, Button, TextInput, FlatList} from 'react-native';
+import { View,Text, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FriendList from '../modules/friendList';
 import HomeLogo from '../modules/homeLogo';
 
- class SinglePost extends Component {
+ class FriendsOfFriend extends Component {
 
     constructor(props){
         super(props); 
@@ -18,6 +18,10 @@ import HomeLogo from '../modules/homeLogo';
             userPostList: [],
             userId: this.props.route.params.userId
         }
+    }
+
+    componentDidMount(){
+        console.log(this.state.userId)
     }
 
     render(){
@@ -35,7 +39,7 @@ import HomeLogo from '../modules/homeLogo';
                     userId={this.state.userId}
                     navigation={this.props.navigation}
                 ></FriendList>
-         
+                
             </View>
         </View>
         )
@@ -60,6 +64,6 @@ import HomeLogo from '../modules/homeLogo';
  
  })
 
- export default SinglePost ;
+ export default FriendsOfFriend ;
 
 

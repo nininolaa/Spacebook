@@ -180,9 +180,10 @@ import styles from "../modules/stylesheet";
                     )}
             </View>
 
-            <Text>{this.state.alertMessage}</Text>
+            
             
             <View style =  {styles.loginButtonRow}>
+            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
             <Button
                 title='Register' 
                 color='#ffaf7a'

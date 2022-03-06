@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeLogo from '../modules/homeLogo';
 import IsLoading from "../modules/isLoading";
 import styles from "../modules/stylesheet";
+import ProfileImage from '../modules/profileImage';
 
  class FriendScreen extends Component {
 
@@ -221,51 +222,62 @@ import styles from "../modules/stylesheet";
             return(
             
             <View style = {stylesIn.flexContainer}>
-                 <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-                <View style = {stylesIn.homeLogo}>
-                <HomeLogo></HomeLogo>
-                </View>
-
-                <View style = {stylesIn.mainContext}>
                 <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-                <Text style={styles.postHeaderText}>Your friend requests:</Text>
-                
-                <FlatList
-                    // calling the array 
-                    data={this.state.friendRequestList}
+                    <View style = {stylesIn.homeLogo}>
+                        <HomeLogo></HomeLogo>
+                    </View>
 
-                    //specify the item that we want to show on the list
-                    renderItem={({item}) => (
-                        <View style = {styles.postBox}>
-                        <View style = {styles.inPostContainer}>
-                            <View style = {styles.inPostImage}>
-                            </View>
-                            <View style = {styles.inPostHeader}>
-                            <Text style = {styles.postNameText}>{item.first_name} {item.last_name} </Text>
-                            </View>
-                        </View>
-                            <View style = {stylesIn.btnContainer}>
-                                <View style = {styles.btnContainer1}>
-                                    <TouchableOpacity  
-                                    style = {[styles.actionBtn, styles.actionBtnGreen]}
-                                    onPress={() => this.acceptFriend(item.user_id)}>
-                                    <Text style = {[styles.actionBtnLight]}>Accept</Text>
-                                    </TouchableOpacity>
-                                </View>
+                    <View style = {stylesIn.mainContext}>
+                        <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                        <Text style={styles.postHeaderText}>Your friend requests:</Text>
+                    
+                        <FlatList
+                            // calling the array 
+                            data={this.state.friendRequestList}
 
-                                <View style = {styles.btnContainer2}>
-                                    <TouchableOpacity 
-                                    style = {[styles.actionBtn,styles.actionBtnRed]}
-                                    onPress={() => this.removeFriend(item.user_id)}>
-                                    <Text style = {styles.actionBtnLight}>Reject</Text>
-                                    </TouchableOpacity>
+                            //specify the item that we want to show on the list
+                            renderItem={({item}) => (
+                                <View style = {styles.postBox}>
+                                    <View style = {styles.inPostContainer}>
+                                        <View style = {styles.inPostImage}>
+                                            <ProfileImage
+                                                userId = {item.user_id}
+                                                isEditable = {false}
+                                                width = {50}
+                                                height = {50}
+                                                navigation={this.props.navigation}
+                                            ></ProfileImage>
+                                        </View>
+                                        <View style = {styles.inPostHeader}>
+                                            <Text 
+                                            style = {styles.postNameText}
+                                            onPress = {() => {this.props.navigation.navigate("FriendProfile", {friendId: item.user_id})}} 
+                                            >{item.first_name} {item.last_name} </Text>
+                                        </View>
+                                    </View>
+                                    
+                                    <View style = {stylesIn.btnContainer}>
+                                        <View style = {styles.btnContainer1}>
+                                            <TouchableOpacity  
+                                            style = {[styles.actionBtn, styles.actionBtnGreen]}
+                                            onPress={() => this.acceptFriend(item.user_id)}>
+                                            <Text style = {[styles.actionBtnLight]}>Accept</Text>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style = {styles.btnContainer2}>
+                                            <TouchableOpacity 
+                                            style = {[styles.actionBtn,styles.actionBtnRed]}
+                                            onPress={() => this.removeFriend(item.user_id)}>
+                                            <Text style = {styles.actionBtnLight}>Reject</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </View>
-                            </View>
-                        </View>
-                    )}
-                    keyExtractor={(item) => item.user_id.toString()}
-                />
-                </View>
+                            )}
+                            keyExtractor={(item) => item.user_id.toString()}
+                        />
+                    </View>
             </View>
             )
     }   }
@@ -284,11 +296,12 @@ import styles from "../modules/stylesheet";
     },
 
     mainContext:{
-        flex: 6,
+        flex: 3,
     },
 
     btnContainer:{
-        flex: 2,
+        flex: 1,
+        marginTop:10,
         flexDirection: 'row',
     }
  

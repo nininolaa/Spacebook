@@ -12,21 +12,23 @@ export function likePost(token, user_id, post_id) {
         .then((response) => {
             switch(response.status){
                 case 200: 
-                    return true;
                     break
                 case 400:
-                    throw 'You already like this post'
+                    throw {errorCase: "Liked"}
                 case 401:
-                    throw 'Unauthorised'
+                    throw {errorCase: "Unauthorised"}
                     break
-                case  403:
-                    throw '	Forbidden - You can only like a post of your friend '
+                case 403:
+                    throw {errorCase: "ForbiddenLikePost"}
                     break
                 case 404:
-                    throw 'Not found'
+                    throw {errorCase: "UserNotFound"}
+                    break
+                case 500:
+                    throw {errorCase: "ServerError"}
                     break
                 default:
-                    throw 'Something went wrong'
+                    throw {errorCase: "WentWrong"}
                     break
            }
         })
@@ -35,6 +37,45 @@ export function likePost(token, user_id, post_id) {
         })
         .catch((error) => {
             console.log(error);
+            switch (error.errorCase){
+
+                case 'Liked':    
+                    this.setState({
+                        alertMessage: 'You already like this post',
+                        isLoading: false,
+                    })
+                    break
+                case 'Unauthorised':    
+                    this.setState({
+                        alertMessage: 'Unauthorised, Please login',
+                        isLoading: false,
+                    })
+                    break
+                case 'ForbiddenLikePost':    
+                    this.setState({
+                        alertMessage: 'Forbidden - you can only delete your own posts',
+                        isLoading: false,
+                    })
+                    break
+                case 'UserNotFound':    
+                    this.setState({
+                        alertMessage: 'Not found',
+                        isLoading: false,
+                    })
+                    break
+                case "ServerError":
+                    this.setState({
+                        alertMessage: 'Cannot connect to the server, please try again',
+                        isLoading: false,
+                    })
+                    break
+                case "WentWrong":
+                    this.setState({
+                        alertMessage: 'Something went wrong, please try again',
+                        isLoading: false,
+                    })
+                    break
+            }
         })
 }
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { View,Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, TextInput } from 'react-native';
+import { View,Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import IsLoading from "../modules/isLoading";
 import styles from "../modules/stylesheet";
 import ProfileImage from '../modules/profileImage';
@@ -26,11 +26,15 @@ import UserWall from '../modules/userWall';
     }
 
     async componentDidMount() {
+
         this.state.user_id = await AsyncStorage.getItem('user_id');
+        this.loadProfile();
+
         this.focusListener = this.props.navigation.addListener('focus', async () => {  
            this.loadProfile();
         })
     }
+    
 
     loadProfile = async() => {
 
@@ -202,9 +206,8 @@ import UserWall from '../modules/userWall';
 
                 <View style = {stylesIn.firstSubContainer}>
 
-                        <View style = {stylesIn.homeLogo}>
-                        
-                        <HomeLogo></HomeLogo>
+                        <View style = {stylesIn.homeLogo}> 
+                            <Logo></Logo>
                         </View>
 
                         <View style = {stylesIn.profilePicture}>
@@ -216,7 +219,6 @@ import UserWall from '../modules/userWall';
                             navigation={this.props.navigation}
                             style = {stylesIn.imageAlign}
                             ></ProfileImage>
-
                         </View>
 
                     <View style = {stylesIn.userInfo}>
@@ -230,7 +232,6 @@ import UserWall from '../modules/userWall';
                         ><Text style = {styles.navigateBtnText}>Edit information</Text>
                         </TouchableOpacity>
                     </View>
-
                 </View>
 
                 <View style = {stylesIn.secondSubContainer}>
@@ -252,10 +253,6 @@ const stylesIn = StyleSheet.create({
     flexContainer: {
         flex: 1,
         backgroundColor: "#fdf6e4",
-    },
-
-    subMainContainer:{
-        flex:1
     },
 
     firstSubContainer:{
@@ -284,14 +281,6 @@ const stylesIn = StyleSheet.create({
 
     userPost: {
         flex: 8,
-    },
-
-    postHeaderText:{
-        border: 5,
-        borderColor: 'black',
-        fontSize: 25,
-        paddingBottom: 10,
-        fontWeight: 'bold',
     },
 
     imageAlign:{

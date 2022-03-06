@@ -110,21 +110,21 @@ class FriendHeading extends Component {
         <View style = {stylesIn.flexContainer}> 
 
             <View style = {stylesIn.subContainer} >
-            <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-                <View style = {stylesIn.friendImage}>
-                <ProfileImage
-                    userId = {this.props.friend_id}
-                    isEditable = {false}
-                    width = {100}
-                    height = {100}
-                    navigation={this.props.navigation}
-                ></ProfileImage>
-                </View>
-                <View style = {stylesIn.friendInfo}>
-                    <Text style = {styles.profileText}> ID: {this.state.user_id} | {this.state.first_name} {this.state.last_name}</Text>
-                    <Text>Email: {this.state.email}</Text>
-                    <Text>Friend count: {this.state.friend_count}</Text>
-                </View>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                    <View style = {stylesIn.friendImage}>
+                        <ProfileImage
+                            userId = {this.props.friend_id}
+                            isEditable = {false}
+                            width = {100}
+                            height = {100}
+                            navigation={this.props.navigation}
+                        ></ProfileImage>
+                    </View>
+                    <View style = {stylesIn.friendInfo}>
+                        <Text style = {styles.profileText}> ID: {this.state.user_id} | {this.state.first_name} {this.state.last_name}</Text>
+                        <Text>Email: {this.state.email}</Text>
+                        <Text>Friend count: {this.state.friend_count}</Text>
+                    </View>
             </View>    
         </View>
         )

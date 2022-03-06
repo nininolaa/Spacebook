@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { View,Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, TextInput, Button, Image} from 'react-native';
+import { View,Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //import styles from "./modules/stylesheet";
@@ -10,7 +10,8 @@ class UploadPicture extends Component{
         
         this.state = {
           hasPermission: null,
-          type: Camera.Constants.Type.front
+          type: Camera.Constants.Type.front,
+          alertMessage: ''
         }
     }
 
@@ -38,12 +39,65 @@ class UploadPicture extends Component{
         })
         .then((response) => {
           console.log("Picture added", response);
-          this.props.navigation.navigate("Profile");
+          switch(response.status){
+            case 200: 
+                this.props.navigation.navigate("Profile");
+                break
+            case 400:
+                throw {errorCase: "BadRequest"}
+                break
+            case 401:
+                throw {errorCase: "Unauthorised"}
+                break
+            case 404:
+                throw {errorCase: "NotFound"}
+                break
+            case 500:
+                throw {errorCase: "ServerError"}
+                break
+            default:
+                throw {errorCase: "WentWrong"}
+                break
+        }
+          
         })
         .catch((err) => {
           console.log(err);
-        })
+          switch (error.errorCase){
+
+            case 'BadRequest':    
+                this.setState({
+                    alertMessage: 'Bad request, please try again',
+                    isLoading: false,
+                })
+                break
+            case 'Unauthorised':    
+                this.setState({
+                    alertMessage: 'Unauthorised, please login',
+                    isLoading: false,
+                })
+                break     
+            case 'NotFound':    
+                this.setState({
+                    alertMessage: 'Not found',
+                    isLoading: false,
+                })
+                break
+            case "ServerError":
+                this.setState({
+                    alertMessage: 'Cannot connect to the server, please try again',
+                    isLoading: false,
+                })
+                break
+            case "WentWrong":
+                this.setState({
+                    alertMessage: 'Something went wrong, please try again',
+                    isLoading: false,
+                })
+                break
         }
+        })
+    }
     
     takePicture = async () => {
         if(this.camera){
@@ -81,6 +135,7 @@ class UploadPicture extends Component{
                     <TouchableOpacity
                     onPress={() => {this.takePicture()}}
                     ><Text style={styles.text}>Take Picture</Text></TouchableOpacity>
+                    <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
                   </View>
                 </View>
                 </Camera>
@@ -103,27 +158,29 @@ const styles = StyleSheet.create({
       backgroundColor: 'transparent',
       flexDirection: 'row',
       margin: 20,
-      justifyContent: 'space-around',
+      justifyContent: 'flex-end',
       alignItems: 'space-around',
     },
 
     flipButtonContainer:{
       flex: 1,
+      justifyContent:'flex-start',
+      alignItems: 'flex-start'
     },
 
     captureButtonContainer:{
       flex: 1,
+      alignItems: 'flex-end'
     },
 
     button: {
       flex: 0.1,
-      alignSelf: 'flex-end',
-      alignItems: 'center',
     },
 
     text: {
       fontSize: 18,
-      color: 'white',
+      color: 'black',
+      fontWeight: 3,
     },
   });
 

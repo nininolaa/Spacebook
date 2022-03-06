@@ -5,90 +5,139 @@ import styles from "../modules/stylesheet";
 
 
 class ProfileImage extends Component{
-  constructor(props){
-    super(props);
 
-    this.state = {
-      profileImage: ''
-    }
-  }
+      constructor(props){
+        super(props);
 
-componentDidMount(){
+        this.state = {
+          profileImage: '',
+          alertMessage: ''
+        }
+      }
 
-  this.getImage()
+      componentDidMount(){
 
-  this.focusListener = this.props.navigation.addListener('focus', async () => {
-    this.getImage()
-  })
-    
-}
+        this.getImage()
 
-componentWillUnmount() {
-  this.focusListener();
-}
-
-async getImage() {
-
-  let token =  await AsyncStorage.getItem('@session_token')
-
-  fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
-    method: "GET",
-    headers: {
-        "Content-Type": "image/png",
-        "X-Authorization": token
-    },
-  })
-
-  .then((res) => {
-    return res.blob();
-  })
-  .then((resBlob) => {
-    this.setState({
-      profileImage: URL.createObjectURL(resBlob)
-    });   
-  })
-  .catch((error) => {
-    console.log("error", error)
-  });
-}
-
-render(){
-
-  if(this.props.isEditable == false){
-    return(
-        <View>
-          <Image source={{
-            uri: this.state.profileImage
-          }}
-          style = {{
-            width: this.props.width,
-            height: this.props.height,
-          }}></Image>
-        </View>
-    )
-  }
-
-    else{
-      return(
-        <View style={stylesIn.container}>
-          <Image source={{
-            uri: this.state.profileImage
-          }}
-          style = {{
-            width: this.props.width,
-            height: this.props.height,
-          }}></Image>
-          <TouchableOpacity
-            style = {[styles.navigateBtn, stylesIn.btnWidth]}
-            onPress = {() => {this.props.navigation.navigate("UploadPicture")}}
-            ><Text style = {styles.navigateBtnText}>Upload profile picture</Text>
-          </TouchableOpacity>
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+          this.getImage()
+        })
           
-        </View>
-      );
-      
-    }
-  }
+      }
+
+      componentWillUnmount() {
+        this.focusListener();
+      }
+
+      async getImage() {
+
+        let token =  await AsyncStorage.getItem('@session_token')
+
+        fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
+          method: "GET",
+          headers: {
+              "Content-Type": "image/png",
+              "X-Authorization": token
+          },
+        })
+
+        .then((response) => {
+
+          switch(response.status){
+            case 200: 
+                return response.blob();
+                break
+            case 401:
+                throw {errorCase: "Unauthorised"}
+                break
+            case 404:
+                throw {errorCase: "UserNotFound"}
+                break
+            case 500:
+                throw {errorCase: "ServerError"}
+                break
+            default:
+                throw {errorCase: "WentWrong"}
+                break
+        }
+        })
+        .then((resBlob) => {
+          this.setState({
+            profileImage: URL.createObjectURL(resBlob)
+          });   
+        })
+        .catch((error) => {
+          console.log("error", error)
+          switch (error.errorCase){
+
+            case 'Unauthorised':    
+                this.setState({
+                    alertMessage: 'Unauthorised, Please login',
+                    isLoading: false,
+                })
+                break
+                
+            case 'UserNotFound':    
+                this.setState({
+                    alertMessage: 'Not found',
+                    isLoading: false,
+                })
+                break
+            case "ServerError":
+                this.setState({
+                    alertMessage: 'Cannot connect to the server, please try again',
+                    isLoading: false,
+                })
+                break
+            case "WentWrong":
+                this.setState({
+                    alertMessage: 'Something went wrong, please try again',
+                    isLoading: false,
+                })
+                break
+          }
+        });
+      }
+
+      render(){
+
+        if(this.props.isEditable == false){
+          return(
+              <View>
+                <Image source={{
+                  uri: this.state.profileImage
+                }}
+                style = {{
+                  width: this.props.width,
+                  height: this.props.height,
+                }}></Image>
+              </View>
+          )
+        }
+
+          else{
+            return(
+              <View style={stylesIn.container}>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
+                <Image source={{
+                  uri: this.state.profileImage
+                }}
+                style = {{
+                  width: this.props.width,
+                  height: this.props.height,
+                }}></Image>
+
+                <TouchableOpacity
+                  style = {[styles.navigateBtn, stylesIn.btnWidth]}
+                  onPress = {() => {this.props.navigation.navigate("UploadPicture")}}
+                  ><Text style = {styles.navigateBtnText}>Upload profile picture</Text>
+                </TouchableOpacity>
+                
+              </View>
+            );
+            
+          }
+      }
 }
 
 export default ProfileImage;

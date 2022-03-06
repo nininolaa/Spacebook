@@ -99,43 +99,44 @@ import styles from "../modules/stylesheet";
         <View style = {styles.flexContainer}>
 
             <View style = {styles.homeLogo}>
-            <Logo></Logo>
+                <Logo></Logo>
             </View>
 
             <View style = {stylesIn.loginRow}>     
-            <Text style = {styles.loginHeading}>Sign In</Text>
-            <TextInput
-            style = {styles.loginInput} 
-            placeholder="email..." 
-            onChangeText={this.handleEmailInput} 
-            value = {this.state.email}
-            />
-            {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
-            <Text key={errorMessage} style={styles.loginErrorText}>An email is required</Text>
-            )}
+                <Text style = {styles.loginHeading}>Sign In</Text>
+                <TextInput
+                style = {styles.loginInput} 
+                placeholder="email..." 
+                onChangeText={this.handleEmailInput} 
+                value = {this.state.email}
+                />
+                {this.isFieldInError('email') && this.getErrorsInField('email').map(errorMessage => 
+                <Text key={errorMessage} style={styles.loginErrorText}>An email is required</Text>
+                )}
             
-            <TextInput 
-            style = {styles.loginInput} 
-            placeholder="password..." 
-            onChangeText={this.handlePasswordInput} 
-            value = {this.state.password} 
-            secureTextEntry={true}/>
-            {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => 
-            <Text key={errorMessage} style={styles.loginErrorText}>A password is required</Text>
-            )}
+                <TextInput 
+                style = {styles.loginInput} 
+                placeholder="password..." 
+                onChangeText={this.handlePasswordInput} 
+                value = {this.state.password} 
+                secureTextEntry={true}/>
+                {this.isFieldInError('password') && this.getErrorsInField('password').map(errorMessage => 
+                <Text key={errorMessage} style={styles.loginErrorText}>A password is required</Text>
+                )}
             </View>
 
             <View style =  {styles.loginButtonRow}>
-            <Text>{this.state.alertMessage}</Text>
-            <TouchableOpacity
-                style = {styles.loginButton}
-                onPress={() => {this.SignInButtonPressed()}}>
-            <Text style = {styles.loginButtonText}>Sign In</Text>
-            </TouchableOpacity>
+                <Text>{this.state.alertMessage}</Text>
+                <TouchableOpacity
+                    style = {styles.loginButton}
+                    onPress={() => {this.SignInButtonPressed()}}>
+                <Text style = {styles.loginButtonText}>Sign In</Text>
+                </TouchableOpacity>
+                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
             </View>
 
             <View style = {styles.endTextRow}>
-            <Text>Haven't Register? <Text onPress={() => { this.RegisterButtonPressed()}} style = {styles.linkText}>Click here</Text> to create an account</Text> 
+                <Text>Haven't Register? <Text onPress={() => { this.RegisterButtonPressed()}} style = {styles.linkText}>Click here</Text> to create an account</Text> 
             </View>
 
         </View>

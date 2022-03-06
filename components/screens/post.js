@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import ValidationComponent from 'react-native-form-validator';
 import { View,Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import styles from "../modules/stylesheet";
 import IsLoading from "../modules/isLoading";
 import UserWall from '../modules/userWall';
@@ -29,11 +29,13 @@ class PostScreen extends ValidationComponent {
             new_text_post: '',
         }
     }
-
     async componentDidMount(){
         this.state.user_id = await AsyncStorage.getItem('user_id')
         this.state.token = await AsyncStorage.getItem('@session_token')
-        this.userPosts();
+        
+        this.focusListener = this.props.navigation.addListener('focus', async () => {  
+            this.userPosts();
+        })
     }
 
     userPosts = async() => {
@@ -187,7 +189,6 @@ class PostScreen extends ValidationComponent {
         })
         }
     }
-
        
     render(){
         if(this.state.isLoading == true) {
@@ -201,9 +202,9 @@ class PostScreen extends ValidationComponent {
         <View style = {stylesIn.flexContainer}>
             
             <View style = {stylesIn.subContainer1}>
-            <View style={stylesIn.homeLogo}>
-                <HomeLogo></HomeLogo>
-            </View>
+                <View style={stylesIn.homeLogo}>
+                    <Logo></Logo>
+                </View>
 
             <View style = {stylesIn.sharePost}>
                 <Text style = {styles.postHeaderText}>Share a post:</Text>
@@ -257,25 +258,9 @@ class PostScreen extends ValidationComponent {
         paddingHorizontal: 20,
     },
 
-    findUserPost:{
-        flex: 0.8,
-        paddingHorizontal: 20,
-    },
-
-    editBtnContainer:{
-        flex: 1,
-        flexDirection: 'column',
-    },
-
     mainPostFeed:{
         flex: 5,
         paddingHorizontal: 20,
-    },
-
-    editText: {
-        color: '#ffffff' , 
-        textTransform: 'uppercase', 
-        fontWeight: 'bold'
     },
 
     postInput:{
