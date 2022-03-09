@@ -12,32 +12,30 @@ import NonFriendScreen from './components/screens/nonFriend';
 import UploadPicture from './components/screens/uploadPicture';
 import FriendsOfFriend from './components/screens/friendsOfFriend';
 
-
 const Stack = createNativeStackNavigator();
 
-class App extends Component{
-
-  constructor(props){
+class App extends Component {
+  constructor(props) {
     super(props);
   }
-  
+
   render() {
-        return (
-            <NavigationContainer> 
-              <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen name="Home" component={Index} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="FriendRequest" component={FriendReqeust} />
-                <Stack.Screen name="SearchResult" component={SearchResult} />
-                <Stack.Screen name="FriendProfile" component={FriendProfile} />
-                <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
-                <Stack.Screen name="UploadPicture" component={UploadPicture} />
-                <Stack.Screen name="FriendsOfFriend" component={FriendsOfFriend} />
-                
-              </Stack.Navigator>
-            </NavigationContainer>
-        );        
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={Index} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="FriendRequest" component={FriendReqeust} />
+          <Stack.Screen name="SearchResult" component={SearchResult} />
+          <Stack.Screen name="FriendProfile" component={FriendProfile} />
+          <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
+          <Stack.Screen name="UploadPicture" component={UploadPicture} />
+          <Stack.Screen name="FriendsOfFriend" component={FriendsOfFriend} />
+
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
   }
 }
 

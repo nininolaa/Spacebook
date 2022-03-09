@@ -1,143 +1,131 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity , Image} from 'react-native';
+import {
+  StyleSheet, Text, View, TouchableOpacity, Image,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from "../modules/stylesheet";
+import styles from './stylesheet';
 
+class ProfileImage extends Component {
+  constructor(props) {
+    super(props);
 
-class ProfileImage extends Component{
+    this.state = {
+      profileImage: '',
+      alertMessage: '',
+    };
+  }
 
-      constructor(props){
-        super(props);
+  componentDidMount() {
+    if (this.props.userId) this.getImage();
+  }
 
-        this.state = {
-          profileImage: '',
-          alertMessage: ''
+  async getImage() {
+    const token = await AsyncStorage.getItem('@session_token');
+
+    fetch(`http://localhost:3333/api/1.0.0/user/${this.props.userId}/photo`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'image/png',
+        'X-Authorization': token,
+      },
+    })
+
+      .then((response) => {
+        switch (response.status) {
+          case 200:
+            return response.blob();
+            break;
+          case 401:
+            throw { errorCase: 'Unauthorised' };
+            break;
+          case 404:
+            throw { errorCase: 'UserNotFound' };
+            break;
+          case 500:
+            throw { errorCase: 'ServerError' };
+            break;
+          default:
+            throw { errorCase: 'WentWrong' };
+            break;
         }
-      }
-
-      componentDidMount(){
-
-        this.getImage()
-
-        this.focusListener = this.props.navigation.addListener('focus', async () => {
-          this.getImage()
-        })
-          
-      }
-
-      componentWillUnmount() {
-        this.focusListener();
-      }
-
-      async getImage() {
-
-        let token =  await AsyncStorage.getItem('@session_token')
-
-        fetch("http://localhost:3333/api/1.0.0/user/" + this.props.userId + "/photo", {
-          method: "GET",
-          headers: {
-              "Content-Type": "image/png",
-              "X-Authorization": token
-          },
-        })
-
-        .then((response) => {
-
-          switch(response.status){
-            case 200: 
-                return response.blob();
-                break
-            case 401:
-                throw {errorCase: "Unauthorised"}
-                break
-            case 404:
-                throw {errorCase: "UserNotFound"}
-                break
-            case 500:
-                throw {errorCase: "ServerError"}
-                break
-            default:
-                throw {errorCase: "WentWrong"}
-                break
-        }
-        })
-        .then((resBlob) => {
-          this.setState({
-            profileImage: URL.createObjectURL(resBlob)
-          });   
-        })
-        .catch((error) => {
-          console.log("error", error)
-          switch (error.errorCase){
-
-            case 'Unauthorised':    
-                this.setState({
-                    alertMessage: 'Unauthorised, Please login',
-                    isLoading: false,
-                })
-                break
-                
-            case 'UserNotFound':    
-                this.setState({
-                    alertMessage: 'Not found',
-                    isLoading: false,
-                })
-                break
-            case "ServerError":
-                this.setState({
-                    alertMessage: 'Cannot connect to the server, please try again',
-                    isLoading: false,
-                })
-                break
-            case "WentWrong":
-                this.setState({
-                    alertMessage: 'Something went wrong, please try again',
-                    isLoading: false,
-                })
-                break
-          }
+      })
+      .then((resBlob) => {
+        this.setState({
+          profileImage: URL.createObjectURL(resBlob),
         });
-      }
+      })
+      .catch((error) => {
+        console.log('error', error);
+        switch (error.errorCase) {
+          case 'Unauthorised':
+            this.setState({
+              alertMessage: 'Unauthorised, Please login',
+              isLoading: false,
+            });
+            break;
 
-      render(){
-
-        if(this.props.isEditable == false){
-          return(
-              <View>
-                <Image source={{
-                  uri: this.state.profileImage
-                }}
-                style = {{
-                  width: this.props.width,
-                  height: this.props.height,
-                }}></Image>
-              </View>
-          )
+          case 'UserNotFound':
+            this.setState({
+              alertMessage: 'Not found',
+              isLoading: false,
+            });
+            break;
+          case 'ServerError':
+            this.setState({
+              alertMessage: 'Cannot connect to the server, please try again',
+              isLoading: false,
+            });
+            break;
+          case 'WentWrong':
+            this.setState({
+              alertMessage: 'Something went wrong, please try again',
+              isLoading: false,
+            });
+            break;
         }
+      });
+  }
 
-          else{
-            return(
-              <View style={stylesIn.container}>
-                <Text style = {styles.errorMessage}>{this.state.alertMessage}</Text>
-                <Image source={{
-                  uri: this.state.profileImage
-                }}
-                style = {{
-                  width: this.props.width,
-                  height: this.props.height,
-                }}></Image>
+  render() {
+    if (this.props.isEditable == false) {
+      return (
+        <View>
+          <Image
+            source={{
+              uri: this.state.profileImage,
+            }}
+            style={{
+              width: this.props.width,
+              height: this.props.height,
+            }}
+          />
+        </View>
+      );
+    }
 
-                <TouchableOpacity
-                  style = {[styles.navigateBtn, stylesIn.btnWidth]}
-                  onPress = {() => {this.props.navigation.navigate("UploadPicture")}}
-                  ><Text style = {styles.navigateBtnText}>Upload profile picture</Text>
-                </TouchableOpacity>
-                
-              </View>
-            );
-            
-          }
-      }
+    return (
+      <View style={stylesIn.container}>
+        <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
+        <Image
+          source={{
+            uri: this.state.profileImage,
+          }}
+          style={{
+            width: this.props.width,
+            height: this.props.height,
+          }}
+        />
+
+        <TouchableOpacity
+          style={[styles.navigateBtn, stylesIn.btnWidth]}
+          onPress={() => { this.props.navigation.navigate('UploadPicture'); }}
+        >
+          <Text style={styles.navigateBtnText}>Upload profile picture</Text>
+        </TouchableOpacity>
+
+      </View>
+    );
+  }
 }
 
 export default ProfileImage;
@@ -145,8 +133,8 @@ export default ProfileImage;
 const stylesIn = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   camera: {
     flex: 1,
@@ -167,8 +155,8 @@ const stylesIn = StyleSheet.create({
     color: 'white',
   },
 
-  btnWidth:{
+  btnWidth: {
     width: 150,
     marginTop: 5,
-  }
+  },
 });

@@ -1,271 +1,270 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from 'react-native';
+
 export default StyleSheet.create({
 
-        flexContainer: {
-            flex: 1,
-            backgroundColor: '#ffffff'
-        },
-    
-        homeLogo: {
-            flex: 30,
-        },
-        
-        loginHeading:{
-            fontSize: 20,
-            fontWeight: 'bold',
-        },
-    
-        loginButtonRow: {
-            flex: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
+  flexContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
 
-        loginButton: {
-            backgroundColor: '#f9943b',
-            borderColor: '#f9943b',
-            borderWidth: 2,
-            borderRadius: 5,
-            width: '30%',
-            height:'50%',
-            alignItems:'center',
-            
-        },
-    
-        loginButtonText: {
-            fontSize: 20,
-            textAlign: 'center',
-            color: '#ffffff'
-        },
-    
-        endTextRow: {
-            flex: 15,
-            justifyContent: 'space-evenly',
-            alignContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'row',
-            backgroundColor: '#ffaf7a'
-        },
+  homeLogo: {
+    flex: 30,
+  },
 
-        loginInput:{
-            borderWidth: 2,
-            borderColor: '#d3d3d3',
-            width: '80%',
-            height: 50,
-            borderRadius: 5,
-            marginBottom: '5%',         
-        },
+  loginHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 
-        linkText:{
-            color: '#ffffff',
-        },
+  loginButtonRow: {
+    flex: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-        actionBtn: {
-            fontSize: 20,
-            textAlign: 'center',
-            height:"80%",
-            width:"100%",
-            alignItems:'center',
-        },
-        btnContainer1:{
-            flex: 1,
-            alignItems:'center'
-        },
-        btnContainer2:{
-            flex: 1,
-            alignItems:'center'
-        },
+  loginButton: {
+    backgroundColor: '#f9943b',
+    borderColor: '#f9943b',
+    borderWidth: 2,
+    borderRadius: 5,
+    width: '30%',
+    height: '50%',
+    alignItems: 'center',
 
-        actionBtnOrange: {
-            backgroundColor: "#ff6700",
-        },
+  },
 
-        actionBtnGreen: {
-            backgroundColor: "#69b34c",
-        },
+  loginButtonText: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#ffffff',
+  },
 
-        actionBtnRed: {
-            backgroundColor: '#990f02',
-        },
+  endTextRow: {
+    flex: 15,
+    justifyContent: 'space-evenly',
+    alignContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#ffaf7a',
+  },
 
-        actionBtnBlue: {
-            backgroundColor: '#95d8eb',
-        },
+  loginInput: {
+    borderWidth: 2,
+    borderColor: '#d3d3d3',
+    width: '80%',
+    height: 50,
+    borderRadius: 5,
+    marginBottom: '5%',
+  },
 
-        actionBtnGrey: {
-            backgroundColor: '#808080',
-        },
+  linkText: {
+    color: '#ffffff',
+  },
 
-        actionBtnLight: {
-            textAlign:'center',
-            textTransform: 'uppercase', 
-            color: "#ffffff"
-        },
+  actionBtn: {
+    fontSize: 20,
+    textAlign: 'center',
+    height: '80%',
+    width: '100%',
+    alignItems: 'center',
+  },
+  btnContainer1: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  btnContainer2: {
+    flex: 1,
+    alignItems: 'center',
+  },
 
-        actionBtnDark: {
-            textTransform: 'uppercase', 
-            color: "#000000"
-        },
+  actionBtnOrange: {
+    backgroundColor: '#ff6700',
+  },
 
-        navigateBtn:{
-            padding: 3,
-            backgroundColor: "#f87217",
-            width: '40%',
-            border: 2,
-            borderRadius: 5,
-        },
+  actionBtnGreen: {
+    backgroundColor: '#69b34c',
+  },
 
-        navigateBtnText:{
-            textAlign: 'center',
-            color: 'white',
-        },
+  actionBtnRed: {
+    backgroundColor: '#990f02',
+  },
 
-        showEdit: {
-            display: 'block',
-        },
-    
-        hideEdit:{
-            display: 'none'
-        },
+  actionBtnBlue: {
+    backgroundColor: '#95d8eb',
+  },
 
+  actionBtnGrey: {
+    backgroundColor: '#808080',
+  },
 
-        //Headings
-        postHeaderText:{
-            color: "#411800",
-            fontSize: 20,
-            paddingBottom: 10,
-            fontWeight: 50,
-        },
+  actionBtnLight: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    color: '#ffffff',
+  },
 
-        //User text
+  actionBtnDark: {
+    textTransform: 'uppercase',
+    color: '#000000',
+  },
 
-        profileText:{
-            fontWeight: 15,
-            fontSize: 22,
-         },
+  navigateBtn: {
+    padding: 3,
+    backgroundColor: '#f87217',
+    width: '40%',
+    border: 2,
+    borderRadius: 5,
+  },
 
-        profileMiniText:{
-            fontSize: 15,
-        },
+  navigateBtnText: {
+    textAlign: 'center',
+    color: 'white',
+  },
 
-        //setting screen 
-        updateInput:{
-            borderWidth: 2,
-            borderColor: '#ffbf99',
-            width: '100%',
-            borderRadius: 5,
-            marginBottom: '2%',  
-            padding: 5,
-        },
+  showEdit: {
+    display: 'block',
+  },
 
-        //post wall
+  hideEdit: {
+    display: 'none',
+  },
 
-        postHeaderText:{
-            border: 5,
-            borderColor: 'black',
-            fontSize: 25,
-            paddingBottom: 10,
-            fontWeight: 'bold',
-        },
+  // Headings
+  postHeaderText: {
+    color: '#411800',
+    fontSize: 20,
+    paddingBottom: 10,
+    fontWeight: 50,
+  },
 
-        postBox:{
-            border: 20,
-            borderColor: 'black',
-            backgroundColor: '#feddc9',
-            marginBottom: 10,
-            padding: 5,
-        },
+  // User text
 
-        postNameText:{
-            fontSize: 15,
-            fontWeight: 'bold',
-            color: "#391500"
-        },
+  profileText: {
+    fontWeight: 15,
+    fontSize: 22,
+  },
 
-        postInfoText:{
-            fontSize: 11,
-            color: 'grey'
-        },
+  profileMiniText: {
+    fontSize: 15,
+  },
 
-        postMainText:{
-            fontSize: 20,
-            padding:5,
-            placeholderTextColor: 'black',
-        },
+  // setting screen
+  updateInput: {
+    borderWidth: 2,
+    borderColor: '#ffbf99',
+    width: '100%',
+    borderRadius: 5,
+    marginBottom: '2%',
+    padding: 5,
+  },
 
-        inPostContainer:{
-            flex: 1,
-            flexDirection: 'row',
-            padding: 10,
-        },
+  // post wall
 
-        inPostImage:{
-            flex: 1,
-        },
+  postHeaderText: {
+    border: 5,
+    borderColor: 'black',
+    fontSize: 25,
+    paddingBottom: 10,
+    fontWeight: 'bold',
+  },
 
-        inPostHeader:{
-            flex: 4,
-        },
+  postBox: {
+    border: 20,
+    borderColor: 'black',
+    backgroundColor: '#feddc9',
+    marginBottom: 10,
+    padding: 5,
+  },
 
-        findPostInput:{
-            borderWidth: 3,
-            borderColor: '#ffc9a9',
-            borderRadius: 3,
-            padding: 5,
-            fontSize: 15,
-        },
+  postNameText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#391500',
+  },
 
-        addPostBtn:{
-            backgroundColor: '#f9943b',
-            borderColor: '#f9943b',
-            borderWidth: 2,
-            borderRadius: 5,
-            width: '40%',
-            height: 40,
-            alignItems:'center',
-            marginTop:10,
-        },
+  postInfoText: {
+    fontSize: 11,
+    color: 'grey',
+  },
 
-        btnToEnd:{
-            alignSelf: 'flex-end',
-            paddingTop:10,
-        },
+  postMainText: {
+    fontSize: 20,
+    padding: 5,
+    placeholderTextColor: 'black',
+  },
 
-        //friend Screen
-        friendsBtn:{
-            border: 5,
-            borderRadius: 5,
-            fontSize: 20,
-            textAlign: 'center',
-            height:"50%",
-            width:"100%",
-            alignItems:'center',
-        },
+  inPostContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 10,
+  },
 
-        //validation
-        loginErrorText:{
-            color: '#B90E0A',
-            marginBottom: 10,
-            textAlign:'left',
-            justifyContent:'flex-start',
-            alignContent:'flex-start',
-            alignItems:'flex-start',
-        },
-        
-        //error message
-        errorMessage:{
-            fontSize: 20,
-            color: '#B90E0A',
-            justifyContent: 'center',
-            padding: 20,
-        },
+  inPostImage: {
+    flex: 1,
+  },
 
-        errorMessageSmall:{
-            fontSize: 15,
-            color: '#B90E0A',
-            justifyContent: 'center',
-            padding: 20,
-        }
+  inPostHeader: {
+    flex: 4,
+  },
 
+  findPostInput: {
+    borderWidth: 3,
+    borderColor: '#ffc9a9',
+    borderRadius: 3,
+    padding: 5,
+    fontSize: 15,
+  },
 
-})
+  addPostBtn: {
+    backgroundColor: '#f9943b',
+    borderColor: '#f9943b',
+    borderWidth: 2,
+    borderRadius: 5,
+    width: '40%',
+    height: 40,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  btnToEnd: {
+    alignSelf: 'flex-end',
+    paddingTop: 10,
+  },
+
+  // friend Screen
+  friendsBtn: {
+    border: 5,
+    borderRadius: 5,
+    fontSize: 20,
+    textAlign: 'center',
+    height: '50%',
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  // validation
+  loginErrorText: {
+    color: '#B90E0A',
+    marginBottom: 10,
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  // error message
+  errorMessage: {
+    fontSize: 20,
+    color: '#B90E0A',
+    justifyContent: 'center',
+    padding: 20,
+  },
+
+  errorMessageSmall: {
+    fontSize: 15,
+    color: '#B90E0A',
+    justifyContent: 'center',
+    padding: 20,
+  },
+
+});

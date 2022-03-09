@@ -1,69 +1,67 @@
-import React, {Component} from 'react';
-import { View,Text, StyleSheet} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FriendList from '../modules/friendList';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 
- class FriendsOfFriend extends Component {
+class FriendsOfFriend extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_id: '',
+      first_name: '',
+      last_name: '',
+      email: '',
+      friend_count: '',
+      post_text: '',
+      userPostList: [],
+      userId: 0,
+    };
+  }
 
-    constructor(props){
-        super(props); 
-        this.state = {
-            user_id: '',
-            first_name: '',
-            last_name: '',
-            email: '',
-            friend_count: '',
-            post_text: '',
-            userPostList: [],
-            userId: this.props.route.params.userId
-        }
-    }
+  componentDidMount() {
+    this.setState({
+      userId: this.props.route.params.userId,
+    });
+    console.log(this.state.userId);
+  }
 
-    componentDidMount(){
-        console.log(this.state.userId)
-    }
+  render() {
+    return (
 
-    render(){
- 
-        return(
-        
-        <View style = {stylesIn.flexContainer}>
-            <View style = {stylesIn.homeLogo}>
-                <HomeLogo></HomeLogo>
-            </View>
-         
-            <View style = {stylesIn.mainMenu}>
-       
-                <FriendList
-                    userId={this.state.userId}
-                    navigation={this.props.navigation}
-                ></FriendList>
-                
-            </View>
+      <View style={stylesIn.flexContainer}>
+        <View style={stylesIn.homeLogo}>
+          <Logo />
         </View>
-        )
-    }
- }
 
- const stylesIn = StyleSheet.create({
+        <View style={stylesIn.mainMenu}>
 
-    flexContainer: {
-        flex: 1,
-        backgroundColor: "#fdf6e4",
-    },
+          <FriendList
+            userId={this.state.userId}
+            navigation={this.props.navigation}
+          />
 
-    homeLogo: {
-        flex: 1,
-    },
+        </View>
+      </View>
+    );
+  }
+}
 
+const stylesIn = StyleSheet.create({
 
-    mainMenu: {
-        flex: 3,
-    }
- 
- })
+  flexContainer: {
+    flex: 1,
+    backgroundColor: '#fdf6e4',
+  },
 
- export default FriendsOfFriend ;
+  homeLogo: {
+    flex: 1,
+  },
 
+  mainMenu: {
+    flex: 3,
+  },
 
+});
+
+export default FriendsOfFriend;
