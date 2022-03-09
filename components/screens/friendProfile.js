@@ -5,7 +5,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ValidationComponent from 'react-native-form-validator';
 import { likePost, unlikePost } from '../../libs/postFunctions';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 import IsLoading from '../modules/isLoading';
 import ProfileImage from '../modules/profileImage';
@@ -27,6 +27,7 @@ class FriendProfile extends ValidationComponent {
       addPost: '',
       isLoading: true,
       alertMessage: '',
+      alertMessage1: '',
       friendId: this.props.route.params.friendId,
     };
   }
@@ -188,9 +189,8 @@ class FriendProfile extends ValidationComponent {
       }
 
       const token = await AsyncStorage.getItem('@session_token');
-      const userId = await AsyncStorage.getItem('user_id');
 
-      return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}`, {
+      return fetch(`http://localhost:3333/api/1.0.0/user/${this.state.friendId}/post/${post_id}`, {
         method: 'PATCH',
         headers: {
           'X-Authorization': token,
@@ -277,9 +277,8 @@ class FriendProfile extends ValidationComponent {
   // Delete post function
   deletePost = async (post_id) => {
     const token = await AsyncStorage.getItem('@session_token');
-    const userId = await AsyncStorage.getItem('user_id');
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}`, {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${this.state.friendId}/post/${post_id}`, {
       method: 'delete',
       headers: {
         'X-Authorization': token,
@@ -309,6 +308,7 @@ class FriendProfile extends ValidationComponent {
       })
       .then((response) => {
         console.log('Post deleted ');
+        this.userPosts();
       })
       .catch((error) => {
         switch (error.errorCase) {
@@ -374,13 +374,10 @@ class FriendProfile extends ValidationComponent {
     return (
 
       <View style={stylesIn.flexContainer}>
-
-        <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
-
         <View style={stylesIn.subMainContainer}>
           <View style={stylesIn.firstSubContainer}>
             <View style={stylesIn.homeLogo}>
-              <HomeLogo />
+              <Logo />
             </View>
 
             <View style={stylesIn.friendDetails}>
@@ -436,8 +433,9 @@ class FriendProfile extends ValidationComponent {
 
           <View style={stylesIn.secondSubContainer}>
             <View style={stylesIn.friendPosts}>
+            <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
               <Text style={stylesIn.friendProfileHeaderText}>Feed:</Text>
-
+              
               <FlatList
                 data={this.state.userPostList}
 
@@ -458,7 +456,6 @@ class FriendProfile extends ValidationComponent {
                           style={styles.postNameText}
                           onPress={() => {
                             this.setState({ friendId: item.author.user_id });
-                            // this.userPosts();
                             this.componentDidMount();
                           }}
                         >
@@ -522,18 +519,19 @@ class FriendProfile extends ValidationComponent {
                     <View style={[stylesIn.editBtnContainer, this.isUserPost() != item.author.user_id ? styles.showEdit : styles.hideEdit]}>
 
                       <View style={styles.btnContainer1}>
+                        <Text style={styles.errorMessage}>{this.state.alertMessage1}</Text>
                         <TouchableOpacity
                           onPress={
-                                                () => likePost(this.state.token, item.author.user_id, item.post_id)
-                                                  .then(() => {
-                                                    this.userPosts();
-                                                  })
-                                                  .catch((error) => {
-                                                    this.setState({
-                                                      alertMessage: error.alertMessage,
-                                                    });
-                                                  })
-                                            }
+                                    () => likePost(this.state.token, item.author.user_id, item.post_id)
+                                      .then(() => {
+                                        this.userPosts();
+                                      })
+                                      .catch((error) => {
+                                        this.setState({
+                                          alertMessage1: error.alertMessage1,
+                                        });
+                                      })
+                                  }
                           style={[styles.actionBtn, styles.actionBtnBlue]}
                         >
                           <Text style={styles.actionBtnLight}>Like</Text>
@@ -544,14 +542,16 @@ class FriendProfile extends ValidationComponent {
                       <View style={styles.btnContainer2}>
                         <TouchableOpacity
                           onPress={
-                                            () => unlikePost(this.state.token, item.author.user_id, item.post_id, this.state.alertMessage)
-                                              .then(() => {
-                                                this.userPosts();
-                                              })
-                                              .catch(() => {
-                                                console.log('Error');
-                                              })
-                                            }
+                                    () => unlikePost(this.state.token, item.author.user_id, item.post_id, this.state.alertMessage)
+                                      .then(() => {
+                                        this.userPosts();
+                                      })
+                                      .catch((error) => {
+                                        this.setState({
+                                          alertMessage1: error.alertMessage1,
+                                        });
+                                      })
+                                  }
                           style={[styles.actionBtn, styles.actionBtnGrey]}
                         >
                           <Text style={styles.actionBtnLight}>Unlike</Text>
@@ -563,6 +563,7 @@ class FriendProfile extends ValidationComponent {
                 )}
                 keyExtractor={(item) => item.post_id.toString()}
               />
+              
             </View>
           </View>
         </View>

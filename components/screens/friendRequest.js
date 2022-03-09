@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import IsLoading from '../modules/isLoading';
 import styles from '../modules/stylesheet';
 import ProfileImage from '../modules/profileImage';
@@ -220,7 +220,7 @@ class FriendScreen extends Component {
       <View style={stylesIn.flexContainer}>
         <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
         <View style={stylesIn.homeLogo}>
-          <HomeLogo />
+          <Logo />
         </View>
 
         <View style={stylesIn.mainContext}>

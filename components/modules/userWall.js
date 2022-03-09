@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ValidationComponent from 'react-native-form-validator';
 import {
   View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, 
-, ScrollView } from 'react-native';
+  ScrollView } from 'react-native';
 import styles from './stylesheet';
 import ProfileImage from './profileImage';
 

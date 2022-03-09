@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export function likePost(token, user_id, post_id) {
+export function likePost(token, userId, post_id) {
   return new Promise((resolve, reject) => {
-    fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/post/${post_id}/like`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}/like`, {
       method: 'post',
       headers: {
         'X-Authorization': token,
@@ -15,6 +15,7 @@ export function likePost(token, user_id, post_id) {
             break;
           case 400:
             throw { errorCase: 'Liked' };
+            break
           case 401:
             throw { errorCase: 'Unauthorised' };
             break;
@@ -32,9 +33,8 @@ export function likePost(token, user_id, post_id) {
             break;
         }
       })
-      .then((responseJson) => {
-        console.log('Posted post ', responseJson);
-
+      .then(() => {
+        console.log('Liked');
         resolve(true);
       })
       .catch((error) => {
@@ -42,32 +42,32 @@ export function likePost(token, user_id, post_id) {
         switch (error.errorCase) {
           case 'Liked':
             reject({
-              alertMessage: 'You already like this post',
+              alertMessage1: 'You already like this post',
             });
             break;
           case 'Unauthorised':
             reject({
-              alertMessage: 'Unauthorised, Please login',
+              alertMessage1: 'Unauthorised, Please login',
             });
             break;
           case 'ForbiddenLikePost':
             reject({
-              alertMessage: 'Forbidden - you can only delete your own posts',
+              alertMessage1: 'Forbidden - You can only like a post of your friends',
             });
             break;
           case 'UserNotFound':
             reject({
-              alertMessage: 'Not found',
+              alertMessage1: 'Not found',
             });
             break;
           case 'ServerError':
             reject({
-              alertMessage: 'Cannot connect to the server, please try again',
+              alertMessage1: 'Cannot connect to the server, please try again',
             });
             break;
           case 'WentWrong':
             reject({
-              alertMessage: 'Something went wrong, please try again',
+              alertMessage1: 'Something went wrong, please try again',
             });
             break;
         }
@@ -75,31 +75,69 @@ export function likePost(token, user_id, post_id) {
   });
 }
 
-export function unlikePost(token, user_id, post_id) {
-  return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/post/${post_id}/like`, {
-    method: 'delete',
-    headers: {
-      'X-Authorization': token,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      switch (response.status) {
-        case 200:
-          return true;
-          break;
-        case 400:
-          throw 'Failed validation';
-          break;
-        default:
-          throw 'Something went wrong';
-          break;
-      }
+export function unlikePost(token, userId, post_id) {
+  return new Promise((resolve, reject) => {
+    fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}/like`, {
+      method: 'delete',
+      headers: {
+        'X-Authorization': token,
+        'Content-Type': 'application/json',
+      },
     })
-    .then((responseJson) => {
-      console.log('Unliked');
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        switch (response.status) {
+          case 200:
+            break;
+          case 401:
+            throw { errorCase: 'Unauthorised' };
+            break;
+          case 403:
+            throw { errorCase: 'ForbiddenLikePost' };
+            break;
+          case 404:
+            throw { errorCase: 'UserNotFound' };
+            break;
+          case 500:
+            throw { errorCase: 'ServerError' };
+            break;
+          default:
+            throw { errorCase: 'WentWrong' };
+            break;
+        }
+      })
+      .then(() => {
+        console.log('unliked')
+        resolve(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        switch (error.errorCase) {
+          case 'Unauthorised':
+            reject({
+              alertMessage1: 'Unauthorised, Please login',
+            });
+            break;
+          case 'ForbiddenLikePost':
+            reject({
+              alertMessage1: 'Forbidden - you have not like this post yet',
+            });
+            break;
+          case 'UserNotFound':
+            reject({
+              alertMessage1: 'Not found',
+            });
+            break;
+          case 'ServerError':
+            reject({
+              alertMessage1: 'Cannot connect to the server, please try again',
+            });
+            break;
+          case 'WentWrong':
+            reject({
+              alertMessage1: 'Something went wrong, please try again',
+            });
+            break;
+        }
+      });
+  });
 }

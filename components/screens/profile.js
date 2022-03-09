@@ -205,6 +205,7 @@ class ProfileScreen extends Component {
 
           <View style={stylesIn.profilePicture}>
             <ProfileImage
+              key={this.state.user_id}
               userId={this.state.user_id}
               isEditable
               width={100}

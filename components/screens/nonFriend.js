@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 import FriendHeading from '../modules/friendHeading';
 
@@ -102,7 +102,7 @@ class NonFriendScreen extends Component {
       <View style={stylesIn.flexContainer}>
 
         <View style={stylesIn.homeLogo}>
-          <HomeLogo />
+          <Logo />
         </View>
 
         <View style={stylesIn.friendProfile}>

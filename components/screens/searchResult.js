@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, FlatList, 
-, TouchableOpacity } from 'react-native';
+  TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Searchbar } from 'react-native-paper';
 
 import styles from '../modules/stylesheet';
 import ProfileImage from '../modules/profileImage';
-import HomeLogo from '../modules/homeLogo';
+import Logo from '../modules/logo';
 import IsLoading from '../modules/isLoading';
 
 class SearchResult extends Component {
@@ -136,7 +136,7 @@ class SearchResult extends Component {
             <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
 
             <View style={stylesIn.homeLogo}>
-            <HomeLogo />
+            <Logo />
           </View>
 
             <View style={stylesIn.friendSearch}>
