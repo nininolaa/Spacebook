@@ -1,23 +1,22 @@
+//import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './stylesheet';
 
+//create a logo component which will render the spacebook logo to all screens
 class Logo extends Component {
+  //create a constructor
   constructor(props) {
+    //passing props into the constructor to enable using this.props inside a constructor
     super(props);
-
-    this.state = {
-      token: null,
-    };
   }
 
-  async componentDidMount() {
-    this.state.token = await AsyncStorage.getItem('@session_token');
-  }
-
+  //calling render function and return the data that will be display 
   render() {
+    //check if the passed in properties size is large
     if (this.props.size == 'large') {
+      //display the large logo image 
       return (
 
         <View style={stylesIn.loginHeader}>
@@ -27,7 +26,7 @@ class Logo extends Component {
 
       );
     }
-
+    //if no props passed in, render a normal logo size
     return (
 
       <View style={styles.homeLogo}>
@@ -41,6 +40,7 @@ class Logo extends Component {
   }
 }
 
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
   loginHeader: {
     alignItems: 'center',

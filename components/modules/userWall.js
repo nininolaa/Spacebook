@@ -1,47 +1,59 @@
+//import elements and components to be able to use it inside the class
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ValidationComponent from 'react-native-form-validator';
 import {
-  View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, 
-  ScrollView } from 'react-native';
+  View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import styles from './stylesheet';
 import ProfileImage from './profileImage';
 
+//create a UserWall component which will render user's post feed
 class UserWall extends ValidationComponent {
+  //create a constructor
   constructor(props) {
+    //passing props into the constructor to enable using this.props inside a constructor
     super(props);
 
+    //initialise the state for each data to be able to change it overtime
     this.state = {
-      token: '',
       user_id: '',
       new_text_post: '',
       userPostList: [],
       editable: false,
-      text: '',
       isLoading: true,
       alertMessage: '',
     };
   }
 
+  //using componentDidmount to get the user id and
+  //to call userPost function immediately after being mounted
   async componentDidMount() {
     this.state.user_id = await AsyncStorage.getItem('user_id');
-    this.state.token = await AsyncStorage.getItem('@session_token');
-
     this.userPosts();
   }
 
-  // show all user posts
+  //create a function to retrieve a list of posts of a given user
   userPosts = async () => {
+    //get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
+    //get the user id to pass in to the api call 
     const userId = await AsyncStorage.getItem('user_id');
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId }/post`, {
+    //using fetch to call the api and send the get request 
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post`, {
       method: 'get',
+      //passing the content type and the session token to be authorised
       headers: {
         'X-Authorization': token,
         'Content-Type': 'application/json',
       },
     })
+      //checking the response status in the return promise
       .then((response) => {
+        //return the values from the response if the calling is successful and
+        //if the response status error occured, store the error reasons into the 
+        //array objects
         switch (response.status) {
           case 200:
             return response.json();
@@ -63,12 +75,17 @@ class UserWall extends ValidationComponent {
             break;
         }
       })
+      //when the promise is resolved, store the response Json array to the userlist state
+      //and set the isLoading state to be false as the promise has been resolved
       .then((responseJson) => {
         this.setState({
           userPostList: responseJson,
           isLoading: false,
         });
       })
+      //when the promise is rejected, check which error reason from the response was and
+      //set the correct error message to each error in order to render the right error message
+      //also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         console.log(error);
         switch (error.errorCase) {
@@ -106,31 +123,45 @@ class UserWall extends ValidationComponent {
       });
   };
 
-  // update a post
+  //create a function to update text in a post
   updatePost = async (post_id, text) => {
+
+    //validation check for the text to update should not be empty
     this.validate({
       new_text_post: { required: true },
     });
 
+    //only call the api if the validation check is passed 
     if (this.isFormValid() == true) {
+
+      //create an empty object array to store the new text that will be send for update
       const new_info = {};
 
+      //only store the new text to the object array when its not the same as the current text
       if (this.state.new_text_post != text && this.state.new_text_post != '') {
         new_info.text = this.state.new_text_post;
       }
 
+      //get the session token and user id as it is needed when sending a request to the api
       const token = await AsyncStorage.getItem('@session_token');
       const userId = await AsyncStorage.getItem('user_id');
 
-      return fetch(`http://localhost:3333/api/1.0.0/user/${userId }/post/${ post_id}`, {
+      //using fetch function to call the api and send the patch request
+      return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}`, {
         method: 'PATCH',
+        //passing the content type to tell the server that we are passing json
+        //and the session token to be authorised
         headers: {
           'X-Authorization': token,
           'Content-Type': 'application/json',
         },
+        //converted a new text to a string and pass into the body
         body: JSON.stringify(new_info),
       })
+        //checking the response status in the return promise
         .then((response) => {
+          //if the response status error occured, store the error reasons into the 
+          //array objects
           switch (response.status) {
             case 200:
               break;
@@ -154,14 +185,19 @@ class UserWall extends ValidationComponent {
               break;
           }
         })
-        .then((response) => {
-          console.log('Info updated');
+        //when the promise is resolved, set the editable back to false as it editing is done
+        //and set the isLoading state to be false as the promise has been resolved
+        .then(() => {
           this.setState({
             editable: false,
             isLoading: false,
           });
+          //update user post feed each time the update function is resolved
           this.userPosts();
         })
+        //when the promise is rejected, check which error reason from the response was and
+        //set the correct error message to each error in order to render the right error message
+        //also set the isLoading state to be false as the promise has been rejected
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
@@ -207,19 +243,27 @@ class UserWall extends ValidationComponent {
     }
   };
 
-  // Delete post function
+  //create a function to delete a user's post
   deletePost = async (post_id) => {
+
+    //get the session token and user id as it is needed when sending a request to the api
     const token = await AsyncStorage.getItem('@session_token');
     const userId = await AsyncStorage.getItem('user_id');
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId }/post/${ post_id}`, {
+    //using fetch function to call the api and send the delete request
+    //by passed in the user id and a post id that want to be deleted
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post/${post_id}`, {
+      //passing the session token to be authorised
       method: 'delete',
       headers: {
         'X-Authorization': token,
-        'Content-Type': 'application/json',
       },
     })
+
+      //checking the response status in the return promise
       .then((response) => {
+        //if the response status error occured, store the error reasons into the 
+        //array objects
         switch (response.status) {
           case 200:
             break;
@@ -240,10 +284,13 @@ class UserWall extends ValidationComponent {
             break;
         }
       })
-      .then((response) => {
-        console.log('Post deleted ');
+      //when promise is resolved, update user post feed 
+      .then(() => {
         this.userPosts();
       })
+      //when the promise is rejected, check which error reason from the response was and
+      //set the correct error message to each error in order to render the right error message
+      //also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         switch (error.errorCase) {
           case 'Unauthorised':
@@ -280,115 +327,143 @@ class UserWall extends ValidationComponent {
       });
   };
 
-  // edit button press
+  //if the edit button pressed, set the text to be editable
   editPost() {
     this.setState({ editable: true });
   }
 
+  //return the value of editable when this function is called
   isEditMode() {
     return this.state.editable;
   }
 
+  //return the value of user_id when this function is called
   isUserPost() {
     return this.state.user_id;
   }
 
+  //calling render function and return the data that will be display 
   render() {
     return (
 
+      // create a flex container to make the content responsive to all screen sizes
+      // by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
-            <Text style={styles.postHeaderText}>Your Wall:</Text>
-            <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
-            <ScrollView styles={styles.postBox}>
+        {/* add a header text before rendering the post list */}
+        <Text style={styles.postHeaderText}>Your Wall:</Text>
+        {/* passing the alertMessage state to alert the error message at the top of the screen  */}
+        <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
 
-              <FlatList
-              data={this.state.userPostList}
+        {/* create a container for the post list */}
+        <ScrollView styles={styles.postBox}>
 
-              renderItem={({ item }) => (
-                  <View style={styles.postBox}>
-                      <View style={styles.inPostContainer}>
+          {/* using flatlist component to show the list of post as flatlist makes the list scrollable */}
+          <FlatList
+            // store the list into the data before rendering each item
+            data={this.state.userPostList}
 
-                      <View style={styles.inPostImage}>
-                          <ProfileImage
-                              userId={item.author.user_id}
-                              isEditable={false}
-                              width={50}
-                              height={50}
-                              navigation={this.props.navigation}
-                            />
-                        </View>
-                      <View style={styles.inPostHeader}>
-                          <Text
-                              style={styles.postNameText}
-                            > 
-                              {' '}
-                              {item.author.first_name}
-                              {' '}
-                              {item.author.last_name}
-                            </Text>
-                          <Text style={styles.postInfoText}>
-                              Post id:{item.post_id}
-                              {' '}
-                              |{item.timestamp}
-                            </Text>
-                        </View>
-
-                    </View>
-
-                      <TextInput
-                      style={styles.postMainText}
-                      placeholder={item.text}
-                      editable={this.state.editable}
-                      onChangeText={(new_text_post) => this.setState({ new_text_post })}
-                    />   
-                      <Text style={styles.postInfoText}>
+            renderItem={({ item }) => (
+              //create a container for each single post
+              <View style={styles.postBox}>
+                {/* create a sub-container that contain a profile image and post information */}
+                <View style={styles.inPostContainer}>
+                  {/* create a container to render profile image */}
+                  <View style={styles.inPostImage}>
+                    {/* passing the profileImage component and given the attributes to the component
+                    in order to render the right profile image and right size */}
+                    <ProfileImage
+                      userId={item.author.user_id}
+                      isEditable={false}
+                      width={50}
+                      height={50}
+                      navigation={this.props.navigation}
+                    />
+                  </View>
+                  {/* create a container to render post information*/}
+                  <View style={styles.inPostHeader}>
+                    {/* display post's author name, post id and post time */}
+                    <Text
+                      style={styles.postNameText}
+                    >
                       {' '}
-                      Likes:{item.numLikes}
+                      {item.author.first_name}
                       {' '}
-                      {'\n'}
-                      {' '}
+                      {item.author.last_name}
                     </Text>
+                    <Text style={styles.postInfoText}>
+                      Post id:
+                      {item.post_id}
+                      {' '}
+                      |
+                      {item.timestamp}
+                    </Text>
+                  </View>
 
-                      <View style={[stylesIn.editBtnContainer, this.isUserPost() == item.author.user_id ? styles.showEdit : styles.hideEdit]}>
+                </View>
+                {/* display the post text by using textInput component as this text should be 
+                editable when the user want to update the text */}
+                <TextInput
+                  style={styles.postMainText}
+                  placeholder={item.text}
+                  editable={this.state.editable}
+                  onChangeText={(new_text_post) => this.setState({ new_text_post })}
+                />
+                {/* display the number of likes of the post */}
+                <Text style={styles.postInfoText}>
+                  {' '}
+                  Likes:
+                  {item.numLikes}
+                  {' '}
+                  {'\n'}
+                  {' '}
+                </Text>
+                
+                {/* create a container for displaying the edit and delete post buttons */}
+                <View style={[stylesIn.editBtnContainer, this.isUserPost() == item.author.user_id ? styles.showEdit : styles.hideEdit]}>
+                  {/* create a sub container which will render the edit button and when the edit button is pressed, 
+                  the update button will toggle to let the user update new text */}
+                  <View style={[styles.btnContainer1]}>
+                    <TouchableOpacity
+                      onPress={() => this.editPost(item.post_id)}
+                      style={[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                    >
+                      <Text style={[styles.actionBtnLight]}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => this.updatePost(item.post_id, item.text)}
+                      style={[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
+                    >
+                      <Text style={[styles.actionBtnLight]}>Update Post</Text>
+                    </TouchableOpacity>
+                  </View>
+                  
+                  {/* create a sub-container to render the delete post button to allow the user to delete
+                  a specific post */}
+                  <View style={[styles.btnContainer2]}>
+                    <TouchableOpacity
+                      style={[styles.actionBtn, styles.actionBtnRed]}
+                      onPress={() => this.deletePost(item.post_id)}
+                    >
+                      <Text style={styles.actionBtnLight}>Delete post</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.errorMessageSmall}>{this.state.alertMessage}</Text>
+                  {this.isFieldInError('new_text_post') && this.getErrorsInField('new_text_post').map((errorMessage) => <Text key={errorMessage} style={styles.loginErrorText}>Please add some text to update this post</Text>)}
+                </View>
+              </View>
 
-                      <View style={[styles.btnContainer1]}>
-                          <TouchableOpacity
-                              onPress={() => this.editPost(item.post_id)}
-                              style={[styles.actionBtn, styles.actionBtnGreen, !this.isEditMode() ? styles.showEdit : styles.hideEdit]}
-                            >
-                              <Text style={[styles.actionBtnLight]}>Edit</Text>
-                            </TouchableOpacity>
-                          <TouchableOpacity
-                              onPress={() => this.updatePost(item.post_id, item.text)}
-                              style={[styles.actionBtn, styles.actionBtnBlue, this.isEditMode() ? styles.showEdit : styles.hideEdit]}
-                            >
-                              <Text style={[styles.actionBtnLight]}>Update Post</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                      <View style={[styles.btnContainer2]}>
-                          <TouchableOpacity
-                              style={[styles.actionBtn, styles.actionBtnRed]}
-                              onPress={() => this.deletePost(item.post_id)}
-                            >
-                              <Text style={styles.actionBtnLight}>Delete post</Text>
-                            </TouchableOpacity>
-                        </View>
-                      <Text style={styles.errorMessageSmall}>{this.state.alertMessage}</Text>
-                      {this.isFieldInError('new_text_post') && this.getErrorsInField('new_text_post').map((errorMessage) => <Text key={errorMessage} style={styles.loginErrorText}>Please add some text to update this post</Text>)}
-                    </View>
-                    </View>
-
-                )}
-              keyExtractor={(item) => item.post_id.toString()}
-            />
-            </ScrollView>
-          </View>
-    ) 
-  };
+            )}
+            //set the post id to be the unique key for each item
+            keyExtractor={(item) => item.post_id.toString()}
+          />
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

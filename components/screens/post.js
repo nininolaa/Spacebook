@@ -72,7 +72,7 @@ class PostScreen extends ValidationComponent {
             break;
         }
       })
-      .then((responseJson) => {
+      .then(() => {
         this.setState({
           isLoading: false,
         });

@@ -306,7 +306,7 @@ class FriendProfile extends ValidationComponent {
             break;
         }
       })
-      .then((response) => {
+      .then(() => {
         console.log('Post deleted ');
         this.userPosts();
       })
@@ -433,9 +433,9 @@ class FriendProfile extends ValidationComponent {
 
           <View style={stylesIn.secondSubContainer}>
             <View style={stylesIn.friendPosts}>
-            <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
+              <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
               <Text style={stylesIn.friendProfileHeaderText}>Feed:</Text>
-              
+
               <FlatList
                 data={this.state.userPostList}
 
@@ -563,7 +563,7 @@ class FriendProfile extends ValidationComponent {
                 )}
                 keyExtractor={(item) => item.post_id.toString()}
               />
-              
+
             </View>
           </View>
         </View>

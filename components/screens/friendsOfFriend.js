@@ -7,24 +7,14 @@ import Logo from '../modules/logo';
 class FriendsOfFriend extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      user_id: '',
-      first_name: '',
-      last_name: '',
-      email: '',
-      friend_count: '',
-      post_text: '',
-      userPostList: [],
-      userId: 0,
-    };
   }
 
-  componentDidMount() {
-    this.setState({
-      userId: this.props.route.params.userId,
-    });
-    console.log(this.state.userId);
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     userId: this.props.route.params.userId,
+  //   });
+  //   console.log(this.props.route.params.userId);
+  // }
 
   render() {
     return (
@@ -37,7 +27,8 @@ class FriendsOfFriend extends Component {
         <View style={stylesIn.mainMenu}>
 
           <FriendList
-            userId={this.state.userId}
+            key={`friendsOffriend${this.props.route.params.userId}`}
+            userId={this.props.route.params.userId}
             navigation={this.props.navigation}
           />
 

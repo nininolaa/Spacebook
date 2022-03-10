@@ -1,3 +1,4 @@
+//import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import { Searchbar } from 'react-native-paper';
 import {
@@ -10,28 +11,33 @@ import styles from '../modules/stylesheet';
 import FriendList from '../modules/friendList';
 import IsLoading from '../modules/isLoading';
 
+//create a UserWall component which will render user's post feed
 class FriendScreen extends Component {
+  //create a constructor
   constructor(props) {
+    //passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
+    //initialise the state for each data to be able to change it overtime
     this.state = {
-      friendId: '',
-      friendRequestList: [],
-      userFriendList: [],
       user_id: 0,
-      alertMessage: '',
       searchQuery: '',
       friendListKey: 0,
     };
   }
 
+  //using componentDidmount to get and set the user id and
+  //the friendListKey immediately after being mounted
   async componentDidMount() {
     const userId = await AsyncStorage.getItem('user_id');
     this.setState({
       user_id: userId,
+      //set the friendListKey state to make the component triggers when assign this state 
+      //as a key in the component in render function
       friendListKey: 1,
     });
-
+    
+    //get and set the user id and assign the random friendListKey when thee focused screen changes
     this.focusListener = this.props.navigation.addListener('focus', () => {
       AsyncStorage.getItem('user_id')
         .then((user_id) => {
@@ -43,25 +49,35 @@ class FriendScreen extends Component {
     });
   }
 
+  //clean up the focusListener function in componentDidMount before being destroyed
   componentWillUnmount() {
     this.focusListener();
   }
 
+  //navigate to the search result screen and passed in the query that want to find for to the query key
+  //in order to access it in another component
   onSearchPress() {
-    this.props.navigation.navigate('SearchResult', { query: this.state.searchQuery, friends: this.state.userFriendList });
+    this.props.navigation.navigate('SearchResult', { query: this.state.searchQuery });
   }
 
+  //calling render function and return the data that will be display 
   render() {
+    //display the friend screen when the component is loaded
     if (this.state.user_id) {
       return (
 
+        // create a flex container to make the content responsive to all screen sizes
+        // by dividing each section to an appropriate flex sizes
         <View style={stylesIn.flexContainer}>
-
+          {/* create a flex box to render spacebook logo */}
           <View style={stylesIn.homeLogo}>
             <Logo />
           </View>
 
+          {/* create a flex box for a search bar to search for friends */} 
           <View style={stylesIn.friendSearch}>
+            {/* using searchbar component to render a search bar and store the text on the search bar
+            to be the string to be search for */}
             <Searchbar
               placeholder="Find friends"
               onChangeText={(query) => { this.setState({ searchQuery: query }); }}
@@ -69,6 +85,7 @@ class FriendScreen extends Component {
             />
           </View>
 
+          {/* create a flex box for the button that will navigate to see the user's friend request  */}  
           <View style={stylesIn.friendBtnContainer}>
             <View style={stylesIn.friendRequestBtn}>
               <TouchableOpacity
@@ -79,10 +96,13 @@ class FriendScreen extends Component {
               </TouchableOpacity>
             </View>
           </View>
-
+          
+          {/* create a flex box to display the user's friend list by calling the FriendList component  */}  
           <View style={stylesIn.friendList}>
-            <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
+            {/* passing the FriendList component and given the attributes to the component
+            in order to render the friend list for a given user */}
             <FriendList
+              //a unique key is needed in order to trigger the component 
               key={this.state.friendListKey}
               userId={this.state.user_id}
               navigation={this.props.navigation}
@@ -93,13 +113,14 @@ class FriendScreen extends Component {
 
       );
     }
-
+    //display the loading icon when the screen is still loading
     return (
       <IsLoading />
     );
   }
 }
 
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

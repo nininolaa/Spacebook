@@ -15,7 +15,7 @@ export function likePost(token, userId, post_id) {
             break;
           case 400:
             throw { errorCase: 'Liked' };
-            break
+            break;
           case 401:
             throw { errorCase: 'Unauthorised' };
             break;
@@ -106,7 +106,7 @@ export function unlikePost(token, userId, post_id) {
         }
       })
       .then(() => {
-        console.log('unliked')
+        console.log('unliked');
         resolve(true);
       })
       .catch((error) => {

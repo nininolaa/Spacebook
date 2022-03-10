@@ -1,11 +1,26 @@
+//import stylesheet to get access to the styling 
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
 
+  //--------------------- Default containers ------------------------------
+
   flexContainer: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fdf6e4',
   },
+
+  btnContainer1: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  btnContainer2: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  //--------------------- Homepage, Login and Register -------------
 
   homeLogo: {
     flex: 30,
@@ -30,7 +45,6 @@ export default StyleSheet.create({
     width: '30%',
     height: '50%',
     alignItems: 'center',
-
   },
 
   loginButtonText: {
@@ -61,19 +75,13 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
 
+  //--------------------- Default buttons -------------
+
   actionBtn: {
     fontSize: 20,
     textAlign: 'center',
     height: '80%',
     width: '100%',
-    alignItems: 'center',
-  },
-  btnContainer1: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  btnContainer2: {
-    flex: 1,
     alignItems: 'center',
   },
 
@@ -129,15 +137,7 @@ export default StyleSheet.create({
     display: 'none',
   },
 
-  // Headings
-  postHeaderText: {
-    color: '#411800',
-    fontSize: 20,
-    paddingBottom: 10,
-    fontWeight: 50,
-  },
-
-  // User text
+  //--------------------- User information texts -------------
 
   profileText: {
     fontWeight: 15,
@@ -148,7 +148,7 @@ export default StyleSheet.create({
     fontSize: 15,
   },
 
-  // setting screen
+  //--------------------- Setting screen  ------------
   updateInput: {
     borderWidth: 2,
     borderColor: '#ffbf99',
@@ -158,14 +158,15 @@ export default StyleSheet.create({
     padding: 5,
   },
 
-  // post wall
+  //--------------------- Post feed  ------------
 
   postHeaderText: {
     border: 5,
     borderColor: 'black',
-    fontSize: 25,
+    color: '#411800',
+    fontSize: 20,
     paddingBottom: 10,
-    fontWeight: 'bold',
+    fontWeight: 50,
   },
 
   postBox: {
@@ -231,7 +232,7 @@ export default StyleSheet.create({
     paddingTop: 10,
   },
 
-  // friend Screen
+  //--------------------- Friend screen  ------------
   friendsBtn: {
     border: 5,
     borderRadius: 5,
@@ -242,7 +243,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
 
-  // validation
+  //--------------------- Error messages  ------------
   loginErrorText: {
     color: '#B90E0A',
     marginBottom: 10,
@@ -252,7 +253,6 @@ export default StyleSheet.create({
     alignItems: 'flex-start',
   },
 
-  // error message
   errorMessage: {
     fontSize: 20,
     color: '#B90E0A',

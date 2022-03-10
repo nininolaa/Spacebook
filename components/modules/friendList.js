@@ -1,3 +1,4 @@
+//import elements and components to be able to use it inside the class
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList,
@@ -7,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './stylesheet';
 import ProfileImage from './profileImage';
 import IsLoading from './isLoading';
+
 
 function FriendList(props) {
   const [alertMessage, setAlert] = useState();
@@ -98,10 +100,10 @@ function FriendList(props) {
       <Text style={styles.postHeaderText}>Friends:</Text>
       <Text style={styles.errorMessage}>{alertMessage}</Text>
       <FlatList
-                    // calling the array
+        // calling the array
         data={userFriendList}
 
-                    // specify the item that we want to show on the list
+        // specify the item that we want to show on the list
         renderItem={({ item }) => (
           <View style={[styles.inPostContainer, styles.postBox]}>
             <View style={styles.inPostImage}>
