@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
@@ -14,24 +14,24 @@ import PostScreen from './post';
 import ProfileScreen from './profile';
 import SettingScreen from './setting';
 
-//declare the variable to store the tab navigator
+// declare the variable to store the tab navigator
 const Tab = createBottomTabNavigator();
 
-//create a Index component to render the welcome screen for un-login user and
-//render a main app with tab bar for logged in user
+// create a Index component to render the welcome screen for un-login user and
+// render a main app with tab bar for logged in user
 class Index extends Component {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructors
+    // passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       token: null,
     };
   }
 
-  //get and set the session token into the state when the focus screen changes
+  // get and set the session token into the state when the focus screen changes
   async componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', async () => {
       AsyncStorage.getItem('@session_token')
@@ -43,20 +43,20 @@ class Index extends Component {
     });
   }
 
-  //clean up the unsubscribe function in componentDidMount before being destroyed
+  // clean up the unsubscribe function in componentDidMount before being destroyed
   componentWillUnmount() {
     this.unsubscribe();
   }
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
-    //when the user is not yet loggeed in
+    // when the user is not yet loggeed in
     if (this.state.token === null) {
-      //display a welcome page that allows a user to navigate to a login or register screen
+      // display a welcome page that allows a user to navigate to a login or register screen
       return (
 
-        //create a flex container to make the content responsive to all screen sizes
-        //by dividing each section to an appropriate flex sizes
+        // create a flex container to make the content responsive to all screen sizes
+        // by dividing each section to an appropriate flex sizes
         <View style={styles.flexContainer}>
 
           {/* create a flex box to render spacebook logo */}
@@ -87,7 +87,7 @@ class Index extends Component {
               {/* create a login button and add an inline function to navigate the user to login screen */}
               <TouchableOpacity
                 style={stylesIn.loginButton}
-                onPress={() => {this.props.navigation.navigate('Login')}}
+                onPress={() => { this.props.navigation.navigate('Login'); }}
               >
                 <Text style={stylesIn.loginButtonText}>Sign In</Text>
               </TouchableOpacity>
@@ -97,7 +97,7 @@ class Index extends Component {
               {/* create a register button and add an inline function to navigate the user to register screen */}
               <TouchableOpacity
                 style={stylesIn.loginButton}
-                onPress={() => {this.props.navigation.navigate('Register')}}
+                onPress={() => { this.props.navigation.navigate('Register'); }}
               >
                 <Text style={stylesIn.loginButtonText}>Register</Text>
               </TouchableOpacity>
@@ -110,18 +110,17 @@ class Index extends Component {
       );
     }
 
-    //if the user is logged in (a session token is valid), display the main screen 
-    //with the bottom tab navigator
+    // if the user is logged in (a session token is valid), display the main screen
+    // with the bottom tab navigator
     return (
 
-      //using the tab navigator element to add the navigator at the bottom of the screen
+      // using the tab navigator element to add the navigator at the bottom of the screen
       <Tab.Navigator
-        //set the profile screen to be the default tab
+        // set the profile screen to be the default tab
         initialRouteName="Profile"
         screenOptions={({ route }) => ({
-          //assigned icon for each tab by using icons from the imported Ion icons
+          // assigned icon for each tab by using icons from the imported Ion icons
           tabBarIcon: ({ focused, color, size }) => {
-
             let iconName;
             const routName = route.name;
             switch (routName) {
@@ -156,7 +155,7 @@ class Index extends Component {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   secondRow: {

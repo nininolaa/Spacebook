@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import React from 'react';
 import {
   View, TextInput, TouchableOpacity, Text, StyleSheet, ScrollView,
@@ -11,14 +11,14 @@ import IsLoading from '../modules/isLoading';
 import Logo from '../modules/logo';
 import ProfileImage from '../modules/profileImage';
 
-//create a SettingScreen component to allow a user to update their information
+// create a SettingScreen component to allow a user to update their information
 class SettingScreen extends ValidationComponent {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructors
+    // passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       user_id: '',
       first_name: '',
@@ -38,19 +38,19 @@ class SettingScreen extends ValidationComponent {
     };
   }
 
-  //using componentDidmount to get the user id and
-  //to call loadProfile function immediately after being mounted
+  // using componentDidmount to get the user id and
+  // to call loadProfile function immediately after being mounted
   async componentDidMount() {
-    this.state.user_id = await AsyncStorage.getItem('user_id'); 
+    this.state.user_id = await AsyncStorage.getItem('user_id');
     this.loadProfile();
     this.setState({
       imageKey: Math.random(),
     });
 
-    //call loadProfile function when the focused screen changes
+    // call loadProfile function when the focused screen changes
     this.focusListener = this.props.navigation.addListener('focus', async () => {
-      //set the imageKey state to random numbers to make the component triggers when assign this state 
-      //as a key in the component in render function
+      // set the imageKey state to random numbers to make the component triggers when assign
+      // this state as a key in the component in render function
       this.setState({
         imageKey: Math.random(),
       });
@@ -58,31 +58,31 @@ class SettingScreen extends ValidationComponent {
     });
   }
 
-  //clean up the focusListener function in componentDidMount before being destroyed
+  // clean up the focusListener function in componentDidMount before being destroyed
   componentWillUnmount() {
     this.focusListener();
   }
 
-  //create a function to call the api for getting user information
+  // create a function to call the api for getting user information
   async loadProfile() {
-    //get the session token to use for authorisation when calling api
+    // get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
-    //get the user id as it is needed for api call 
-    const user_id = await AsyncStorage.getItem('user_id');
+    // get the user id as it is needed for api call
+    const userId = await AsyncStorage.getItem('user_id');
 
-    //using fetch function to call the api and send the get request
-    return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+    // using fetch function to call the api and send the get request
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
       method: 'get',
-      //passing the session token to be authorised
+      // passing the session token to be authorised
       headers: {
         'X-Authorization': token,
       },
     })
-    //checking the response status after calling api
+    // checking the response status after calling api
       .then((response) => {
-        //return the values from the response if the calling is successful and
-        //if the response status error occured, store the error reasons into the 
-        //object array
+        // return the values from the response if the calling is successful and
+        // if the response status error occured, store the error reasons into the
+        // object array
         switch (response.status) {
           case 200:
             return response.json();
@@ -101,8 +101,8 @@ class SettingScreen extends ValidationComponent {
             break;
         }
       })
-      //when the promise is resolved, set all the states to be the value from the response Json array
-      //and set the isLoading state to be false as the promise has been resolved
+      // when the promise is resolved, set all the states to be the value from the response
+      // Json array and set the isLoading state to be false as the promise has been resolved
       .then((response) => {
         this.setState({
           user_id: response.user_id,
@@ -112,9 +112,9 @@ class SettingScreen extends ValidationComponent {
           isLoading: false,
         });
       })
-      //when the promise is rejected, check which error reason from the response was and
-      //set the correct error message to each error in order to render the right error message
-      //also set the isLoading state to be false as the promise has been rejected
+      // when the promise is rejected, check which error reason from the response was and
+      // set the correct error message to each error in order to render the right error message
+      // also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         console.log(error);
         switch (error.errorCase) {
@@ -146,10 +146,9 @@ class SettingScreen extends ValidationComponent {
       });
   }
 
-  //create a function to update user's information
+  // create a function to update user's information
   updateInfo = async () => {
-
-    //validation check for user's information
+    // validation check for user's information
     this.validate({
       first_name: { maxlength: 20, hasLowerCase: true },
       last_name: { maxlength: 20 },
@@ -158,50 +157,49 @@ class SettingScreen extends ValidationComponent {
       new_password_confirm: { minlength: 6, equalPassword: this.state.new_password },
     });
 
-   
-    //only call the api if the validation check is passed 
-    if (this.isFormValid() == true) {
+    // only call the api if the validation check is passed
+    if (this.isFormValid() === true) {
+      // create an empty object array to store the new information that will be send for an update
+      const newInfo = {};
 
-      //create an empty object array to store the new information that will be send for an update
-      const new_info = {};
-
-      //only store the new information to the object array when its not the same as the current information
-      if (this.state.new_first_name != this.state.first_name && this.state.new_first_name != '') {
-        new_info.first_name = this.state.new_first_name;
+      // only store the new information to the object array
+      // when its not the same as the current information
+      if (this.state.new_first_name !== this.state.first_name && this.state.new_first_name !== '') {
+        newInfo.first_name = this.state.new_first_name;
       }
 
-      if (this.state.new_last_name != this.state.last_name && this.state.new_last_name != '') {
-        new_info.last_name = this.state.new_last_name;
+      if (this.state.new_last_name !== this.state.last_name && this.state.new_last_name !== '') {
+        newInfo.last_name = this.state.new_last_name;
       }
 
-      if (this.state.new_email != this.state.email && this.state.new_email != '') {
-        new_info.email = this.state.new_email;
+      if (this.state.new_email !== this.state.email && this.state.new_email !== '') {
+        newInfo.email = this.state.new_email;
       }
 
-      if (this.state.new_password != this.state.password && this.state.new_password != '') {
-        new_info.password = this.state.new_password;
+      if (this.state.new_password !== this.state.password && this.state.new_password !== '') {
+        newInfo.password = this.state.new_password;
       }
 
-      //get the session token and user id as it is needed when sending a request to the api
+      // get the session token and user id as it is needed when sending a request to the api
       const token = await AsyncStorage.getItem('@session_token');
-      const user_id = await AsyncStorage.getItem('user_id');
+      const userId = await AsyncStorage.getItem('user_id');
 
-      //using fetch function to call the api and send the patch request
-      return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+      // using fetch function to call the api and send the patch request
+      return fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
         method: 'PATCH',
-        //passing the content type to tell the server that we are passing json
-        //and the session token to be authorised
+        // passing the content type to tell the server that we are passing json
+        // and the session token to be authorised
         headers: {
           'X-Authorization': token,
           'Content-Type': 'application/json',
         },
-         //converted a new text to a string and pass into the body
-        body: JSON.stringify(new_info),
+        // converted a new text to a string and pass into the body
+        body: JSON.stringify(newInfo),
       })
-        //checking the response status in the return promise
+        // checking the response status in the return promise
         .then((response) => {
-          //if the response status error occured, store the error reasons into the 
-          //object array
+          // if the response status error occured, store the error reasons into the
+          // object array
           switch (response.status) {
             case 200:
               break;
@@ -225,19 +223,19 @@ class SettingScreen extends ValidationComponent {
               break;
           }
         })
-        //when the promise is resolved, set the editable back to false as it editing is done
-        //and set the isLoading state to be false as the promise has been resolved
+        // when the promise is resolved, set the editable back to false as it editing is done
+        // and set the isLoading state to be false as the promise has been resolved
         .then(() => {
           this.setState({
             editable: false,
             isLoading: false,
           });
-          //update user's profile each time an update is made
+          // update user's profile each time an update is made
           this.loadProfile();
         })
-        //when the promise is rejected, check which error reason from the response was and
-        //set the correct error message to each error in order to render the right error message
-        //also set the isLoading state to be false as the promise has been rejected
+        // when the promise is rejected, check which error reason from the response was and
+        // set the correct error message to each error in order to render the right error message
+        // also set the isLoading state to be false as the promise has been rejected
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
@@ -281,31 +279,30 @@ class SettingScreen extends ValidationComponent {
           }
         });
     }
-  }
+  };
 
-  //create a function to allow a user to logout
+  // create a function to allow a user to logout
   logout = async () => {
-
-    //get the session token to use for authorisation when calling api
+    // get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
-    
-    //remove the session token and user id to be able to logout
+
+    // remove the session token and user id to be able to logout
     await AsyncStorage.removeItem('@session_token');
     await AsyncStorage.removeItem('user_id');
 
-    //using fetch function to call the api and send the post request
+    // using fetch function to call the api and send the post request
     return fetch('http://localhost:3333/api/1.0.0/logout', {
       method: 'post',
-      //passing the session token to be authorised
+      // passing the session token to be authorised
       headers: {
         'X-Authorization': token,
       },
     })
-      //check the response status in the return promise
+      // check the response status in the return promise
       .then((response) => {
-        //if the promise is resolved navigate a user back to login screen 
-        //if the response status error occured, store the error reasons into the 
-        //object array
+        // if the promise is resolved navigate a user back to login screen
+        // if the response status error occured, store the error reasons into the
+        // object array
         switch (response.status) {
           case 200:
             return this.props.navigation.navigate('Login');
@@ -320,9 +317,9 @@ class SettingScreen extends ValidationComponent {
             break;
         }
       })
-      //when the promise is rejected, check which error reason from the response was and
-        //set the correct error message to each error in order to render the right error message
-        //also set the isLoading state to be false as the promise has been rejected
+      // when the promise is rejected, check which error reason from the response was and
+    // set the correct error message to each error in order to render the right error message
+    // also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         console.log(error.message);
         switch (error.errorCase) {
@@ -342,39 +339,39 @@ class SettingScreen extends ValidationComponent {
       });
   };
 
-  //if the edit button pressed, set the text inputs to be editable
+  // if the edit button pressed, set the text inputs to be editable
   editPost() {
     this.setState({ editable: true });
   }
 
-  //return the value of editable when this function is called
+  // return the value of editable when this function is called
   isEditMode() {
     return this.state.editable;
   }
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
-    //check if the function is still loading
-    //if it does, render the loading icon
-    if (this.state.isLoading == true) {
+    // check if the function is still loading
+    // if it does, render the loading icon
+    if (this.state.isLoading === true) {
       return (
         <IsLoading />
       );
     }
-    //render the main screen when the functions are ready
+    // render the main screen when the functions are ready
     return (
-      //create a flex container to make the content responsive to all screen sizes
-      //by dividing each section to an appropriate flex sizes and using a ScrollView 
-      //to make the screen scrollable
+      // create a flex container to make the content responsive to all screen sizes
+      // by dividing each section to an appropriate flex sizes and using a ScrollView
+      // to make the screen scrollable
       <ScrollView style={stylesIn.flexContainer}>
         {/* create a flex box for rendering spacebook logo */}
         <View style={stylesIn.homeLogo}>
           <Logo />
         </View>
-       
+
         {/* create a container for user's imagee and information */}
         <View style={stylesIn.userProfile}>
-           {/* create a container to render user's profile image */}
+          {/* create a container to render user's profile image */}
           <View style={stylesIn.userImage}>
             {/* passing the profileImage component and given the attributes to the component
             in order to render the right profile image and right size */}
@@ -387,7 +384,7 @@ class SettingScreen extends ValidationComponent {
               navigation={this.props.navigation}
             />
           </View>
-          
+
           {/* create a container to render user's information */}
           <View style={stylesIn.userDetails}>
             <Text style={styles.profileText}>
@@ -402,12 +399,12 @@ class SettingScreen extends ValidationComponent {
             </Text>
           </View>
         </View>
-        
+
         {/* create a container to render the text inputs for a user to edit and update */}
         <View style={stylesIn.userUpdateDetails}>
 
           <Text style={styles.postHeaderText}>Edit Profile </Text>
-          
+
           {/* create a text input to allow a user to see their current firstname and edit it */}
           <Text style={stylesIn.userDetailsText}>First Name: </Text>
           <TextInput
@@ -445,7 +442,7 @@ class SettingScreen extends ValidationComponent {
           />
           {/* display the error of the email validation */}
           {this.isFieldInError('new_email') && this.getErrorsInField('new_email').map((errorMessage) => <Text key={errorMessage} style={styles.loginErrorText}>Please enter a valid email address</Text>)}
-          
+
           {/* create a text input to allow a user to change their password */}
           <Text style={stylesIn.userDetailsText}>Password:</Text>
           <TextInput
@@ -468,10 +465,10 @@ class SettingScreen extends ValidationComponent {
             secureTextEntry
             editable={this.state.editable}
           />
-          {/* display the error of the password validation , the new password and confirm new password should be match*/}
+          {/* display the error of the password validation , the new password and confirm new password should be match */}
           {this.isFieldInError('new_password_confirm') && this.getErrorsInField('new_password_confirm').map((errorMessage) => <Text key={errorMessage} style={styles.loginErrorText}>{errorMessage}</Text>)}
 
-          {/* create a container for displaying the edit and update button*/}
+          {/* create a container for displaying the edit and update button */}
           {/* when the edit button is pressed, the update button will toggle to let the user update any information */}
           <TouchableOpacity
             onPress={() => this.editPost()}
@@ -504,7 +501,7 @@ class SettingScreen extends ValidationComponent {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

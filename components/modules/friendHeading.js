@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,15 +7,15 @@ import styles from './stylesheet';
 import IsLoading from './isLoading';
 import ProfileImage from './profileImage';
 
-//create a friendHeading component which will render user's general information and image
-//this component can be used as a header for both friend and non-friend screen
+// create a friendHeading component which will render user's general information and image
+// this component can be used as a header for both friend and non-friend screen
 class FriendHeading extends Component {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructor
+    // passing props into the constructor to enable using this.props inside a constructor
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       user_id: '',
       first_name: '',
@@ -27,31 +27,31 @@ class FriendHeading extends Component {
     };
   }
 
-  //using componentDidmount to invoked friend details component immediately after being mounted
+  // using componentDidmount to invoked friend details component immediately after being mounted
   componentDidMount() {
     this.loadFriend();
   }
 
-  //create a function to call the api for getting user information
+  // create a function to call the api for getting user information
   loadFriend = async () => {
-    //get the session token to use for authorisation when calling api
+    // get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
 
-    //calling the api and passing the id of the friend that going to will be view
+    // calling the api and passing the id of the friend that going to will be view
     return fetch(`http://localhost:3333/api/1.0.0/user/${this.props.friend_id}`, {
-      //passing get method in order to get user information
+      // passing get method in order to get user information
       method: 'get',
-      //passing the session token to be authorised
+      // passing the session token to be authorised
       headers: {
         'X-Authorization': token,
       },
     })
-      //checking the response status after calling api
+      // checking the response status after calling api
       .then((response) => {
         switch (response.status) {
-          //return the values from the response if the calling is successful and
-          //if the response status error occured, store the error reasons into the 
-          //array objects
+          // return the values from the response if the calling is successful and
+          // if the response status error occured, store the error reasons into the
+          // array objects
           case 200:
             return response.json();
             break;
@@ -69,8 +69,8 @@ class FriendHeading extends Component {
             break;
         }
       })
-      //when the promise is resolved, set all the states to be the value from the response Json array
-      //and set the isLoading state to be false as the promise has been resolved
+      // when the promise is resolved, set all the states to be the value from the response Json array
+      // and set the isLoading state to be false as the promise has been resolved
       .then((responseJson) => {
         this.setState({
           profile: responseJson,
@@ -82,9 +82,9 @@ class FriendHeading extends Component {
           isLoading: false,
         });
       })
-      //when the promise is rejected, check which error reason from the response was and
-      //set the correct error message to each error in order to render the right error message
-      //also set the isLoading state to be false as the promise has been rejected
+      // when the promise is rejected, check which error reason from the response was and
+      // set the correct error message to each error in order to render the right error message
+      // also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         console.log(error);
         switch (error.errorCase) {
@@ -115,7 +115,8 @@ class FriendHeading extends Component {
         }
       });
   };
-  //calling render function and return the data that will be display 
+
+  // calling render function and return the data that will be display
   render() {
     // check if the function is still loading
     // if it does, render the loading icon

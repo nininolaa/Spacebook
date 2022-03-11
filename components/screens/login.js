@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import React from 'react';
 import {
   View, TextInput, Text, StyleSheet, TouchableOpacity,
@@ -8,14 +8,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 
-//create a Login component to let the user login to their account
+// create a Login component to let the user login to their account
 class Login extends ValidationComponent {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructors
+    // passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       email: '',
       password: '',
@@ -23,31 +23,31 @@ class Login extends ValidationComponent {
     };
   }
 
-  //create a sign in function to call the api for access to login
+  // create a sign in function to call the api for access to login
   SignInButtonPressed = async () => {
-    //validation check for email and password
+    // validation check for email and password
     this.validate({
       email: { required: true },
       password: { required: true },
     });
 
-    //only call the api if the validation check is passed 
+    // only call the api if the validation check is passed
     if (this.isFormValid() == true) {
-      //using fetch function to call the api and send the post request
+      // using fetch function to call the api and send the post request
       return fetch('http://localhost:3333/api/1.0.0/login', {
         method: 'post',
-        //passing the content type to tell the server that we are passing json
+        // passing the content type to tell the server that we are passing json
         headers: {
           'Content-Type': 'application/json',
         },
-        //convert the email and password in the state to a string and pass into the body
+        // convert the email and password in the state to a string and pass into the body
         body: JSON.stringify(this.state),
       })
-        //checking the response status in the return promise
+        // checking the response status in the return promise
         .then((response) => {
-          //return the values from the response if the calling is successful and
-          //if the response status error occured, store the error reasons into the 
-          //object array
+          // return the values from the response if the calling is successful and
+          // if the response status error occured, store the error reasons into the
+          // object array
           switch (response.status) {
             case 200:
               return response.json();
@@ -63,16 +63,16 @@ class Login extends ValidationComponent {
               break;
           }
         })
-        //when the promise is resolved, set the value response token and 
-        //the value of the user id to the keys and navigate the user to the index screen
-        //which index screen will let the user enter the main screen if the user is logged in
+        // when the promise is resolved, set the value response token and
+        // the value of the user id to the keys and navigate the user to the index screen
+        // which index screen will let the user enter the main screen if the user is logged in
         .then(async (responseJson) => {
           await AsyncStorage.setItem('@session_token', responseJson.token);
           await AsyncStorage.setItem('user_id', responseJson.id);
           this.props.navigation.navigate('Home');
         })
-        //when the promise is rejected, check which error reason from the response was and
-        //set the correct error message to each error in order to render the right error message
+        // when the promise is rejected, check which error reason from the response was and
+        // set the correct error message to each error in order to render the right error message
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
@@ -96,22 +96,22 @@ class Login extends ValidationComponent {
     }
   };
 
-  //set the user's input email into the email in state
+  // set the user's input email into the email in state
   handleEmailInput = (email) => {
-    this.setState({email: email });
+    this.setState({ email });
   };
 
-  //set the user's input password into the password state
+  // set the user's input password into the password state
   handlePasswordInput = (pass) => {
     this.setState({ password: pass });
   };
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
     return (
 
-      //create a flex container to make the content responsive to all screen sizes
-      //by dividing each section to an appropriate flex sizes
+      // create a flex container to make the content responsive to all screen sizes
+      // by dividing each section to an appropriate flex sizes
       <View style={styles.flexContainer}>
 
         {/* create a flex box to render spacebook logo */}
@@ -149,7 +149,7 @@ class Login extends ValidationComponent {
 
         {/* create a container for login button */}
         <View style={styles.loginButtonRow}>
-          
+
           {/* call the sign in function when the login button is pressed */}
           <TouchableOpacity
             style={styles.loginButton}
@@ -166,7 +166,7 @@ class Login extends ValidationComponent {
           {/* navigate a user to register screen when the text is clicked */}
           <Text>
             Haven't Register?
-            <Text onPress={() => { this.props.navigation.navigate('Register')}} style={styles.linkText}>Click here</Text>
+            <Text onPress={() => { this.props.navigation.navigate('Register'); }} style={styles.linkText}>Click here</Text>
             {' '}
             to create an account
           </Text>
@@ -178,7 +178,7 @@ class Login extends ValidationComponent {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

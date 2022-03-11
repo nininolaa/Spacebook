@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import ValidationComponent from 'react-native-form-validator';
@@ -9,14 +9,14 @@ import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 import UserWall from '../modules/userWall';
 
-//create a PostScreen component which will allow user to share a post in tab navigator
+// create a PostScreen component which will allow user to share a post in tab navigator
 class PostScreen extends ValidationComponent {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructors
+    // passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       user_id: '',
       addPost: '',
@@ -26,66 +26,63 @@ class PostScreen extends ValidationComponent {
     };
   }
 
-  //---for post management, view a single post has not been used as the design for this already allow
+  // ---for post management, view a single post has not been used as the design for this already allow
   // a user to edit and delete post from the list of post
 
-  //using componentDidmount to get the user id and 
-  //a token immediately after being mounted
+  // using componentDidmount to get the user id and
+  // a token immediately after being mounted
   async componentDidMount() {
     this.state.user_id = await AsyncStorage.getItem('user_id');
     this.state.token = await AsyncStorage.getItem('@session_token');
 
     this.focusListener = this.props.navigation.addListener('focus', async () => {
-      //set the imageKey state to random numbers to make the component triggers when assign this state 
-      //as a key in the component in render function
+      // set the imageKey state to random numbers to make the component triggers when assign this state
+      // as a key in the component in render function
       this.setState({
         imageKey: Math.random(),
       });
     });
   }
 
-  //clean up the focusListener function in componentDidMount before being destroyed
+  // clean up the focusListener function in componentDidMount before being destroyed
   componentWillUnmount() {
     this.focusListener();
   }
 
-
-  //create a function for a user to add a post
+  // create a function for a user to add a post
   addPost = async () => {
-
-    //validation check that the text to be post should not be empty
+    // validation check that the text to be post should not be empty
     this.validate({
       addPost: { required: true },
     });
 
-    //only call the api if the validation check is passed 
+    // only call the api if the validation check is passed
     if (this.isFormValid() == true) {
-
-      //get the session token  as it is needed for authorisation
+      // get the session token  as it is needed for authorisation
       const token = await AsyncStorage.getItem('@session_token');
 
-      //get the user id as it is needed for api call 
+      // get the user id as it is needed for api call
       const userId = await AsyncStorage.getItem('user_id');
 
-      //store the text to the object array 
+      // store the text to the object array
       const post = { text: this.state.addPost };
 
-      //using fetch function to call the api and send the post request
+      // using fetch function to call the api and send the post request
       return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post`, {
         method: 'post',
-        //passing the content type to tell the server that we are passing json
-        //and the session token to be authorised
+        // passing the content type to tell the server that we are passing json
+        // and the session token to be authorised
         headers: {
           'X-Authorization': token,
           'Content-Type': 'application/json',
         },
-        //convert a text to a string and pass into the body
+        // convert a text to a string and pass into the body
         body: JSON.stringify(post),
       })
-        //checking the response status in the return promise
+        // checking the response status in the return promise
         .then((response) => {
-          //if the response status error occured, store the error reasons into the 
-          //object array
+          // if the response status error occured, store the error reasons into the
+          // object array
           switch (response.status) {
             case 201:
               break;
@@ -103,15 +100,15 @@ class PostScreen extends ValidationComponent {
               break;
           }
         })
-        //when the promise is resolved, set the userWallKey in state to any random number 
+        // when the promise is resolved, set the userWallKey in state to any random number
         // to make the userWall component triggers each time a user add new post
         .then(() => {
           this.setState({
             userWallKey: Math.random(),
           });
         })
-        //when the promise is rejected, check which error reason from the response was and
-        //set the correct error message to each error in order to render the right error message
+        // when the promise is rejected, check which error reason from the response was and
+        // set the correct error message to each error in order to render the right error message
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
@@ -140,27 +137,26 @@ class PostScreen extends ValidationComponent {
     }
   };
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
-
-    //display the screen when the components are ready
+    // display the screen when the components are ready
     return (
 
-      //create a flex container to make the content responsive to all screen sizes
-      //by dividing each section to an appropriate flex sizes
+      // create a flex container to make the content responsive to all screen sizes
+      // by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
-         {/* create a sub-container to split between a normal view and a flatlist to
+        {/* create a sub-container to split between a normal view and a flatlist to
         ensure that it will not overlay each other when the flatlist data is empty */}
         <View style={stylesIn.subContainer1}>
           {/* create a flex box for rendering spacebook logo */}
           <View style={stylesIn.homeLogo}>
             <Logo />
           </View>
-           {/* create a flex box to let the user add a new post to their wall */}
+          {/* create a flex box to let the user add a new post to their wall */}
           <View style={stylesIn.sharePost}>
             <Text style={styles.postHeaderText}>Share a post:</Text>
-            {/* set the text that the user enter to the text input component into a state 
+            {/* set the text that the user enter to the text input component into a state
               in order to send the text to the api */}
             <TextInput
               style={stylesIn.postInput}
@@ -190,7 +186,7 @@ class PostScreen extends ValidationComponent {
           <View style={stylesIn.mainPostFeed}>
             {/* call the userwall component to render the user wall */}
             <UserWall
-              //passed in the key in order to update the user's wall each time the update is made
+              // passed in the key in order to update the user's wall each time the update is made
               key={this.state.userWallKey}
               navigation={this.props.navigation}
             />
@@ -202,7 +198,7 @@ class PostScreen extends ValidationComponent {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

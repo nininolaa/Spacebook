@@ -1,4 +1,4 @@
-//import elements and components to be able to use it inside the class
+// import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
@@ -8,37 +8,36 @@ import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 import FriendHeading from '../modules/friendHeading';
 
-//create a NonFriend component to display a screen for a person that is not friend with the user
+// create a NonFriend component to display a screen for a person that is not friend with the user
 class NonFriend extends Component {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructors
+    // passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    //initialise the state for each data to be able to change it overtime
+    // initialise the state for each data to be able to change it overtime
     this.state = {
       alertMessage: '',
     };
   }
 
-  //create a function for a user to add a friend
+  // create a function for a user to add a friend
   addFriend = async () => {
-
-    //get the session token  as it is needed for authorisation
+    // get the session token  as it is needed for authorisation
     const token = await AsyncStorage.getItem('@session_token');
 
-    //using fetch function to call the api and send the post request
+    // using fetch function to call the api and send the post request
     return fetch(`http://localhost:3333/api/1.0.0/user/${this.props.route.params.friendId}/friends`, {
       method: 'POST',
-      //passing the session token to be authorised
+      // passing the session token to be authorised
       headers: {
         'X-Authorization': token,
       },
     })
-      //checking the response status in the return promise
+      // checking the response status in the return promise
       .then((response) => {
-      //if the response status error occured, store the error reasons into the 
-      //errorCase key in object array
+      // if the response status error occured, store the error reasons into the
+      // errorCase key in object array
         switch (response.status) {
           case 201:
             break;
@@ -60,10 +59,10 @@ class NonFriend extends Component {
         }
       })
       .then(() => {
-        console.log('Request sent')
+        console.log('Request sent');
       })
-      //when the promise is rejected, check which error reason from the response was and
-      //set the correct error message to each error in order to render the right error message
+      // when the promise is rejected, check which error reason from the response was and
+      // set the correct error message to each error in order to render the right error message
       .catch((error) => {
         console.log(error);
         switch (error.errorCase) {
@@ -96,12 +95,12 @@ class NonFriend extends Component {
       });
   };
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
     return (
 
-      //create a flex container to make the content responsive to all screen sizes
-      //by dividing each section to an appropriate flex sizes
+      // create a flex container to make the content responsive to all screen sizes
+      // by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
         {/* create a flex box to render spacebook logo */}
@@ -149,7 +148,7 @@ class NonFriend extends Component {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

@@ -1,18 +1,18 @@
-//import elements to be able to use it inside the class
+// import elements to be able to use it inside the class
 import React, { Component } from 'react';
 import {
   View, StyleSheet, ActivityIndicator, Text,
 } from 'react-native';
 
-//create isLoading component which will render a loading icon when the screen is still loading
+// create isLoading component which will render a loading icon when the screen is still loading
 class IsLoading extends Component {
-  //create a constructor
+  // create a constructor
   constructor(props) {
-    //passing props into the constructor to enable using this.props inside a constructor
+    // passing props into the constructor to enable using this.props inside a constructor
     super(props);
   }
 
-  //calling render function and return the data that will be display 
+  // calling render function and return the data that will be display
   render() {
     return (
       // create a container for loading icon
@@ -29,7 +29,7 @@ class IsLoading extends Component {
   }
 }
 
-//using stylesheet to design the render
+// using stylesheet to design the render
 const stylesIn = StyleSheet.create({
   loadingBox: {
     flex: 1,

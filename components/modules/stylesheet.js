@@ -1,9 +1,9 @@
-//import stylesheet to get access to the styling 
+// import stylesheet to get access to the styling
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
 
-  //--------------------- Default containers ------------------------------
+  // --------------------- Default containers ------------------------------
 
   flexContainer: {
     flex: 1,
@@ -20,7 +20,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
 
-  //--------------------- Homepage, Login and Register -------------
+  // --------------------- Homepage, Login and Register -------------
 
   homeLogo: {
     flex: 30,
@@ -75,7 +75,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
 
-  //--------------------- Default buttons -------------
+  // --------------------- Default buttons -------------
 
   actionBtn: {
     fontSize: 20,
@@ -137,7 +137,7 @@ export default StyleSheet.create({
     display: 'none',
   },
 
-  //--------------------- User information texts -------------
+  // --------------------- User information texts -------------
 
   profileText: {
     fontWeight: 15,
@@ -148,7 +148,7 @@ export default StyleSheet.create({
     fontSize: 15,
   },
 
-  //--------------------- Setting screen  ------------
+  // --------------------- Setting screen  ------------
   updateInput: {
     borderWidth: 2,
     borderColor: '#ffbf99',
@@ -158,7 +158,7 @@ export default StyleSheet.create({
     padding: 5,
   },
 
-  //--------------------- Post feed  ------------
+  // --------------------- Post feed  ------------
 
   postHeaderText: {
     border: 5,
@@ -232,7 +232,7 @@ export default StyleSheet.create({
     paddingTop: 10,
   },
 
-  //--------------------- Friend screen  ------------
+  // --------------------- Friend screen  ------------
   friendsBtn: {
     border: 5,
     borderRadius: 5,
@@ -243,7 +243,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
 
-  //--------------------- Error messages  ------------
+  // --------------------- Error messages  ------------
   loginErrorText: {
     color: '#B90E0A',
     marginBottom: 10,
