@@ -28,6 +28,7 @@ class ProfileScreen extends Component {
       userProfile: [],
       userPostList: [],
       alertMessage: '',
+      imageKey: 0,
     };
   }
 
@@ -36,10 +37,18 @@ class ProfileScreen extends Component {
   async componentDidMount() {
     this.state.user_id = await AsyncStorage.getItem('user_id');
     this.loadProfile();
+    this.setState({
+      imageKey: Math.random(),
+    });
     
     //call loadProfile function when the focused screen changes
     this.focusListener = this.props.navigation.addListener('focus', async () => {
       this.loadProfile();
+      //set the imageKey state to random numbers to make the component triggers when assign this state 
+      //as a key in the component in render function
+      this.setState({
+        imageKey: Math.random(),
+      });
     });
   }
 
@@ -56,7 +65,6 @@ class ProfileScreen extends Component {
     //get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
 
-    console.log(token);
     //using fetch function to call the api and send the get request
     return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
       method: 'get',
@@ -69,7 +77,7 @@ class ProfileScreen extends Component {
       .then((response) => {
         //return the values from the response if the calling is successful and
         //if the response status error occured, store the error reasons into the 
-        //array objects
+        //object array
         switch (response.status) {
           case 200:
             return response.json();
@@ -144,7 +152,7 @@ class ProfileScreen extends Component {
         <IsLoading />
       );
     }
-    //if not, render the main screen
+    //render the main screen when the functions are ready
     return (
       //create a flex container to make the content responsive to all screen sizes
       //by dividing each section to an appropriate flex sizes
@@ -153,7 +161,7 @@ class ProfileScreen extends Component {
         {/* create a sub-container to split between a normal view and a flatlist to
         ensure that it will not overlay each other when the flatlist data is empty */}
         <View style={stylesIn.firstSubContainer}>
-           {/* create a flex box for rendering spacebook logo */}
+          {/* create a flex box for rendering spacebook logo */}
           <View style={stylesIn.homeLogo}>
             <Logo />
           </View>
@@ -165,7 +173,7 @@ class ProfileScreen extends Component {
             <ProfileImage
               // set the key to be the user id so the component will trigger each time the user id is change
               // and also set the image to be editable as this is a user's own image
-              key={this.state.user_id}
+              key={this.state.imageKey}
               userId={this.state.user_id}
               isEditable
               width={100}
@@ -214,10 +222,11 @@ class ProfileScreen extends Component {
         {/* create a container to display flatlist component */}
         <View style={stylesIn.secondSubContainer}>
           <View style={stylesIn.userPost}>
-             {/* passing the alertMessage state to alert the error message  */}
+             {/* passing the alertMessage state to display the error message */}
             <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
             {/* call the userwall component to render the user wall */}
             <UserWall
+              key={this.state.imageKey}
               navigation={this.props.navigation}
             />
           </View>

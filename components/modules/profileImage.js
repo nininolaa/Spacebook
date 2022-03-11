@@ -159,7 +159,7 @@ class ProfileImage extends Component {
   }
 }
 
-// using stylesheet to design the render
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
   container: {
     flex: 1,

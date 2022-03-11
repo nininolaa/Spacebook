@@ -23,9 +23,8 @@ class Login extends ValidationComponent {
     };
   }
 
-  //create a loadfriend function to call the api for login
+  //create a sign in function to call the api for access to login
   SignInButtonPressed = async () => {
-
     //validation check for email and password
     this.validate({
       email: { required: true },
@@ -34,7 +33,6 @@ class Login extends ValidationComponent {
 
     //only call the api if the validation check is passed 
     if (this.isFormValid() == true) {
-
       //using fetch function to call the api and send the post request
       return fetch('http://localhost:3333/api/1.0.0/login', {
         method: 'post',
@@ -75,7 +73,6 @@ class Login extends ValidationComponent {
         })
         //when the promise is rejected, check which error reason from the response was and
         //set the correct error message to each error in order to render the right error message
-        //also set the isLoading state to be false as the promise has been rejected
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
@@ -99,7 +96,7 @@ class Login extends ValidationComponent {
     }
   };
 
-  //set the user's input email into the email state
+  //set the user's input email into the email in state
   handleEmailInput = (email) => {
     this.setState({email: email });
   };
@@ -160,7 +157,7 @@ class Login extends ValidationComponent {
           >
             <Text style={styles.loginButtonText}>Sign In</Text>
           </TouchableOpacity>
-          {/* passing the alertMessage to alert the error message */}
+          {/* passing the alertMessage to display the error message */}
           <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
         </View>
 

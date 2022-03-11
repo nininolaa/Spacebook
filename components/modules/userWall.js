@@ -22,7 +22,7 @@ class UserWall extends ValidationComponent {
       userPostList: [],
       editable: false,
       isLoading: true,
-      alertMessage: '',
+      alertMessage: '',      
     };
   }
 
@@ -386,6 +386,8 @@ class UserWall extends ValidationComponent {
                   <View style={styles.inPostHeader}>
                     {/* display post's author name, post id and post time */}
                     <Text
+                      // make the name of each user clickable, and allow a user to visit their profile when click on their name 
+                      onPress={() => { this.props.navigation.navigate('FriendProfile', { friendId: item.author.user_id }) }} 
                       style={styles.postNameText}
                     >
                       {' '}

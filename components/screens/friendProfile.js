@@ -660,7 +660,7 @@ class FriendProfile extends ValidationComponent {
                                         this.userPosts();
                                       })
                                       //when the promise is rejected, set the alertMessage1 state to the error message that retrieved 
-                                      //from the like functions
+                                      //from the unlike functions
                                       .catch((error) => {
                                         this.setState({
                                           alertMessage1: error.alertMessage1,

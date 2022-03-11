@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
-import IsLoading from '../modules/isLoading';
 import UserWall from '../modules/userWall';
 
 //create a PostScreen component which will allow user to share a post in tab navigator
@@ -36,6 +35,18 @@ class PostScreen extends ValidationComponent {
     this.state.user_id = await AsyncStorage.getItem('user_id');
     this.state.token = await AsyncStorage.getItem('@session_token');
 
+    this.focusListener = this.props.navigation.addListener('focus', async () => {
+      //set the imageKey state to random numbers to make the component triggers when assign this state 
+      //as a key in the component in render function
+      this.setState({
+        imageKey: Math.random(),
+      });
+    });
+  }
+
+  //clean up the focusListener function in componentDidMount before being destroyed
+  componentWillUnmount() {
+    this.focusListener();
   }
 
 

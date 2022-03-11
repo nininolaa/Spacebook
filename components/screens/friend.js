@@ -55,9 +55,15 @@ class Friend extends Component {
   }
 
   //navigate to the search result screen and passed in the query that want to find for to the query key
-  //in order to access it in another component
+  //and also set searchIn key to all to get a result of all users 
   onSearchPress() {
-    this.props.navigation.navigate('SearchResult', { query: this.state.searchQuery });
+    this.props.navigation.navigate('SearchResult', { query: this.state.searchQuery , searchIn: 'all' });
+  }
+
+  //navigate to the search result screen and passed in the query that want to find for to the query key
+  //and also set searchIn key to friends to get a result of a user's friends only
+  onSearchPressFriend() {
+    this.props.navigation.navigate('SearchResult', { query: this.state.searchQuery , searchIn: 'friends' });
   }
 
   //calling render function and return the data that will be display 
@@ -74,12 +80,12 @@ class Friend extends Component {
             <Logo />
           </View>
 
-          {/* create a flex box for a search bar to search for friends */} 
+          {/* create a flex box for a search bar to search for any user */} 
           <View style={stylesIn.friendSearch}>
             {/* using searchbar component to render a search bar and store the text on the search bar
             to be the string to be search for */}
             <Searchbar
-              placeholder="Find friends"
+              placeholder="Find users"
               onChangeText={(query) => { this.setState({ searchQuery: query }); }}
               onIconPress={() => { this.onSearchPress(); }}
             />
@@ -99,6 +105,14 @@ class Friend extends Component {
           
           {/* create a flex box to display the user's friend list by calling the FriendList component  */}  
           <View style={stylesIn.friendList}>
+            {/* using searchbar component to render a search bar to search for user's friend
+             and store the text on the search bar to be the string to be search for */}
+            <Searchbar
+              style = {stylesIn.searchBar}
+              placeholder="Find your friends"
+              onChangeText={(query) => { this.setState({ searchQuery: query }); }}
+              onIconPress={() => { this.onSearchPressFriend(); }}
+            />
             {/* passing the FriendList component and given the attributes to the component
             in order to render the friend list for a given user */}
             <FriendList
@@ -154,6 +168,10 @@ const stylesIn = StyleSheet.create({
     flex: 2,
     paddingHorizontal: 20,
   },
+
+  searchBar:{
+    marginBottom : 15,
+  }
 });
 
 export default Friend;
