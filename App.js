@@ -5,10 +5,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/screens/login';
 import Index from './components/screens/index';
 import Register from './components/screens/register';
-import FriendReqeust from './components/screens/friendRequest';
+import FriendRequest from './components/screens/friendRequest';
 import SearchResult from './components/screens/searchResult';
 import FriendProfile from './components/screens/friendProfile';
-import NonFriendScreen from './components/screens/nonFriend';
+import NonFriend from './components/screens/nonFriend';
 import UploadPicture from './components/screens/uploadPicture';
 import FriendsOfFriend from './components/screens/friendsOfFriend';
 
@@ -26,10 +26,10 @@ class App extends Component {
           <Stack.Screen name="Home" component={Index} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="FriendRequest" component={FriendReqeust} />
+          <Stack.Screen name="FriendRequest" component={FriendRequest} />
           <Stack.Screen name="SearchResult" component={SearchResult} />
           <Stack.Screen name="FriendProfile" component={FriendProfile} />
-          <Stack.Screen name="NonFriendScreen" component={NonFriendScreen} />
+          <Stack.Screen name="NonFriend" component={NonFriend} />
           <Stack.Screen name="UploadPicture" component={UploadPicture} />
           <Stack.Screen name="FriendsOfFriend" component={FriendsOfFriend} />
 

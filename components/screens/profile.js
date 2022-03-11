@@ -1,3 +1,4 @@
+//import elements and components to be able to use it inside the class
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
@@ -9,15 +10,18 @@ import styles from '../modules/stylesheet';
 import ProfileImage from '../modules/profileImage';
 import UserWall from '../modules/userWall';
 
+//create a ProfileScreen component which will render user information and feed
 class ProfileScreen extends Component {
+  //create a constructor
   constructor(props) {
+    //passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
+    //initialise the state for each data to be able to change it overtime
     this.state = {
       user_id: '',
       first_name: '',
       last_name: '',
-
       friend_count: '',
       email: '',
       isLoading: true,
@@ -27,27 +31,45 @@ class ProfileScreen extends Component {
     };
   }
 
+  //using componentDidmount to get the user id and
+  //to call loadProfile function immediately after being mounted
   async componentDidMount() {
     this.state.user_id = await AsyncStorage.getItem('user_id');
     this.loadProfile();
-
+    
+    //call loadProfile function when the focused screen changes
     this.focusListener = this.props.navigation.addListener('focus', async () => {
       this.loadProfile();
     });
   }
 
+  //clean up the focusListener function in componentDidMount before being destroyed
+  componentWillUnmount() {
+    this.focusListener();
+  }
+
+  //create a function to call the api for getting user information
   loadProfile = async () => {
+    //get the user id as it is needed for api call 
     const user_id = await AsyncStorage.getItem('user_id');
+
+    //get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
+
     console.log(token);
+    //using fetch function to call the api and send the get request
     return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
       method: 'get',
+      //passing the session token to be authorised
       headers: {
         'X-Authorization': token,
-        'Content-Type': 'application/json',
       },
     })
+      //checking the response status after calling api
       .then((response) => {
+        //return the values from the response if the calling is successful and
+        //if the response status error occured, store the error reasons into the 
+        //array objects
         switch (response.status) {
           case 200:
             return response.json();
@@ -66,6 +88,8 @@ class ProfileScreen extends Component {
             break;
         }
       })
+      //when the promise is resolved, set all the states to be the value from the response Json array
+      //and set the isLoading state to be false as the promise has been resolved
       .then((response) => {
         this.setState({
           userProfile: response,
@@ -78,6 +102,9 @@ class ProfileScreen extends Component {
 
         });
       })
+      //when the promise is rejected, check which error reason from the response was and
+      //set the correct error message to each error in order to render the right error message
+      //also set the isLoading state to be false as the promise has been rejected
       .catch((error) => {
         console.log(error);
         switch (error.errorCase) {
@@ -108,103 +135,36 @@ class ProfileScreen extends Component {
         }
       });
   };
-
-  userPosts = async () => {
-    const user_id = await AsyncStorage.getItem('user_id');
-    const token = await AsyncStorage.getItem('@session_token');
-
-    return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/post`, {
-      method: 'get',
-      headers: {
-        'X-Authorization': token,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => {
-        switch (response.status) {
-          case 200:
-            return response.json();
-            break;
-          case 401:
-            throw { errorCase: 'Unauthorised' };
-            break;
-          case 403:
-            throw { errorCase: 'UnauthorisedPost' };
-            break;
-          case 404:
-            throw { errorCase: 'UserNotFound' };
-            break;
-          case 500:
-            throw { errorCase: 'ServerError' };
-            break;
-          default:
-            throw { errorCase: 'WentWrong' };
-            break;
-        }
-      })
-      .then((responseJson) => {
-        this.setState({
-          userPostList: responseJson,
-          isLoading: false,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        switch (error.errorCase) {
-          case 'Unauthorised':
-            this.setState({
-              alertMessage: 'Unauthorised, Please login',
-              isLoading: false,
-            });
-            break;
-          case 'UnauthorisedPost':
-            this.setState({
-              alertMessage: 'You can only view the post of yourself or your friends',
-              isLoading: false,
-            });
-            break;
-
-          case 'UserNotFound':
-            this.setState({
-              alertMessage: 'Not found',
-              isLoading: false,
-            });
-            break;
-          case 'ServerError':
-            this.setState({
-              alertMessage: 'Cannot connect to the server, please try again',
-              isLoading: false,
-            });
-            break;
-          case 'WentWrong':
-            this.setState({
-              alertMessage: 'Something went wrong, please try again',
-              isLoading: false,
-            });
-            break;
-        }
-      });
-  };
-
+  //calling render function and return the data that will be display
   render() {
+    //check if the function is still loading
+    //if it does, render the loading icon
     if (this.state.isLoading == true) {
       return (
         <IsLoading />
       );
     }
-
+    //if not, render the main screen
     return (
-
+      //create a flex container to make the content responsive to all screen sizes
+      //by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
+        {/* create a sub-container to split between a normal view and a flatlist to
+        ensure that it will not overlay each other when the flatlist data is empty */}
         <View style={stylesIn.firstSubContainer}>
-
+           {/* create a flex box for rendering spacebook logo */}
           <View style={stylesIn.homeLogo}>
             <Logo />
           </View>
 
+           {/* create a container to render user's profile image */}
           <View style={stylesIn.profilePicture}>
+            {/* passing the profileImage component and given the attributes to the component
+            in order to render the right profile image and right size */}
             <ProfileImage
+              // set the key to be the user id so the component will trigger each time the user id is change
+              // and also set the image to be editable as this is a user's own image
               key={this.state.user_id}
               userId={this.state.user_id}
               isEditable
@@ -214,7 +174,8 @@ class ProfileScreen extends Component {
               style={stylesIn.imageAlign}
             />
           </View>
-
+          
+          {/* create a container to render user's information */}
           <View style={stylesIn.userInfo}>
             <Text style={styles.profileText}>
               {' '}
@@ -240,6 +201,7 @@ class ProfileScreen extends Component {
               {' '}
             </Text>
 
+            {/* navigate a user to setting screen when the edit information button is clicked */}
             <TouchableOpacity
               onPress={() => { this.props.navigation.navigate('Setting'); }}
               style={styles.navigateBtn}
@@ -248,10 +210,13 @@ class ProfileScreen extends Component {
             </TouchableOpacity>
           </View>
         </View>
-
+        
+        {/* create a container to display flatlist component */}
         <View style={stylesIn.secondSubContainer}>
           <View style={stylesIn.userPost}>
+             {/* passing the alertMessage state to alert the error message  */}
             <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
+            {/* call the userwall component to render the user wall */}
             <UserWall
               navigation={this.props.navigation}
             />
@@ -263,6 +228,7 @@ class ProfileScreen extends Component {
   }
 }
 
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

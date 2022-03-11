@@ -1,5 +1,6 @@
+//import elements and components to be able to use it inside the class
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { Component, useEffect } from 'react';
+import React from 'react';
 import ValidationComponent from 'react-native-form-validator';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
@@ -9,135 +10,73 @@ import styles from '../modules/stylesheet';
 import IsLoading from '../modules/isLoading';
 import UserWall from '../modules/userWall';
 
+//create a PostScreen component which will allow user to share a post in tab navigator
 class PostScreen extends ValidationComponent {
+  //create a constructor
   constructor(props) {
+    //passing props into the constructor to enable using this.props inside a constructors
     super(props);
 
-    this.postId = '',
-
+    //initialise the state for each data to be able to change it overtime
     this.state = {
       user_id: '',
       addPost: '',
-      textPost: '',
-      userPostList: [],
-      editable: false,
-      text: '',
-      isLoading: true,
       alertMessage: '',
       token: '',
-      new_text_post: '',
       userWallKey: 0,
     };
   }
 
+  //---for post management, view a single post has not been used as the design for this already allow
+  // a user to edit and delete post from the list of post
+
+  //using componentDidmount to get the user id and 
+  //a token immediately after being mounted
   async componentDidMount() {
     this.state.user_id = await AsyncStorage.getItem('user_id');
     this.state.token = await AsyncStorage.getItem('@session_token');
 
-    this.focusListener = this.props.navigation.addListener('focus', async () => {
-      this.userPosts();
-    });
   }
 
-  userPosts = async () => {
-    const token = await AsyncStorage.getItem('@session_token');
-    const userId = await AsyncStorage.getItem('user_id');
 
-    return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post`, {
-      method: 'get',
-      headers: {
-        'X-Authorization': token,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => {
-        switch (response.status) {
-          case 200:
-            return response.json();
-            break;
-          case 401:
-            throw { errorCase: 'Unauthorised' };
-            break;
-          case 403:
-            throw { errorCase: 'UnauthorisedPost' };
-            break;
-          case 404:
-            throw { errorCase: 'UserNotFound' };
-            break;
-          case 500:
-            throw { errorCase: 'ServerError' };
-            break;
-          default:
-            throw { errorCase: 'WentWrong' };
-            break;
-        }
-      })
-      .then(() => {
-        this.setState({
-          isLoading: false,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        switch (error.errorCase) {
-          case 'Unauthorised':
-            this.setState({
-              alertMessage: 'Unauthorised, Please login',
-              isLoading: false,
-            });
-            break;
-          case 'UnauthorisedPost':
-            this.setState({
-              alertMessage: 'You can only view the post of yourself or your friends',
-              isLoading: false,
-            });
-            break;
-          case 'UserNotFound':
-            this.setState({
-              alertMessage: 'Not found',
-              isLoading: false,
-            });
-            break;
-          case 'ServerError':
-            this.setState({
-              alertMessage: 'Cannot connect to the server, please try again',
-              isLoading: false,
-            });
-            break;
-          case 'WentWrong':
-            this.setState({
-              alertMessage: 'Something went wrong, please try again',
-              isLoading: false,
-            });
-            break;
-        }
-      });
-  };
-
-  // add new post
+  //create a function for a user to add a post
   addPost = async () => {
+
+    //validation check that the text to be post should not be empty
     this.validate({
       addPost: { required: true },
     });
 
+    //only call the api if the validation check is passed 
     if (this.isFormValid() == true) {
+
+      //get the session token  as it is needed for authorisation
       const token = await AsyncStorage.getItem('@session_token');
+
+      //get the user id as it is needed for api call 
       const userId = await AsyncStorage.getItem('user_id');
 
+      //store the text to the object array 
       const post = { text: this.state.addPost };
 
+      //using fetch function to call the api and send the post request
       return fetch(`http://localhost:3333/api/1.0.0/user/${userId}/post`, {
         method: 'post',
+        //passing the content type to tell the server that we are passing json
+        //and the session token to be authorised
         headers: {
           'X-Authorization': token,
           'Content-Type': 'application/json',
         },
+        //convert a text to a string and pass into the body
         body: JSON.stringify(post),
       })
+        //checking the response status in the return promise
         .then((response) => {
+          //if the response status error occured, store the error reasons into the 
+          //object array
           switch (response.status) {
             case 201:
-              return response.json();
               break;
             case 401:
               throw { errorCase: 'Unauthorised' };
@@ -153,37 +92,36 @@ class PostScreen extends ValidationComponent {
               break;
           }
         })
-        .then((responseJson) => {
-          console.log('Posted post ', responseJson);
+        //when the promise is resolved, set the userWallKey in state to any random number 
+        // to make the userWall component triggers each time a user add new post
+        .then(() => {
           this.setState({
             userWallKey: Math.random(),
           });
         })
+        //when the promise is rejected, check which error reason from the response was and
+        //set the correct error message to each error in order to render the right error message
         .catch((error) => {
           console.log(error);
           switch (error.errorCase) {
             case 'Unauthorised':
               this.setState({
                 alertMessage: 'Unauthorised, Please login',
-                isLoading: false,
               });
               break;
             case 'UserNotFound':
               this.setState({
                 alertMessage: 'Not found',
-                isLoading: false,
               });
               break;
             case 'ServerError':
               this.setState({
                 alertMessage: 'Cannot connect to the server, please try again',
-                isLoading: false,
               });
               break;
             case 'WentWrong':
               this.setState({
                 alertMessage: 'Something went wrong, please try again',
-                isLoading: false,
               });
               break;
           }
@@ -191,23 +129,28 @@ class PostScreen extends ValidationComponent {
     }
   };
 
+  //calling render function and return the data that will be display 
   render() {
-    if (this.state.isLoading == true) {
-      return (
-        <IsLoading />
-      );
-    }
+
+    //display the screen when the components are ready
     return (
 
+      //create a flex container to make the content responsive to all screen sizes
+      //by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
+         {/* create a sub-container to split between a normal view and a flatlist to
+        ensure that it will not overlay each other when the flatlist data is empty */}
         <View style={stylesIn.subContainer1}>
+          {/* create a flex box for rendering spacebook logo */}
           <View style={stylesIn.homeLogo}>
             <Logo />
           </View>
-
+           {/* create a flex box to let the user add a new post to their wall */}
           <View style={stylesIn.sharePost}>
             <Text style={styles.postHeaderText}>Share a post:</Text>
+            {/* set the text that the user enter to the text input component into a state 
+              in order to send the text to the api */}
             <TextInput
               style={stylesIn.postInput}
               placeholder="Add text here"
@@ -215,8 +158,10 @@ class PostScreen extends ValidationComponent {
               onChangeText={(addPost) => this.setState({ addPost })}
               value={this.state.addPost}
             />
+            {/* display an error message when the validation for adding post is incorrect */}
             {this.isFieldInError('addPost') && this.getErrorsInField('addPost').map((errorMessage) => <Text key={errorMessage} style={styles.loginErrorText}>Write something before you post</Text>)}
 
+            {/* display a button for adding a post */}
             <TouchableOpacity
               style={[styles.addPostBtn, styles.btnToEnd, stylesIn.addPostBtn]}
               onPress={() => this.addPost()}
@@ -226,11 +171,15 @@ class PostScreen extends ValidationComponent {
           </View>
 
         </View>
-
+        {/* create a container to display flatlist components */}
         <View style={stylesIn.subContainer2}>
+          {/* passing the alertMessage state to alert the error message  */}
           <Text style={styles.errorMessage}>{this.state.alertMessage}</Text>
+          {/* a container for the user's feed */}
           <View style={stylesIn.mainPostFeed}>
+            {/* call the userwall component to render the user wall */}
             <UserWall
+              //passed in the key in order to update the user's wall each time the update is made
               key={this.state.userWallKey}
               navigation={this.props.navigation}
             />
@@ -242,6 +191,7 @@ class PostScreen extends ValidationComponent {
   }
 }
 
+//using stylesheet to design the render
 const stylesIn = StyleSheet.create({
 
   flexContainer: {

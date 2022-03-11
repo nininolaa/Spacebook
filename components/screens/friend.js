@@ -11,8 +11,8 @@ import styles from '../modules/stylesheet';
 import FriendList from '../modules/friendList';
 import IsLoading from '../modules/isLoading';
 
-//create a UserWall component which will render user's post feed
-class FriendScreen extends Component {
+//create a FriendScreen component which will render main friend screen in tab navigator
+class Friend extends Component {
   //create a constructor
   constructor(props) {
     //passing props into the constructor to enable using this.props inside a constructors
@@ -37,7 +37,7 @@ class FriendScreen extends Component {
       friendListKey: 1,
     });
     
-    //get and set the user id and assign the random friendListKey when thee focused screen changes
+    //get and set the user id and assign the random friendListKey when the focused screen changes
     this.focusListener = this.props.navigation.addListener('focus', () => {
       AsyncStorage.getItem('user_id')
         .then((user_id) => {
@@ -66,8 +66,8 @@ class FriendScreen extends Component {
     if (this.state.user_id) {
       return (
 
-        // create a flex container to make the content responsive to all screen sizes
-        // by dividing each section to an appropriate flex sizes
+        //create a flex container to make the content responsive to all screen sizes
+        //by dividing each section to an appropriate flex sizes
         <View style={stylesIn.flexContainer}>
           {/* create a flex box to render spacebook logo */}
           <View style={stylesIn.homeLogo}>
@@ -156,4 +156,4 @@ const stylesIn = StyleSheet.create({
   },
 });
 
-export default FriendScreen;
+export default Friend;

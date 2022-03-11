@@ -33,6 +33,9 @@ class UserWall extends ValidationComponent {
     this.userPosts();
   }
 
+  //---for post management, view a single post has not been used as the design for this already allow
+  // a user to edit and delete post from the list of post
+
   //create a function to retrieve a list of posts of a given user
   userPosts = async () => {
     //get the session token to use for authorisation when calling api
@@ -46,7 +49,6 @@ class UserWall extends ValidationComponent {
       //passing the content type and the session token to be authorised
       headers: {
         'X-Authorization': token,
-        'Content-Type': 'application/json',
       },
     })
       //checking the response status in the return promise
@@ -161,7 +163,7 @@ class UserWall extends ValidationComponent {
         //checking the response status in the return promise
         .then((response) => {
           //if the response status error occured, store the error reasons into the 
-          //array objects
+          //object array
           switch (response.status) {
             case 200:
               break;
@@ -346,8 +348,8 @@ class UserWall extends ValidationComponent {
   render() {
     return (
 
-      // create a flex container to make the content responsive to all screen sizes
-      // by dividing each section to an appropriate flex sizes
+      //create a flex container to make the content responsive to all screen sizes
+      //by dividing each section to an appropriate flex sizes
       <View style={stylesIn.flexContainer}>
 
         {/* add a header text before rendering the post list */}
@@ -360,7 +362,7 @@ class UserWall extends ValidationComponent {
 
           {/* using flatlist component to show the list of post as flatlist makes the list scrollable */}
           <FlatList
-            // store the list into the data before rendering each item
+            //store the list into the data before rendering each item
             data={this.state.userPostList}
 
             renderItem={({ item }) => (

@@ -32,7 +32,7 @@ class FriendHeading extends Component {
     this.loadFriend();
   }
 
-  //create a loadfriend function to call the api for getting user information
+  //create a function to call the api for getting user information
   loadFriend = async () => {
     //get the session token to use for authorisation when calling api
     const token = await AsyncStorage.getItem('@session_token');
@@ -41,10 +41,9 @@ class FriendHeading extends Component {
     return fetch(`http://localhost:3333/api/1.0.0/user/${this.props.friend_id}`, {
       //passing get method in order to get user information
       method: 'get',
-      //passing the content type and the session token to be authorised to get user information
+      //passing the session token to be authorised
       headers: {
         'X-Authorization': token,
-        'Content-Type': 'application/json',
       },
     })
       //checking the response status after calling api

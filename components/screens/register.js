@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+//import elements and components to be able to use it inside the class
+import React from 'react';
 import {
   View, TextInput, Button, Text, StyleSheet,
 } from 'react-native';
@@ -7,6 +8,7 @@ import ValidationComponent from 'react-native-form-validator';
 import Logo from '../modules/logo';
 import styles from '../modules/stylesheet';
 
+//create a PostScreen component which will allow user to share a post in tab navigator
 class Register extends ValidationComponent {
   constructor(props) {
     super(props);
